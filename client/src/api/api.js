@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Create an axios instance with the base URL of the Express server
 const api = axios.create({
-  baseURL: 'http://localhost:3000'
+  baseURL: 'http://localhost:3001'
 });
 
 // Get all data

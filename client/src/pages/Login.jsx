@@ -1,7 +1,21 @@
-import React from "react";
+import React, { useEffect } from "react";
 import InputField from "../components/InputField";
+import { getData} from "../api/api";
 
 export default function Login() {
+
+  useEffect(() => {
+    async function fetchData() {
+      // You can await here
+      try {
+        const res = await getData();
+        console.log(res.data);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    fetchData();
+  }, []); // Or [] if effect doesn't need props or state
   return (
     <>
       <div className="login-container w-full bg-secondary h-screen flex justify-center items-center">
@@ -37,7 +51,7 @@ export default function Login() {
           </div>
 
           <div className="text-center">
-            <button className="confirm-btn p-2 py-3 rounded-md w-full  bg-primary text-white text-[12px] font-bold">
+            <button className="confirm-btn p-3 py-3 rounded-xl w-full  bg-primary text-white text-[12px] font-bold">
               SIGN IN
             </button>
           </div>

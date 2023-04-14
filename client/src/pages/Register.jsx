@@ -57,7 +57,7 @@ export default function Register() {
           </div>
 
           <div className="text-center">
-            <button className="confirm-btn p-2 py-3 rounded-md w-full  bg-primary text-white text-[12px] font-bold">
+            <button className="confirm-btn p-2 py-3 rounded-xl w-full  bg-primary text-white text-[12px] font-bold">
               SIGN UP
             </button>
           </div>
