@@ -4,7 +4,6 @@ const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 const axios = require('axios');
 const db = require('./db')
-const config = require('./config/config');
 
 // Import the users router
 const usersRouter = require('./routes/users');

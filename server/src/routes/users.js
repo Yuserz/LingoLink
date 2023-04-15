@@ -4,10 +4,10 @@ const router = express.Router();
 const User = require('../models/user');
 
 // Define your routes here
-router.get("/", async (req, res) => {
+router.get("/getAll", async (req, res) => {
   try {
     const users = await User.find();
-    res.json(users);
+    res.send(users);
     console.log("DB data:", users)
   } catch (error) {
     console.error(error);
