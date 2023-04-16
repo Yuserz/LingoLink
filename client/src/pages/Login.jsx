@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import InputField from "../components/InputField";
 import { useNavigate } from "react-router-dom";
 import { login } from "../api/api";
@@ -20,6 +20,8 @@ export default function Login() {
         password,
       });
 
+      console.log("login success");
+
       const { token } = response.data;
 
       // Store token in local storage
@@ -31,6 +33,10 @@ export default function Login() {
       console.log("Invalid email or password");
     }
   };
+
+  // useEffect(() => {
+  //   console.log("hello")
+  // },[])
 
   return (
     <>

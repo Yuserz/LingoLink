@@ -5,6 +5,7 @@ const api = axios.create({
   baseURL: 'http://localhost:3001'
 });
 
+//http header
 const config = {
   headers: {
     "Content-Type": "application/json",
@@ -36,4 +37,4 @@ export const updateData = (id, payload) => api.put(`/api/users/${id}`, payload);
 export const deleteData = id => api.delete(`/api/users/${id}`);
 
 // Create login session
-export const login = payload => api.post('/api/login', payload, config);
+export const login = payload => api.post('/api/users/login', payload, config);
