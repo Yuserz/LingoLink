@@ -5,7 +5,7 @@ const api = axios.create({
   baseURL: 'http://localhost:3001'
 });
 
-//http header
+//http header(not yet inforced)
 const config = {
   headers: {
     "Content-Type": "application/json",
@@ -13,28 +13,17 @@ const config = {
   },
 }
 
-api.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
-
-// Get all data
-export const getData = () => api.get('/api/users');
-
-// Create a new data item/session
-export const createData = payload => api.post('/api/users', payload);
-
-// Update an existing data item
-export const updateData = (id, payload) => api.put(`/api/users/${id}`, payload);
-
-// Delete an existing data item
-export const deleteData = id => api.delete(`/api/users/${id}`);
-
+// Register a user
+export const register = payload => api.post('/api/users/register', payload, config);
 // Create login session
 export const login = payload => api.post('/api/users/login', payload, config);
+
+
+// // Get all data
+// export const getData = () => api.get('/api/users');
+
+// // Update an existing data item
+// export const updateData = (id, payload) => api.put(`/api/users/${id}`, payload);
+
+// // Delete an existing data item
+// export const deleteData = id => api.delete(`/api/users/${id}`);
