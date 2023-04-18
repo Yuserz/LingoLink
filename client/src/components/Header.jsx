@@ -5,9 +5,14 @@ import DarkModeBtn from "./DarkModeBtn";
 export default function Header() {
   return (
     <>
-      <header className="flex justify-between">
-        <div className="search-bar">
-          <input placeholder="search contact here.." type="text" />
+      <header className="flex justify-between mt-4 gap-4 items-center">
+        <div className="search-bar flex items-center p-2 bg-white border border-solid rounded-2xl outline-gray-200 w-1/2 min-w-[220px] gap-2">
+          <img src="" alt="icon" />
+          <input
+          className="w-full outline-none py-2"
+            placeholder="Search contact here.."
+            type="text"
+          />
         </div>
         <div className="util-bar flex gap-2">
           <StatusBtn />
