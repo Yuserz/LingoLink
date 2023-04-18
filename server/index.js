@@ -6,22 +6,45 @@ const compression = require("compression");
 const config = require('./src/config/config');
 const serverApp = require('./src/app');
 const app = express();
+const http = require('http');
+const server = http.createServer(app);
+const { Server } = require("socket.io");
 
-const corsOrigin = "http://localhost:3000";
+// const io = new Server(server, {
+//   cors: {
+//     origin: "http://localhost:3000",
+//     methods: ["GET", "POST"],
+//   },
+// });
 
-const corsOptions = {
-  origin: corsOrigin,
-  optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
-};
 
 // Use middleware functions
 app.use(helmet());
 app.use(compression());
-app.use(cors(corsOptions));
+app.use(cors());
 app.use(bodyParser.json());
-
 app.use('/api', serverApp);
 
-app.listen(config.server.port, () => {
+// Import socket controller
+const socketController = require('./src/controllers/socketController');
+
+// Setup socket io connection
+socketController.initialize(server);
+
+// //Setup socket io connecion
+// io.on("connection", (socket) => {
+//   console.log(`User Connected: ${socket.id}`);
+
+//   socket.on("join_room", (data) => {
+//     socket.join(data);
+//   });
+
+//   socket.on("send_message", (data) => {
+//     socket.to(data.room).emit("receive_message", data);
+//   });
+// });
+
+
+server.listen(config.server.port, () => {
   console.log(`Server running on port ${config.server.port}`);
 });
