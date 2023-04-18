@@ -1,5 +1,5 @@
 import React from 'react'
-import SideBar from '../components/SideBar'
+import SideBar from '../components/sidebar/SideBar'
 import Header from '../components/Header'
 
 export default function MainLayout({children}) {

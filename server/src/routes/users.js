@@ -6,18 +6,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 
 // Define your routes here
-router.get("/getAll", async (req, res) => {
-  try {
-    const users = await User.find();
-    console.log("DB data:", users);
-    res.send(users);
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Error fetching users from database");
-  }
-});
-
-//Register user
+//Register endpoint
 router.post("/register", async (req, res) => {
   try {
     const { name, email, password } = req.body;

@@ -7,7 +7,6 @@ const config = require('./src/config/config');
 const serverApp = require('./src/app');
 const app = express();
 
-
 const corsOrigin = "http://localhost:3000";
 
 const corsOptions = {
