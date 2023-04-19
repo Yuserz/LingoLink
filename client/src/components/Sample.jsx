@@ -1,52 +1,45 @@
-import "./App.css";
 import io from "socket.io-client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import Chat from "./Chat";
 
 const socket = io.connect("http://localhost:3001");
 
 function App() {
-  //Room State
+  const [username, setUsername] = useState("");
   const [room, setRoom] = useState("");
-
-  // Messages States
-  const [message, setMessage] = useState("");
-  const [messageReceived, setMessageReceived] = useState("");
+  const [showChat, setShowChat] = useState(false);
 
   const joinRoom = () => {
-    if (room !== "") {
+    if (username !== "" && room !== "") {
       socket.emit("join_room", room);
+      setShowChat(true);
     }
   };
 
-  const sendMessage = () => {
-    socket.emit("send_message", { message, room });
-    console.log(room);
-  };
-
-  useEffect(() => {
-    socket.on("receive_message", (data) => {
-      setMessageReceived(data.message);
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [socket]);
   return (
-    <div className="App">
-      <input
-        placeholder="Room Number..."
-        onChange={(event) => {
-          setRoom(event.target.value);
-        }}
-      />
-      <button onClick={joinRoom}> Join Room</button>
-      <input
-        placeholder="Message..."
-        onChange={(event) => {
-          setMessage(event.target.value);
-        }}
-      />
-      <button onClick={sendMessage}> Send Message</button>
-      <h1> Message:</h1>
-      {messageReceived}
+    <div className="App w-1/2  h-1/2 max-h-[500px]">
+      {!showChat ? (
+        <div className="joinChatContainer">
+          <h3>Join A Chat</h3>
+          <input
+            type="text"
+            placeholder="John..."
+            onChange={(event) => {
+              setUsername(event.target.value);
+            }}
+          />
+          <input
+            type="text"
+            placeholder="Room ID..."
+            onChange={(event) => {
+              setRoom(event.target.value);
+            }}
+          />
+          <button onClick={joinRoom}>Join A Room</button>
+        </div>
+      ) : (
+        <Chat socket={socket} username={username} room={room} />
+      )}
     </div>
   );
 }
