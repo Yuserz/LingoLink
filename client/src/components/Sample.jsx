@@ -20,14 +20,14 @@ function App() {
 
   const sendMessage = () => {
     socket.emit("send_message", { message, room });
-    console.log(room)
+    console.log(room);
   };
 
   useEffect(() => {
     socket.on("receive_message", (data) => {
       setMessageReceived(data.message);
     });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket]);
   return (
     <div className="App">

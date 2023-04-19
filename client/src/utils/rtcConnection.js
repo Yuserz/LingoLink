@@ -1,61 +1,38 @@
-// client/src/utils/rtcConnection.js
+import { useState, useEffect } from 'react';
 
-import io from 'socket.io-client';
+const configuration = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
 
-class RTCConnection {
-  constructor(roomId) {
-    this.roomId = roomId;
-    this.socket = io.connect();
-    this.peerConnection = new RTCPeerConnection();
-    this.dataChannel = null;
-  }
+export const usePeerConnection = () => {
+  const [peerConnection, setPeerConnection] = useState(null);
 
-  async createOffer() {
-    this.dataChannel = this.peerConnection.createDataChannel('channel');
-    this.peerConnection.onicecandidate = this.handleICECandidateEvent.bind(this);
-    this.dataChannel.onmessage = this.handleDataChannelMessage.bind(this);
-    this.peerConnection.ondatachannel = this.handleDataChannel.bind(this);
-    
-    const offer = await this.peerConnection.createOffer();
-    await this.peerConnection.setLocalDescription(offer);
+  useEffect(() => {
+    const pc = new RTCPeerConnection(configuration);
+    setPeerConnection(pc);
 
-    this.socket.emit('offer', { roomId: this.roomId, offer: offer });
-  }
+    return () => {
+      pc.close();
+    };
+  }, []);
 
-  async handleOffer(offer) {
-    this.peerConnection.onicecandidate = this.handleICECandidateEvent.bind(this);
-    this.dataChannel = this.peerConnection.createDataChannel('channel');
-    this.peerConnection.ondatachannel = this.handleDataChannel.bind(this);
-    
-    await this.peerConnection.setRemoteDescription(offer);
-    const answer = await this.peerConnection.createAnswer();
-    await this.peerConnection.setLocalDescription(answer);
+  return peerConnection;
+};
 
-    this.socket.emit('answer', { roomId: this.roomId, answer: answer });
-  }
+export const createOffer = async (peerConnection) => {
+  const offer = await peerConnection.createOffer();
+  await peerConnection.setLocalDescription(offer);
+  return offer;
+};
 
-  async handleAnswer(answer) {
-    await this.peerConnection.setRemoteDescription(answer);
-  }
+export const createAnswer = async (peerConnection) => {
+  const answer = await peerConnection.createAnswer();
+  await peerConnection.setLocalDescription(answer);
+  return answer;
+};
 
-  handleICECandidateEvent(event) {
-    if (event.candidate) {
-      this.socket.emit('ice-candidate', { roomId: this.roomId, candidate: event.candidate });
-    }
-  }
+export const setRemoteDescription = async (peerConnection, description) => {
+  await peerConnection.setRemoteDescription(description);
+};
 
-  handleDataChannel(event) {
-    this.dataChannel = event.channel;
-    this.dataChannel.onmessage = this.handleDataChannelMessage.bind(this);
-  }
-
-  handleDataChannelMessage(event) {
-    console.log(`Received message: ${event.data}`);
-  }
-
-  addICECandidate(candidate) {
-    this.peerConnection.addIceCandidate(candidate);
-  }
-}
-
-export default RTCConnection;
+export const addIceCandidate = async (peerConnection, candidate) => {
+  await peerConnection.addIceCandidate(candidate);
+};
