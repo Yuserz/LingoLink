@@ -8,15 +8,6 @@ const serverApp = require('./src/app');
 const app = express();
 const http = require('http');
 const server = http.createServer(app);
-const { Server } = require("socket.io");
-
-// const io = new Server(server, {
-//   cors: {
-//     origin: "http://localhost:3000",
-//     methods: ["GET", "POST"],
-//   },
-// });
-
 
 // Use middleware functions
 app.use(helmet());
@@ -30,19 +21,6 @@ const socketController = require('./src/controllers/socketController');
 
 // Setup socket io connection
 socketController.initialize(server);
-
-// //Setup socket io connecion
-// io.on("connection", (socket) => {
-//   console.log(`User Connected: ${socket.id}`);
-
-//   socket.on("join_room", (data) => {
-//     socket.join(data);
-//   });
-
-//   socket.on("send_message", (data) => {
-//     socket.to(data.room).emit("receive_message", data);
-//   });
-// });
 
 
 server.listen(config.server.port, () => {

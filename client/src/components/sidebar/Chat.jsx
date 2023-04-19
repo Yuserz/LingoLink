@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import arrowDown from "../../assets/icons/arrowDown.svg";
 import add from "../../assets/icons/add.svg";
+import AddContact from "./modals/AddContact";
 
 export default function Chat() {
   const [expanded, setExpanded] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   const toggleExpanded = () => {
     setExpanded(!expanded);
@@ -24,12 +26,17 @@ export default function Chat() {
           onClick={toggleExpanded}
           className="add-btn flex gap-2 items-center h-fit"
         >
-          <img className={`${expanded ? "rotate-180":""}`} src={arrowDown} alt="" />
+          <img
+            className={`${expanded ? "rotate-180" : ""}`}
+            src={arrowDown}
+            alt=""
+          />
           <h2>Chat</h2>
         </button>
-        <button className="dropDown-btn h-fit">
+        <button onClick={() => setShowModal(true)} className="dropDown-btn h-fit">
           <img src={add} alt="" />
         </button>
+        {showModal ? <AddContact closeModal={setShowModal} /> : "" }
       </div>
     </div>
   );
