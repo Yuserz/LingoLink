@@ -26,17 +26,4 @@ Make sure you have the following installed:
 
 <h3>6. Open your browser and navigate to http://localhost:3000</h3>
 
-<h2>Running the Server</h2>
-To run the server, use the following command:
-
-<h2>npm run server</h2>
- `npm run dev` 
-This will start the server on port 3001.
-
-<h2>Running the Client</h2>
-To run the client, use the following command:
-
-`npm start`
-This will start the client on port 3000.
-
 
