@@ -17,8 +17,8 @@ Make sure you have the following installed:
 
 <h3>3. Create a .env file based on the example.env and add your MongoDB connection string
 `PORT = <PORT NUMBER>`
-MONGODB_URL = <'MONGODB_URL STRING'>
-CORS_ORIGIN = <'LINK OF THE APP RUNNING ON'>
+`MONGODB_URL = <'MONGODB_URL STRING'>`
+`CORS_ORIGIN = <'LINK OF THE APP RUNNING ON'>`
 
 <h3>4. Start the server:</h3>
   `npm run dev`
