@@ -18,11 +18,11 @@ Make sure you have the following installed:
 <h3>3. Create a .env file based on the example.env and add your MongoDB connection string
 
 <h3>4. Start the server:</h3>
-  `npm run server`
+  `npm run dev`
   
 <h3>5. Start the client:</h3>
 
-  `npm run client`
+  `npm start`
 
 <h3>6. Open your browser and navigate to http://localhost:3000</h3>
 
