@@ -4,7 +4,7 @@ import Chat from "./Chat";
 
 const socket = io.connect("http://localhost:3001");
 
-function App() {
+function Messaging() {
   const [username, setUsername] = useState("");
   const [room, setRoom] = useState("");
   const [showChat, setShowChat] = useState(false);
@@ -17,10 +17,10 @@ function App() {
   };
 
   return (
-    <div className="App w-1/2  h-1/2 max-h-[500px]">
+    <div className="chat-container my-4 flex justify-center w-full h-full overflow-clip">
       {!showChat ? (
         <div className="joinChatContainer">
-          <h3>Join A Chat</h3>
+          {/* <h3>Join A Chat</h3> */}
           <input
             type="text"
             placeholder="John..."
@@ -44,4 +44,4 @@ function App() {
   );
 }
 
-export default App;
+export default Messaging;

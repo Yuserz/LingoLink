@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
-import InputField from "./InputField";
+import moment from "moment";
+import sendBtn from "../assets/icons/send.svg"
 
 function Chat({ socket, username, room }) {
   const [currentMessage, setCurrentMessage] = useState("");
@@ -12,10 +13,7 @@ function Chat({ socket, username, room }) {
         room: room,
         author: username,
         message: currentMessage,
-        time:
-          new Date(Date.now()).getHours() +
-          ":" +
-          new Date(Date.now()).getMinutes(),
+        time: moment().format("h:mm A"),
       };
 
       await socket.emit("send_message", messageData);
@@ -25,9 +23,15 @@ function Chat({ socket, username, room }) {
   };
 
   useEffect(() => {
-    socket.on("receive_message", (data) => {
+    const receiveMessageHandler = (data) => {
       setMessageList((list) => [...list, data]);
-    });
+    };
+
+    socket.on("receive_message", receiveMessageHandler);
+
+    return () => {
+      socket.off("receive_message", receiveMessageHandler);
+    };
   }, [socket]);
 
   useEffect(() => {
@@ -37,41 +41,44 @@ function Chat({ socket, username, room }) {
   }, [messageList]);
 
   return (
-    <div className="chat-window w-full h-full border flex justify-between flex-col p-2">
-      <div className="chat-header">
-        <p>Live Chat</p>
+    <div className="chat-window w-3/4 h-full flex justify-between flex-col p-2 gap-2">
+      <div className="contact-profile  pt-2 w-full flex justify-center h-full p-4 items-center">
+        <div className="flex flex-col justify-center w-fit">
+          {/* <img className="profile-image w-full h-full" src="" alt="" /> */}
+          <h4 className="text-center">{"Contact Name"}</h4>
+        </div>
       </div>
-      <div className="chat-input-botton flex flex-col gap-2">
-        <div className="chat-body">
-          <div className="flex flex-col gap-2 h-full max-h-[300px] overflow-y-auto">
-            {messageList.map((messageContent) => {
+      <div className="flex flex-col gap-2">
+        <div className="chat-body h-full overflow-auto">
+          <div className="message-box flex flex-col gap-2 h-full max-h-[400px] overflow-y-auto">
+            {messageList.map((messageContent, index) => {
+              const time = moment(messageContent.time, "h:mm A");
+              const timeDiff = moment().diff(time, "minutes");
+              const timeDisplay = timeDiff < 1 ? "now" : time.format("h:mm A");
               return (
                 <div
-                  className={`${
-                    username === messageContent.author ? "self-start" : "self-end"
+                  key={index}
+                  className={`message-content-container w-fit max-w-[70%] px-4 ${
+                    username === messageContent.author
+                      ? "self-start"
+                      : "self-end"
                   }`}
-                  // id={username === messageContent.author ? "you" : "other"}
                 >
-                  <div>
-                    <div className="message-content">
-                      <p
-                        className={`w-full  rounded-xl px-3 py-2 ${
-                          username === messageContent.author
-                            ? "bg-primary text-white"
-                            : "bg-white self-end"
-                        }`}
-                      >
-                        {messageContent.message}
-                      </p>
-                    </div>
-                    <div className="message-meta flex gap-2">
-                      <p className="text-gray-500" id="time">
-                        {messageContent.time}
-                      </p>
-                      <p className="text-gray-500" id="author">
-                        {messageContent.author}
-                      </p>
-                    </div>
+                  <div className="message-content">
+                    <p
+                      className={`w-full rounded-2xl p-4 ${
+                        username === messageContent.author
+                          ? "bg-primary text-white"
+                          : "bg-white self-end"
+                      }`}
+                    >
+                      {messageContent.message}
+                    </p>
+                  </div>
+                  <div className="message-meta flex justify-end gap-2">
+                    <p className="text-gray-400 text-sm" id="time">
+                      {timeDisplay}
+                    </p>
                   </div>
                 </div>
               );
@@ -79,20 +86,31 @@ function Chat({ socket, username, room }) {
             <div ref={messagesEndRef} />
           </div>
         </div>
-        <div className="chat-footer flex">
-          <InputField
+      </div>
+      <div className="chat-footer flex gap-4">
+        <div className="p-3 px-4 w-full flex bg-white rounded-2xl">
+          <input
+            className="p-1 w-full outline-none"
             type="text"
             value={currentMessage}
-            placeholder="Hey..."
+            placeholder="Type a message..."
             onChange={(event) => {
               setCurrentMessage(event.target.value);
             }}
-            // beforeinput={(event) => {
-            //   event.key === "Enter" && sendMessage();
-            // }}
+            onKeyDown={(event) => {
+              event.key === "Enter" && sendMessage();
+            }}
           />
-          <button onClick={sendMessage}>&#9658;</button>
+          <button>
+            {" "}
+            <img src="" alt="" />
+          </button>
+          <button>
+            {" "}
+            <img src="" alt="" />
+          </button>
         </div>
+        <button onClick={sendMessage}><img src={sendBtn} alt="" /></button>
       </div>
     </div>
   );

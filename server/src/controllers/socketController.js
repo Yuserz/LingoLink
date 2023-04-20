@@ -3,7 +3,7 @@ let io;
 function initialize(server) {
   io = require("socket.io")(server, {
     cors: {
-      origin: process.env.CORS_ORIGIN,
+      origin: process.env.CORS_ORIGIN || `http://localhost:3000`,
       // methods: ['GET', 'POST']
     },
   });

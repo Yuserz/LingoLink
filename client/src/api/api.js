@@ -5,16 +5,20 @@ const api = axios.create({
   baseURL: 'http://localhost:3001'
 });
 
-//http header(not yet inforced)
-const config = {
-  headers: {
-    "Content-Type": "application/json",
-    "accept":"application/json"
-  },
-}
+//Enforced using helmet
+// //http header
+// const config = {
+//   headers: {
+//     "Content-Type": "application/json",
+//     "accept":"application/json"
+//   },
+// }
 
 // Register a user
-export const register = payload => api.post('/api/users/register', payload, config);
+export const register = payload => api.post('/api/users/register', payload);
 
 // Create login session
-export const login = payload => api.post('/api/users/login', payload, config);
+export const login = payload => api.post('/api/users/login', payload);
+
+// Find user by email
+export const add = payload => api.post('/api/users/add', payload);
