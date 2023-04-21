@@ -1,26 +1,24 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import Search from "../../Search";
 import close from "../../../assets/icons/close.svg";
 import { add } from "../../../api/api";
 import { MyContext } from "../../../pages/Home";
 
-
 export default function AddContact({ closeModal }) {
   const [email, setEmail] = useState();
-  // const [message, setMessage] = useState();
+  const [foundEmail, setFoundEmail] = useState();
 
   const findContact = async () => {
-    // e.preventDefault();
-
     try {
       const response = await add({
         email,
       });
 
-      console.log("Object:", response);
+      console.log("success:", response);
     } catch (error) {
       console.log("not found");
     }
+    setFoundEmail(email);
   };
 
   const { setShowMessaging } = useContext(MyContext);
@@ -43,8 +41,17 @@ export default function AddContact({ closeModal }) {
         <div className="h-12 overflow-hidden ">
           <Search setEmail={setEmail} findContact={findContact} />
         </div>
+
         <div className="search-results">
-          <button onClick={() => {setShowMessaging(true)}}>{email}</button>
+          <button
+            onClick={() => {
+              setShowMessaging(true);
+              closeModal(false);
+            }}
+          >
+            {" "}
+            {foundEmail}
+          </button>
         </div>
       </div>
     </div>

@@ -1,16 +1,17 @@
-import React, { useState } from "react";
+import React, { createContext, useState } from "react";
 import MainLayout from "../layout/MainLayout";
 import Messaging from "../components/Messaging";
 
-export const MyContext = React.createContext();
+//Context API for state management
+export const MyContext = createContext();
 
 export default function Home() {
   const [showMessaging, setShowMessaging] = useState(false);
   return (
-    <MainLayout>
-      <MyContext.Provider value={{ showMessaging, setShowMessaging }}>
+    <MyContext.Provider value={{ showMessaging, setShowMessaging }}>
+      <MainLayout>
         {showMessaging ? <Messaging openMessaging={setShowMessaging} /> : ""}
-      </MyContext.Provider>
-    </MainLayout>
+      </MainLayout>
+    </MyContext.Provider>
   );
 }
