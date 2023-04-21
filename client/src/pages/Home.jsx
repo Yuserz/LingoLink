@@ -1,4 +1,4 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useState, useEffect } from "react";
 import MainLayout from "../layout/MainLayout";
 import Messaging from "../components/Messaging";
 
@@ -7,10 +7,16 @@ export const MyContext = createContext();
 
 export default function Home() {
   const [showMessaging, setShowMessaging] = useState(false);
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    console.log("contact info:", data);
+  }, [data]);
+
   return (
-    <MyContext.Provider value={{ showMessaging, setShowMessaging }}>
+    <MyContext.Provider value={{ showMessaging, setShowMessaging, setData }}>
       <MainLayout>
-        {showMessaging ? <Messaging openMessaging={setShowMessaging} /> : ""}
+        {showMessaging ? <Messaging data = { data }  openMessaging={setShowMessaging} /> : ""}
       </MainLayout>
     </MyContext.Provider>
   );

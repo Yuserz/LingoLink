@@ -45,7 +45,7 @@ function Chat({ socket, username, room }) {
       <div className="contact-profile  pt-2 w-full flex justify-center h-full p-4 items-center">
         <div className="flex flex-col justify-center w-fit">
           {/* <img className="profile-image w-full h-full" src="" alt="" /> */}
-          <h4 className="text-center">{"Contact Name"}</h4>
+          <h4 className="text-center">{username}</h4>
         </div>
       </div>
       <div className="flex flex-col gap-2">

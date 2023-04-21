@@ -54,14 +54,14 @@ router.post("/add", async (req, res, next) => {
     if (!user) {
       return res.status(401).send({ error: "Email not found" });
     }
-    console.log("User Found:", email)
-    //success message
-    res.send({ success: "User found", email });
+
+    // Only include name
+    const { name } = user;
+    res.send({ success: "User found", name });
   } catch (error) {
     next(error);
-    console.log("Not Found:")
+    console.log("Not Found:");
   }
 });
-
 
 module.exports = router;

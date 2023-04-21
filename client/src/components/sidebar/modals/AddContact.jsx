@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, createContext } from "react";
 import Search from "../../Search";
 import close from "../../../assets/icons/close.svg";
 import { add } from "../../../api/api";
@@ -7,12 +7,15 @@ import { MyContext } from "../../../pages/Home";
 export default function AddContact({ closeModal }) {
   const [email, setEmail] = useState();
   const [foundEmail, setFoundEmail] = useState();
+  const { setShowMessaging, setData } = useContext(MyContext);
 
   const findContact = async () => {
     try {
       const response = await add({
         email,
       });
+      //store user info to data
+      setData(response);
 
       console.log("success:", response);
     } catch (error) {
@@ -21,7 +24,7 @@ export default function AddContact({ closeModal }) {
     setFoundEmail(email);
   };
 
-  const { setShowMessaging } = useContext(MyContext);
+
 
   return (
     <div className="absolute w-screen h-screen bg-black/20 top-0 left-0 flex items-center justify-center">
