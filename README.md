@@ -1,42 +1,34 @@
-<h1>LingoLink</h1>
-A google hangout clone build with `react.js`, `express.js`, and `mongoDB`.
+# LingoLink
+### A google hangout clone build with react.js, express.js, and mongoDB.
 
-<h2>Prerequisites</h2>
-Make sure you have the following installed:
+## Prerequisites
+### Make sure you have the following installed:
 
 1. Node.js
 2. MongoDB
 
-<h2>Getting Started</h2>
-<h5>1. Clone the repository:</h5>
+## Getting Started
+### 1. Clone the repository:
     - git clone https://github.com/Yuserz/LingoLink.git
     
-<h5>2. Install the dependencies</h5>
+### 2. Install the dependencies</h3>
 
   `npm install`
 
-<h5>3. Create a .env file based on the example.env and add your MongoDB connection string
+### 3. Create a .env:</h3>
+- PORT = <'PORT NUMBER'>
+- MONGODB_URL = <'MONGODB_URL STRING'>
+- CORS_ORIGIN = <'LINK OF THE APP RUNNING ON'>
 
-<h5>4. Start the server:</h5>
-  `npm run server`
+#### Note: Remove < > sign and replace it with the asked value
+
+### 4. Start the server:</h3>
+  `npm run dev`
   
-<h5>5. Start the client:</h5>
+### 5. Start the client:</h3>
 
-  `npm run client`
+  `npm start`
 
-<h5>6. Open your browser and navigate to http://localhost:3000</h5>
-
-<h2>Running the Server</h2>
-To run the server, use the following command:
-
-<h2>npm run server</h2>
- `npm run dev` 
-This will start the server on port 3001.
-
-<h2>Running the Client</h2>
-To run the client, use the following command:
-
-`npm start`
-This will start the client on port 3000.
+### 6. Open your browser and navigate to http://localhost:3000</h3>
 
 
