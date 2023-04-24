@@ -1,6 +1,6 @@
-import React, { useState, useContext} from "react";
+import React, { useState, useContext } from "react";
 import { search, addContact } from "../../../api/api";
-import { MyContext } from "../../../pages/Home";
+import { MyDataContext } from "../../../pages/Home";
 import Search from "../../Search";
 
 //icons
@@ -11,7 +11,7 @@ export default function AddContact({ closeModal }) {
   const [email, setEmail] = useState();
   const [contact, setContact] = useState();
   const [foundEmail, setFoundEmail] = useState();
-  const { setShowMessaging, setData } = useContext(MyContext);
+  const { setShowMessaging, setData } = useContext(MyDataContext);
 
   const findContact = async () => {
     try {
@@ -62,7 +62,7 @@ export default function AddContact({ closeModal }) {
           <button
             onClick={() => {
               setShowMessaging(true);
-              handleClick(email)
+              handleClick(email);
               closeModal(false);
             }}
             className="search-results bg-white border-2 border-primary/50 hover:border-primary/100 px-4 py-3 rounded-lg flex justify-between items-center"
