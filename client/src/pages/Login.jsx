@@ -1,15 +1,13 @@
-import React, { createContext, useState } from "react";
+import React, { useState, useContext } from "react";
 import InputField from "../components/InputField";
 import { useNavigate } from "react-router-dom";
 import { login } from "../api/api";
-
-//Context API for state management
-export const MyId = createContext();
+import { MyIdContext } from "../context/MyIdContext";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [_id, setId] = useState("");
+  const { set_id } = useContext(MyIdContext);
   // const [data, setData] = useState("");
 
   const navigate = useNavigate();
@@ -22,12 +20,12 @@ export default function Login() {
       const response = await login({
         email,
         password,
-        _id
       });
 
       console.log("login success");
 
-      const { token } = response.data;
+      const { token, _id } = response.data;
+      set_id(_id);
 
       // Store token in local storage
       localStorage.setItem("token", token);
@@ -39,12 +37,8 @@ export default function Login() {
     }
   };
 
-  // useEffect(() => {
-  //   console.log("hello")
-  // },[])
-
   return (
-    <MyId.Provider value={{ _id }}>
+    <>
       <div className="login-container w-full bg-secondary h-screen flex justify-center items-center">
         <div className="box bg-white shadow-xl login w-[24%] max-[24%]: min-w-[360px]  p-8 rounded-xl flex flex-col gap-6">
           <form
@@ -101,6 +95,6 @@ export default function Login() {
           </form>
         </div>
       </div>{" "}
-    </MyId.Provider>
+    </>
   );
 }
