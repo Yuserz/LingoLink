@@ -83,10 +83,10 @@ router.post("/search", verifyToken, async (req, res, next) => {
 });
 
 //add contact
-router.post("/addContact", verifyToken,  async (req, res) => {
+router.post("/addContact",  async (req, res) => {
   try {
-    const { contact } = req.body;
-    const user = await User.findOneAndUpdate(
+    const { contact, _id } = req.body;
+    const user = await User.findOneAndUpdate(_id,
       { $push: { contacts: contact } },
       { new: true }
     );

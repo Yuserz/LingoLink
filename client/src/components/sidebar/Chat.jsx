@@ -8,19 +8,14 @@ export default function Chat() {
   const [expanded, setExpanded] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [contacts, setContact] = useState();
-  const data = useContext(MyDataContext);
+  const  data  = useContext(MyDataContext);
 
   useEffect(() => {
     if (data.data) {
-      console.log(data.data);
+      // console.log(data.data);
       setContact(data.data.contacts);
     }
   }, [data]);
-
-  // useEffect(() => {
-  //   console.log("contacts:", contacts);
-  //   // setContact(data.contacts)
-  // }, [contacts]);
 
   const toggleExpanded = () => {
     setExpanded(!expanded);
@@ -28,12 +23,12 @@ export default function Chat() {
 
   return (
     <div
-      className={`chat-container  bg-secondary rounded-md p-3 px-4 flex flex-col justify-between${
+      className={`chat-container gap-3  bg-secondary rounded-md p-3 px-4 flex flex-col justify-between${
         expanded ? "expanded min-h-[150px] max-h-fit" : ""
       }`}
     >
       <div
-        className={`flex items-center w-full justify-between h-fit ${
+        className={`flex items-center w-full justify-between h-fit  ${
           expanded ? "pb-2 border-gray-300/80 border-b " : ""
         }`}
       >
@@ -57,14 +52,16 @@ export default function Chat() {
 
         {showModal ? <AddContact closeModal={setShowModal} /> : ""}
       </div>
-      <div>
+      <div className="flex flex-col gap-2  border-gray-300/80 border-t pt-2">
         {contacts
           ? contacts.map((contact, index) => (
-              <div key={index}>{contact.name}</div>
+              <button  className="flex gap-2 px-3 p-1 hover:shadow-sm hover:border-2 hover:border-primary/20 rounded-md " key={index}>
+                <h2>{index + 1 +"."}</h2>
+                <h2>{contact.name}</h2>
+              </button>
             ))
-          : []}
+          : <h1 className="opacity-70">No contact</h1>}
       </div>
-      {/* {data.data.name} */}
     </div>
   );
 }

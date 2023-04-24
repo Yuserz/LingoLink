@@ -31,6 +31,7 @@ export default function AddContact({ closeModal }) {
   const handleClick = async () => {
     try {
       const response = await addContact({
+        
         contact,
       });
       setContact(response);
@@ -58,7 +59,7 @@ export default function AddContact({ closeModal }) {
           <Search setEmail={setEmail} findContact={findContact} />
         </div>
 
-        {foundEmail && (
+        {foundEmail ? (
           <button
             onClick={() => {
               setShowMessaging(true);
@@ -70,7 +71,7 @@ export default function AddContact({ closeModal }) {
             {foundEmail}
             <img className="w-4 h-4" src={plus} alt="" />
           </button>
-        )}
+        ) : []}
       </div>
     </div>
   );
