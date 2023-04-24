@@ -1,11 +1,15 @@
-import React, { useState } from "react";
+import React, { createContext, useState } from "react";
 import InputField from "../components/InputField";
 import { useNavigate } from "react-router-dom";
 import { login } from "../api/api";
 
+//Context API for state management
+export const MyId = createContext();
+
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [_id, setId] = useState("");
   // const [data, setData] = useState("");
 
   const navigate = useNavigate();
@@ -18,6 +22,7 @@ export default function Login() {
       const response = await login({
         email,
         password,
+        _id
       });
 
       console.log("login success");
@@ -39,10 +44,13 @@ export default function Login() {
   // },[])
 
   return (
-    <>
+    <MyId.Provider value={{ _id }}>
       <div className="login-container w-full bg-secondary h-screen flex justify-center items-center">
         <div className="box bg-white shadow-xl login w-[24%] max-[24%]: min-w-[360px]  p-8 rounded-xl flex flex-col gap-6">
-          <form className="w-full h-fit flex flex-col gap-6 " onSubmit={handleSubmit}>
+          <form
+            className="w-full h-fit flex flex-col gap-6 "
+            onSubmit={handleSubmit}
+          >
             <div className="intro-box">
               <p className="intro-box__intro-text text-4xl font-bold text-primary text-center mb-4">
                 Login
@@ -76,7 +84,10 @@ export default function Login() {
             </div>
 
             <div className="text-center">
-              <button type="submit" className="confirm-btn p-3 py-3 rounded-xl w-full  bg-primary text-white text-[12px] font-bold">
+              <button
+                type="submit"
+                className="confirm-btn p-3 py-3 rounded-xl w-full  bg-primary text-white text-[12px] font-bold"
+              >
                 SIGN IN
               </button>
             </div>
@@ -90,6 +101,6 @@ export default function Login() {
           </form>
         </div>
       </div>{" "}
-    </>
+    </MyId.Provider>
   );
 }

@@ -5,6 +5,23 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 
+// middleware for verifying token
+const verifyToken = (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  if (authHeader) {
+    const token = authHeader.split(" ")[1];
+    jwt.verify(token, process.env.JWT_SECRET || "12345", (err, user) => {
+      if (err) {
+        return res.status(403).send("Invalid token");
+      }
+      req.user = user;
+      next();
+    });
+  } else {
+    res.status(401).send("Token not provided");
+  }
+};
+
 // Define your routes here
 //Register endpoint
 router.post("/register", async (req, res) => {
@@ -40,14 +57,16 @@ router.post("/login", async (req, res, next) => {
         expiresIn: "1h",
       }
     );
-    res.send({ success: "User logged in successfully", token });
+
+    const { _id } = user;
+    res.send({ success: "User logged in successfully", token, _id });
   } catch (error) {
     next(error);
   }
 });
 
 //Find a user
-router.post("/add", async (req, res, next) => {
+router.post("/search", verifyToken, async (req, res, next) => {
   try {
     const { email } = req.body;
     const user = await User.findOne({ email });
@@ -55,12 +74,43 @@ router.post("/add", async (req, res, next) => {
       return res.status(401).send({ error: "Email not found" });
     }
 
-    // Only include name
-    const { name } = user;
-    res.send({ success: "User found", name });
+    const { name, _id, contacts } = user;
+    res.send({ name, _id, contacts });
   } catch (error) {
     next(error);
     console.log("Not Found:");
+  }
+});
+
+//add contact
+router.post("/addContact", verifyToken,  async (req, res) => {
+  try {
+    const { contact } = req.body;
+    const user = await User.findOneAndUpdate(
+      { $push: { contacts: contact } },
+      { new: true }
+    );
+    res.json(user);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error adding contact");
+  }
+});
+
+//get current user data based on ID
+router.get("/getUserData", verifyToken,  async (req, res) => {
+  try {
+    const { _id } = req.body; // assuming userId is passed in the request body
+    const user = await User.findOne(_id, {
+      _id: 1,
+      name: 1,
+      contacts: 1,
+      email: 1,
+    });
+    res.json(user);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error getting user data");
   }
 });
 

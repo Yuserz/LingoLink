@@ -1,17 +1,21 @@
-import React, { useState, useContext, createContext } from "react";
-import Search from "../../Search";
-import close from "../../../assets/icons/close.svg";
-import { add } from "../../../api/api";
+import React, { useState, useContext} from "react";
+import { search, addContact } from "../../../api/api";
 import { MyContext } from "../../../pages/Home";
+import Search from "../../Search";
+
+//icons
+import close from "../../../assets/icons/close.svg";
+import plus from "../../../assets/icons/add.svg";
 
 export default function AddContact({ closeModal }) {
   const [email, setEmail] = useState();
+  const [contact, setContact] = useState();
   const [foundEmail, setFoundEmail] = useState();
   const { setShowMessaging, setData } = useContext(MyContext);
 
   const findContact = async () => {
     try {
-      const response = await add({
+      const response = await search({
         email,
       });
       //store user info to data
@@ -24,7 +28,16 @@ export default function AddContact({ closeModal }) {
     setFoundEmail(email);
   };
 
-
+  const handleClick = async () => {
+    try {
+      const response = await addContact({
+        contact,
+      });
+      setContact(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className="absolute w-screen h-screen bg-black/20 top-0 left-0 flex items-center justify-center">
@@ -45,17 +58,19 @@ export default function AddContact({ closeModal }) {
           <Search setEmail={setEmail} findContact={findContact} />
         </div>
 
-        <div className="search-results">
+        {foundEmail && (
           <button
             onClick={() => {
               setShowMessaging(true);
+              handleClick(email)
               closeModal(false);
             }}
+            className="search-results bg-white border-2 border-primary/50 hover:border-primary/100 px-4 py-3 rounded-lg flex justify-between items-center"
           >
-            {" "}
             {foundEmail}
+            <img className="w-4 h-4" src={plus} alt="" />
           </button>
-        </div>
+        )}
       </div>
     </div>
   );
