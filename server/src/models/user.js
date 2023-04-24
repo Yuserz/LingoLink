@@ -14,5 +14,8 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  contacts: {
+    type: Array
+  },
 });
 module.exports = mongoose.model("User", userSchema);
