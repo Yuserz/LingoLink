@@ -9,17 +9,19 @@ const api = axios.create({
   },
 });
 
+//POST
+
 // Register a user
 export const register = payload => api.post('/api/users/register', payload);
-
 // Create login session
 export const login = payload => api.post('/api/users/login', payload);
-
 // Find user by email
 export const search = payload => api.post('/api/users/search', payload);
-
 //Add contact
 export const addContact = payload => api.post('/api/users/addContact', payload);
 
-//get all contacts
+
+//GET
+
+//get all current user data
 export const getData = payload => api.get('/api/users/getUserData', payload);

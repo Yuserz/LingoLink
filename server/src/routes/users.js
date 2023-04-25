@@ -83,7 +83,7 @@ router.post("/search", verifyToken, async (req, res, next) => {
 });
 
 //add contact
-router.post("/addContact",  async (req, res) => {
+router.post("/addContact", verifyToken,  async (req, res) => {
   try {
     const { contact, _id } = req.body;
     const user = await User.findOneAndUpdate(_id,
