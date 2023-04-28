@@ -1,11 +1,11 @@
 import React, { useState, useContext } from "react";
-import { search, addContact } from "../../../api/api";
-import { MyDataContext } from "../../../pages/Home";
-import Search from "../../Search";
+import { search, addContact } from "../../api/api";
+import { MyDataContext } from "../../pages/Home";
+import Search from "../Search";
 
 //icons
-import close from "../../../assets/icons/close.svg";
-import plus from "../../../assets/icons/add.svg";
+import close from "../../assets/icons/close.svg";
+import plus from "../../assets/icons/add.svg";
 
 export default function AddContact({ closeModal }) {
   const [email, setEmail] = useState();

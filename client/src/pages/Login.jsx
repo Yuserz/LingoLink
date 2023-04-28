@@ -22,12 +22,14 @@ export default function Login() {
         password,
       });
 
-      console.log("login success");
+      console.log("login success", email);
 
       const { token, _id } = response.data;
       set_id(_id);
 
-      // Store token in local storage
+      // Clear local storage for past session
+      localStorage.clear();
+      // Store token in local storage for new session
       localStorage.setItem("token", token);
 
       // Redirect user to the protected route

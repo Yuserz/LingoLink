@@ -1,11 +1,19 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useContext } from "react";
 import moment from "moment";
-import sendBtn from "../assets/icons/send.svg"
+
+//icons
+import sendBtn from "../assets/icons/send.svg";
+import callBtn from "../assets/icons/call.svg";
+import cameraBtn from "../assets/icons/cam.svg";
+
+//context api
+import { MyDataContext } from "../pages/Home";
 
 function Chat({ socket, username, room }) {
   const [currentMessage, setCurrentMessage] = useState("");
   const [messageList, setMessageList] = useState([]);
   const messagesEndRef = useRef(null);
+  const { setShowVideoCall, setShowMessaging } = useContext(MyDataContext);
 
   const sendMessage = async () => {
     if (currentMessage !== "") {
@@ -88,7 +96,7 @@ function Chat({ socket, username, room }) {
         </div>
       </div>
       <div className="chat-footer flex gap-4">
-        <div className="p-3 px-4 w-full flex bg-white rounded-2xl">
+        <div className="p-3 px-4 w-full h-fit flex bg-white rounded-2xl gap-1">
           <input
             className="p-1 w-full outline-none"
             type="text"
@@ -101,16 +109,25 @@ function Chat({ socket, username, room }) {
               event.key === "Enter" && sendMessage();
             }}
           />
-          <button>
+          <button className="p-2 hover:border-2 hover:border-primary/50 border-2 border-white/0 rounded-xl focus:border-primary">
             {" "}
-            <img src="" alt="" />
+            <img className="w-8 h-6" src={cameraBtn} alt="" />
           </button>
-          <button>
+          <button
+            onClick={() => {
+              console.log("clicked")
+              setShowVideoCall(true);
+              setShowMessaging(false);
+            }}
+            className="p-2 hover:border-2 hover:border-primary/50 border-2 border-white/0 rounded-xl focus:border-primary"
+          >
             {" "}
-            <img src="" alt="" />
+            <img className="w-8 h-6" src={callBtn} alt="" />
           </button>
         </div>
-        <button onClick={sendMessage}><img src={sendBtn} alt="" /></button>
+        <button onClick={sendMessage}>
+          <img src={sendBtn} alt="" />
+        </button>
       </div>
     </div>
   );

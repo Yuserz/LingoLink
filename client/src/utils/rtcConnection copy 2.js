@@ -11,7 +11,7 @@ export function createPeer(initiator, stream, signalCallback) {
     signalCallback(data);
   });
 
-  return { peer, stream };
+  return peer;
 }
 
 export function answerPeer(peer, signal, stream) {

@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from "react";
 import arrowDown from "../../assets/icons/arrowDown.svg";
 import add from "../../assets/icons/add.svg";
-import AddContact from "./modals/AddContact";
+import AddContact from "../modals/AddContact";
 import { MyDataContext } from "../../pages/Home";
 
 export default function Chat() {
@@ -52,7 +52,7 @@ export default function Chat() {
 
         {showModal ? <AddContact closeModal={setShowModal} /> : ""}
       </div>
-      <div className="flex flex-col gap-2  border-gray-300/80 border-t pt-2">
+      {/* <div className="flex flex-col gap-2  border-gray-300/80 border-t pt-2">
         {contacts
           ? contacts.map((contact, index) => (
               <button  className="flex gap-2 px-3 p-1 hover:shadow-sm hover:border-2 hover:border-primary/20 rounded-md " key={index}>
@@ -61,7 +61,7 @@ export default function Chat() {
               </button>
             ))
           : <h1 className="opacity-70">No contact</h1>}
-      </div>
+      </div> */}
     </div>
   );
 }
