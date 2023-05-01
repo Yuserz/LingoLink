@@ -9,17 +9,19 @@ import cameraBtn from "../assets/icons/cam.svg";
 //context api
 import { MyDataContext } from "../pages/Home";
 
-function Chat({ socket, username, room }) {
+function Chat({ socket, contactName, roomId }) {
   const [currentMessage, setCurrentMessage] = useState("");
   const [messageList, setMessageList] = useState([]);
   const messagesEndRef = useRef(null);
   const { setShowVideoCall, setShowMessaging } = useContext(MyDataContext);
 
+  // console.log(roomId)
+
   const sendMessage = async () => {
     if (currentMessage !== "") {
       const messageData = {
-        room: room,
-        author: username,
+        room: roomId,
+        author: contactName,
         message: currentMessage,
         time: moment().format("h:mm A"),
       };
@@ -53,7 +55,7 @@ function Chat({ socket, username, room }) {
       <div className="contact-profile  pt-2 w-full flex justify-center h-full p-4 items-center">
         <div className="flex flex-col justify-center w-fit">
           {/* <img className="profile-image w-full h-full" src="" alt="" /> */}
-          <h4 className="text-center">{username}</h4>
+          <h4 className="text-center">{contactName}</h4>
         </div>
       </div>
       <div className="flex flex-col gap-2">
@@ -67,7 +69,7 @@ function Chat({ socket, username, room }) {
                 <div
                   key={index}
                   className={`message-content-container w-fit max-w-[70%] px-4 ${
-                    username === messageContent.author
+                    contactName === messageContent.author
                       ? "self-start"
                       : "self-end"
                   }`}
@@ -75,7 +77,7 @@ function Chat({ socket, username, room }) {
                   <div className="message-content">
                     <p
                       className={`w-full rounded-2xl p-4 ${
-                        username === messageContent.author
+                        contactName === messageContent.author
                           ? "bg-primary text-white"
                           : "bg-white self-end"
                       }`}
@@ -115,7 +117,7 @@ function Chat({ socket, username, room }) {
           </button>
           <button
             onClick={() => {
-              console.log("clicked")
+              console.log("clicked");
               setShowVideoCall(true);
               setShowMessaging(false);
             }}

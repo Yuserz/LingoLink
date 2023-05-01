@@ -110,65 +110,73 @@ export default function VideoCall() {
   return (
     <>
       <h1 style={{ textAlign: "center", color: "#fff" }}>Zoomish</h1>
-      <div className="container">
-        <div className="video-container">
-          <div className="video">
+      <div className="container h-full w-full">
+        <div className="relative video-container w-full h-full flex">
+          <div className="video flex justify-center w-full h-full bg-black rounded-lg">
             {stream && (
               <video
+                className="absolute w-fit h-full rounded-lg"
                 playsInline
                 muted
                 ref={myVideo}
                 autoPlay
-                style={{ width: "300px" }}
+                // style={{ width: "300px" }}
               />
             )}
           </div>
-          <div className="video">
+          {/* <div className="video">
             {callAccepted && !callEnded ? (
               <video
                 playsInline
                 ref={userVideo}
                 autoPlay
-                style={{ width: "300px" }}
+                // style={{ width: "300px" }}
               />
             ) : null}
-          </div>
-        </div>
-        <div className="myId">
-          <input
-            id="filled-basic"
-            label="Name"
-            variant="filled"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            style={{ marginBottom: "20px" }}
-          />
-          <CopyToClipboard text={me} style={{ marginBottom: "2rem" }}>
-            <button variant="contained" color="primary">
-              Copy ID
-            </button>
-          </CopyToClipboard>
+          </div> */}
+          <div className="absolute bottom-0 mb-4 w-full self-center place-self-center flex justify-center ">
+            <div className="myId bg-white w-fit p-4 rounded-md">
+              <input
+                id="filled-basic"
+                label="Name"
+                variant="filled"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                style={{ marginBottom: "20px" }}
+              />
+              <CopyToClipboard text={me} style={{ marginBottom: "2rem" }}>
+                <button variant="contained" color="primary">
+                  Copy ID
+                </button>
+              </CopyToClipboard>
 
-          <input
-            id="filled-basic"
-            label="ID to call"
-            variant="filled"
-            placeholder={id}
-            value={idToCall}
-            defaultValue={id}
-            onChange={(e) => setIdToCall(e.target.value)}
-          />
-          <div className="call-button">
-            {callAccepted && !callEnded ? (
-              <button variant="contained" color="secondary" onClick={leaveCall}>
-                End Call
-              </button>
-            ) : (
-              <button onClick={() => callUser(idToCall)}>call</button>
-            )}
-            {idToCall}
+              <input
+                id="filled-basic"
+                label="ID to call"
+                variant="filled"
+                placeholder={me}
+                value={idToCall}
+                // defaultValue={me}
+                onChange={(e) => setIdToCall(e.target.value)}
+              />
+              <div className="call-button">
+                {callAccepted && !callEnded ? (
+                  <button
+                    variant="contained"
+                    color="secondary"
+                    onClick={leaveCall}
+                  >
+                    End Call
+                  </button>
+                ) : (
+                  <button onClick={() => callUser(idToCall)}>call</button>
+                )}
+                {/* {idToCall} */}
+              </div>
+            </div>
           </div>
         </div>
+
         <div>
           {receivingCall && !callAccepted ? (
             <div className="caller">

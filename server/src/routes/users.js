@@ -66,7 +66,7 @@ router.post("/login", async (req, res, next) => {
 });
 
 //Find a user
-router.post("/search", verifyToken, async (req, res, next) => {
+router.post("/search", async (req, res, next) => {
   try {
     const { email } = req.body;
     const user = await User.findOne({ email });
@@ -74,31 +74,32 @@ router.post("/search", verifyToken, async (req, res, next) => {
       return res.status(401).send({ error: "Email not found" });
     }
 
-    const { name, _id, contacts } = user;
-    res.send({ name, _id, contacts });
+    const { name, _id } = user;
+    res.send({ name, _id, email });
   } catch (error) {
     next(error);
     console.log("Not Found:");
   }
 });
 
-//add contact
-router.post("/addContact", verifyToken,  async (req, res) => {
-  try {
-    const { contact, _id } = req.body;
-    const user = await User.findOneAndUpdate(_id,
-      { $push: { contacts: contact } },
-      { new: true }
-    );
-    res.json(user);
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Error adding contact");
-  }
-});
+// //add contact
+// router.post("/addContact", async (req, res) => {
+//   try {
+//     const { _id, name, email, roomId} = req.body;
+//     const user = await User.findOneAndUpdate(
+//       _id,
+//       { $push: { contacts: contact } },
+//       { new: true }
+//     );
+//     res.json(user);
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).send("Error adding contact");
+//   }
+// });
 
 //get current user data based on ID
-router.get("/getUserData", verifyToken,  async (req, res) => {
+router.get("/getUserData", async (req, res) => {
   try {
     const { _id } = req.body; // assuming userId is passed in the request body
     const user = await User.findOne(_id, {
@@ -111,6 +112,26 @@ router.get("/getUserData", verifyToken,  async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).send("Error getting user data");
+  }
+});
+
+//get roomId for single contact chat
+router.post("/getRoomId", async (req, res) => {
+  try {
+    const { userId, email } = req.body;
+    const user = await User.findOne({ _id: userId }, { contacts: 1 });
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+    const contact = user.contacts.find((c) => c.email === email);
+    if (!contact) {
+      return res.status(404).send("Contact not found");
+    }
+    const { roomId, name} = contact;
+    res.json({ roomId, name });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error getting contact data");
   }
 });
 

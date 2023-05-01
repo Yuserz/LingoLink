@@ -4,54 +4,38 @@ function initialize(server) {
   io = require("socket.io")(server, {
     cors: {
       origin: process.env.CORS_ORIGIN || `http://localhost:3000`,
-      // methods: ['GET', 'POST']
+      methods: ["GET", "POST"],
     },
   });
 
   io.on("connection", (socket) => {
-    console.log(`User Connected: ${socket.id}`);
+    socket.emit("me", socket.id);
 
     socket.on("join_room", (data) => {
-      socket.join(data.room);
-      console.log(`User with ID: ${socket.id} joined room: ${data.room}`);
+      socket.join(data);
+      console.log(`User with socket ID: ${socket.id} joined the room `);
     });
 
     socket.on("send_message", (data) => {
       socket.to(data.room).emit("receive_message", data);
     });
 
-    socket.on("start_call", async (room) => {
-      const peerConnection = new RTCPeerConnection();
-
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: true,
-          audio: true,
-        });
-        stream.getTracks().forEach((track) => {
-          peerConnection.addTrack(track, stream);
-        });
-
-        const offer = await peerConnection.createOffer();
-        await peerConnection.setLocalDescription(offer);
-        socket.emit("offer", { room, offer });
-      } catch (error) {
-        console.error(error);
-      }
-
-      socket.on("answer", async (data) => {
-        const { answer } = data;
-        await peerConnection.setRemoteDescription(answer);
+    socket.on("callUser", (data) => {
+      socket.to(data.userToCall).emit("callUser", {
+        signal: data.signalData,
+        from: data.from,
+        name: data.name,
+        roomId: data.roomId
       });
+      // console.log(data)
+    });
 
-      peerConnection.ontrack = (event) => {
-        const remoteVideo = document.getElementById("remote-video");
-        remoteVideo.srcObject = event.streams[0];
-      };
+    socket.on("answerCall", (data) => {
+      socket.to(data.to).emit("callAccepted", data.signal);
     });
 
     socket.on("disconnect", () => {
-      console.log("User Disconnected", socket.id);
+      socket.broadcast.emit("callEnded");
     });
   });
 }

@@ -25,3 +25,8 @@ export const addContact = payload => api.post('/api/users/addContact', payload);
 
 //get all current user data
 export const getData = payload => api.get('/api/users/getUserData', payload);
+
+//get Duo roomId
+export const getRoomId = payload => api.post('/api/users/getRoomId', payload);
+
+//get Group RoomID

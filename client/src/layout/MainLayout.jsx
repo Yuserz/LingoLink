@@ -9,7 +9,7 @@ export default function MainLayout({ children }) {
         <div className="sidebar bg-primary w-[20%] min-w-[250px]">
           <SideBar />
         </div>
-        <div className="flex flex-col w-full h-full mx-4 jus">
+        <div className="flex flex-col w-full h-full mx-4 pb-4 jus">
           <Header />
           {children}
         </div>
