@@ -24,12 +24,30 @@ const verifyToken = (req, res, next) => {
 
 // Define your routes here
 //Register endpoint
+const mongoose = require("mongoose");
+
 router.post("/register", async (req, res) => {
   try {
     const { name, email, password } = req.body;
+
+    // check if email is in valid format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).send("Invalid email address");
+    }
+
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
-    const user = new User({ name, email, password: hashedPassword });
+
+    const objectId = new mongoose.Types.ObjectId();
+
+    const user = new User({
+      _id: objectId, // generate a unique ID
+      name,
+      email,
+      password: hashedPassword,
+    });
+
     await user.save();
     res.json(user);
   } catch (error) {
@@ -42,6 +60,15 @@ router.post("/register", async (req, res) => {
 router.post("/login", async (req, res, next) => {
   try {
     const { email, password } = req.body;
+
+    // Regex pattern to validate email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    // Check if email is valid
+    if (!emailRegex.test(email)) {
+      return res.status(400).send({ error: "Invalid email format" });
+    }
+
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(401).send({ error: "Email or password is incorrect" });
@@ -83,20 +110,28 @@ router.post("/search", async (req, res, next) => {
 });
 
 //create new contact
-router.post('/contacts/:_id', async (req, res) => {
+router.post("/contacts/:_id", async (req, res) => {
   const { _id } = req.params;
   const { name, email, roomId } = req.body;
 
   try {
     const user = await User.findById(_id);
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Check if contact already exists
+    const existingContact = user.contacts.find(
+      (contact) => contact.email === email
+    );
+    if (existingContact) {
+      return res.status(400).json({ message: "Contact already exists" });
     }
 
     const newContact = {
       name,
       email,
-      roomId
+      roomId,
     };
 
     user.contacts.push(newContact);
@@ -105,15 +140,14 @@ router.post('/contacts/:_id', async (req, res) => {
     res.status(201).json(newContact);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: "Server error" });
   }
 });
-
 
 //get current user data based on ID
 router.get("/getUserData", async (req, res) => {
   try {
-    const { _id } = req.body; 
+    const { _id } = req.body;
     const user = await User.findOne(_id, {
       _id: 1,
       name: 1,

@@ -1,32 +1,25 @@
-import axios from 'axios';
+import axios from "axios";
 
 // Create an axios instance with the base URL of the Express server
 const api = axios.create({
-  baseURL: 'http://localhost:3001',
+  baseURL: "http://localhost:3001",
   headers: {
-    'Content-Type': 'application/json',
-    Authorization: `Bearer ${localStorage.getItem('token')}`,
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${localStorage.getItem("token")}`,
   },
 });
 
-//POST
-
 // Register a user
-export const register = payload => api.post('/api/users/register', payload);
+export const register = (payload) => api.post("/api/users/register", payload);
 // Create login session
-export const login = payload => api.post('/api/users/login', payload);
+export const login = (payload) => api.post("/api/users/login", payload);
 // Find user by email
-export const search = payload => api.post('/api/users/search', payload);
+export const search = (payload) => api.post("/api/users/search", payload);
 //Add contact
-export const addContact = payload => api.post('/api/users/addContact', payload);
-
-
-//GET
+export const addContact = (payload, _id) =>
+  api.post(`/api/users/contacts/${_id}`, payload);
+//get roomId
+export const getRoomId = (payload) => api.post("/api/users/getRoomId", payload);
 
 //get all current user data
-export const getData = payload => api.get('/api/users/getUserData', payload);
-
-//get Duo roomId
-export const getRoomId = payload => api.post('/api/users/getRoomId', payload);
-
-//get Group RoomID
+export const getData = (payload) => api.get("/api/users/getUserData", payload);

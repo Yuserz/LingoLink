@@ -10,7 +10,7 @@ const socket = io.connect("http://localhost:3001");
 
 
 function Messaging({ contactData }) {
-  // const roomId = uuidv4();
+
   // const [roomId, setRoomId] = useState();
   const [contactName, setContactName] = useState();
   const { _id, roomId, setRoomId } = useContext(MyGlobalContext);

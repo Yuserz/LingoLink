@@ -1,18 +1,26 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { search, addContact } from "../../api/api";
 import { MyDataContext } from "../../pages/Home";
 import Search from "../Search";
-
+import { MyGlobalContext } from "../../context/MyGlobalContext";
 //icons
 import close from "../../assets/icons/close.svg";
 import plus from "../../assets/icons/add.svg";
 
+const { v4: uuidv4 } = require("uuid");
+
 export default function AddContact({ closeModal }) {
   const [email, setEmail] = useState();
+  const genaratedRoomId = uuidv4();
   // const [contact, setContact] = useState();
   const [foundEmail, setFoundEmail] = useState();
   const { setShowMessaging, setContactData, contactData } =
     useContext(MyDataContext);
+  const { _id, roomId, setRoomId } = useContext(MyGlobalContext);
+
+  useEffect(() => {
+    setRoomId(genaratedRoomId);
+  }, []);
 
   const findContact = async () => {
     try {
@@ -22,7 +30,7 @@ export default function AddContact({ closeModal }) {
       //store user info to data
       // console.log(response.data)
       setContactData(response.data);
-
+      console.log("Contact Found");
       console.log("success:", response.data);
     } catch (error) {
       console.log("not found");
@@ -32,15 +40,23 @@ export default function AddContact({ closeModal }) {
 
   const handleClick = async () => {
     try {
-      const response = await addContact({
-        name: contactData.name,
-        email: contactData.email,
-      });
+      const response = await addContact(
+        {
+          name: contactData.name,
+          email: contactData.email,
+          roomId: roomId,
+        },
+        _id
+      );
       console.log(response);
     } catch (error) {
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    console.log(contactData);
+  }, [contactData]);
 
   return (
     <div className="absolute w-screen h-screen bg-black/20 top-0 left-0 flex items-center justify-center">
