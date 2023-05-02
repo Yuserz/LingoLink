@@ -82,26 +82,38 @@ router.post("/search", async (req, res, next) => {
   }
 });
 
-// //add contact
-// router.post("/addContact", async (req, res) => {
-//   try {
-//     const { _id, name, email, roomId} = req.body;
-//     const user = await User.findOneAndUpdate(
-//       _id,
-//       { $push: { contacts: contact } },
-//       { new: true }
-//     );
-//     res.json(user);
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).send("Error adding contact");
-//   }
-// });
+//create new contact
+router.post('/contacts/:_id', async (req, res) => {
+  const { _id } = req.params;
+  const { name, email, roomId } = req.body;
+
+  try {
+    const user = await User.findById(_id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const newContact = {
+      name,
+      email,
+      roomId
+    };
+
+    user.contacts.push(newContact);
+    await user.save();
+
+    res.status(201).json(newContact);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 
 //get current user data based on ID
 router.get("/getUserData", async (req, res) => {
   try {
-    const { _id } = req.body; // assuming userId is passed in the request body
+    const { _id } = req.body; 
     const user = await User.findOne(_id, {
       _id: 1,
       name: 1,
@@ -115,7 +127,7 @@ router.get("/getUserData", async (req, res) => {
   }
 });
 
-//get roomId for single contact chat
+//get roomId
 router.post("/getRoomId", async (req, res) => {
   try {
     const { userId, email } = req.body;
@@ -127,7 +139,7 @@ router.post("/getRoomId", async (req, res) => {
     if (!contact) {
       return res.status(404).send("Contact not found");
     }
-    const { roomId, name} = contact;
+    const { roomId, name } = contact;
     res.json({ roomId, name });
   } catch (error) {
     console.error(error);
