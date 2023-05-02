@@ -2,12 +2,12 @@ import React, { useState, useContext } from "react";
 import InputField from "../components/InputField";
 import { useNavigate } from "react-router-dom";
 import { login } from "../api/api";
-import { MyIdContext } from "../context/MyIdContext";
+import { MyGlobalContext } from "../context/MyGlobalContext";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { set_id } = useContext(MyIdContext);
+  const { set_id } = useContext(MyGlobalContext);
   // const [data, setData] = useState("");
 
   const navigate = useNavigate();

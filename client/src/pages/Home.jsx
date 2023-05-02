@@ -10,7 +10,7 @@ import MainLayout from "../layout/MainLayout";
 import Messaging from "../components/Messaging";
 import VideoCall from "../components/VideoCall";
 import { getData } from "../api/api";
-import { MyIdContext } from "../context/MyIdContext";
+import { MyGlobalContext } from "../context/MyGlobalContext";
 
 //Context API for state management
 export const MyDataContext = createContext();
@@ -24,7 +24,7 @@ export default function Home() {
   );
   const [userData, setUserData] = useState("");
   const [contactData, setContactData] = useState("");
-  const { _id } = useContext(MyIdContext);
+  const { _id } = useContext(MyGlobalContext);
 
   // useEffect(() => {
   //   console.log(contactData);

@@ -27,8 +27,8 @@ function initialize(server) {
         name: data.name,
         roomId: data.roomId
       });
-      // console.log(data)
     });
+    
 
     socket.on("answerCall", (data) => {
       socket.to(data.to).emit("callAccepted", data.signal);

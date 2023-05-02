@@ -11,7 +11,8 @@ export default function AddContact({ closeModal }) {
   const [email, setEmail] = useState();
   // const [contact, setContact] = useState();
   const [foundEmail, setFoundEmail] = useState();
-  const { setShowMessaging, setContactData } = useContext(MyDataContext);
+  const { setShowMessaging, setContactData, contactData } =
+    useContext(MyDataContext);
 
   const findContact = async () => {
     try {
@@ -29,17 +30,17 @@ export default function AddContact({ closeModal }) {
     setFoundEmail(email);
   };
 
-  // const handleClick = async () => {
-  //   try {
-  //     const response = await addContact({
-  //       name,
-  //       email
-  //     });
-  //     setContact(response);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
+  const handleClick = async () => {
+    try {
+      const response = await addContact({
+        name: contactData.name,
+        email: contactData.email,
+      });
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className="absolute w-screen h-screen bg-black/20 top-0 left-0 flex items-center justify-center">
@@ -64,7 +65,7 @@ export default function AddContact({ closeModal }) {
           <button
             onClick={() => {
               setShowMessaging(true);
-              // handleClick(email);
+              handleClick();
               closeModal(false);
             }}
             className="search-results bg-white border-2 border-primary/50 hover:border-primary/100 px-4 py-3 rounded-lg flex justify-between items-center"

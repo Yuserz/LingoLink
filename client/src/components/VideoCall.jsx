@@ -69,6 +69,7 @@ export default function VideoCall() {
         signalData: data,
         from: me,
         name: name,
+        // roomId: roomId,
       });
     });
     peer.on("stream", (stream) => {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useContext } from "react";
+import React, { useEffect, useState, useRef, useContext, createContext } from "react";
 import moment from "moment";
 
 //icons
@@ -16,6 +16,16 @@ function Chat({ socket, contactName, roomId }) {
   const { setShowVideoCall, setShowMessaging } = useContext(MyDataContext);
 
   // console.log(roomId)
+
+  // const sendOffer = () => {
+  //   socket.emit("callUser", {
+  //     userToCall: contactName, // user ID to call
+  //     signalData: null, // signal data for WebRTC (set to null for now)
+  //     from: socket, // caller's socket ID
+  //     name: "Caller", // caller's name
+  //     roomId: roomId, // room ID to join
+  //   });
+  // };
 
   const sendMessage = async () => {
     if (currentMessage !== "") {
