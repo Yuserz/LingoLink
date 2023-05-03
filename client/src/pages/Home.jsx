@@ -24,6 +24,7 @@ export default function Home() {
   );
   const [userData, setUserData] = useState("");
   const [contactData, setContactData] = useState("");
+  const [contactName, setContactName] = useState("user");
   const { _id } = useContext(MyGlobalContext);
 
   // useEffect(() => {
@@ -46,6 +47,8 @@ export default function Home() {
   // Cache the data with useMemo
   const cachedData = useMemo(
     () => ({
+      contactName,
+      setContactName,
       userData,
       showMessaging,
       setShowMessaging,
@@ -56,6 +59,8 @@ export default function Home() {
       setContactData,
     }),
     [
+      contactName,
+      setContactName,
       userData,
       showMessaging,
       setShowMessaging,

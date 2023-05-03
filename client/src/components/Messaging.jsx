@@ -1,23 +1,22 @@
 import io from "socket.io-client";
-import { useEffect, useState, useCallback, useContext } from "react";
+import { useEffect, useCallback, useState, useContext } from "react";
 import Chat from "./Chat";
 import { getRoomId } from "../api/api";
 import { MyGlobalContext } from "../context/MyGlobalContext";
+import { MyDataContext } from "../pages/Home";
 
 const socket = io.connect("http://localhost:3001");
 
 function Messaging() {
-  // const [roomId, setRoomId] = useState();
-  const [contactName, setContactName] = useState();
+  const [email, setEmail] = useState();
   const { _id, roomId, setRoomId } = useContext(MyGlobalContext);
-  const userId = _id;
-  const email = "admin2@gmail.com";
+  const { contactName, setContactName } = useContext(MyDataContext);
 
-  // console.log(roomId);
+  const userId = _id;
 
   const fetchRoomId = useCallback(async () => {
     try {
-      const response = await getRoomId({ userId, email: "admin2@gmail.com" });
+      const response = await getRoomId({ userId, email: email });
       // console.log("response", response.data.roomId);
       if (response) {
         const { roomId, name } = response.data;

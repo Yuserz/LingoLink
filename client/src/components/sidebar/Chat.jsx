@@ -4,7 +4,7 @@ import add from "../../assets/icons/add.svg";
 import AddContact from "../modals/AddContact";
 import { getContact } from "../../api/api";
 import { MyGlobalContext } from "../../context/MyGlobalContext";
-import ContactList from "./ContactList";
+import ContactList from "./Contacts";
 
 export default function Chat() {
   const [expanded, setExpanded] = useState(false);
@@ -50,7 +50,7 @@ export default function Chat() {
       >
         <button
           onClick={toggleExpanded}
-          className="add-btn flex gap-2 items-center h-fit"
+          className={`add-btn flex gap-2 items-center h-fit`}
         >
           <img
             className={`${expanded ? "rotate-180" : ""}`}
