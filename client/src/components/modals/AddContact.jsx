@@ -12,7 +12,6 @@ const { v4: uuidv4 } = require("uuid");
 export default function AddContact({ closeModal }) {
   const [email, setEmail] = useState();
   const genaratedRoomId = uuidv4();
-  // const [contact, setContact] = useState();
   const [foundEmail, setFoundEmail] = useState();
   const { setShowMessaging, setContactData, contactData } =
     useContext(MyDataContext);
@@ -28,10 +27,8 @@ export default function AddContact({ closeModal }) {
         email,
       });
       //store user info to data
-      // console.log(response.data)
       setContactData(response.data);
-      console.log("Contact Found");
-      console.log("success:", response.data);
+      console.log("Contact Found", response.data);
     } catch (error) {
       console.log("not found");
     }

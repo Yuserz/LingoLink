@@ -144,10 +144,49 @@ router.post("/contacts/:_id", async (req, res) => {
   }
 });
 
+//get contact list from current user
+router.get("/contacts/:_id", async (req, res) => {
+  const { _id } = req.params;
+
+  try {
+    const user = await User.findById(_id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    const { contacts } = user;
+    res.json({ contacts });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// //SSE endpoint 
+// router.get("/contacts/sse/:_id", async (req, res) => {
+//   const { _id } = req.params;
+//   const user = await User.findById(_id);
+//   if (!user) {
+//     return res.status(404).json({ message: "User not found" });
+//   }
+//   res.set({
+//     'Cache-Control': 'no-cache',
+//     'Content-Type': 'text/event-stream',
+//     'Connection': 'keep-alive'
+//   });
+//   // listen for new contact events and send the updated contact list to the client-side
+//   user.on('newContact', function(contact) {
+//     res.write('event: newContact\n');
+//     res.write(`data: ${JSON.stringify(contact)}\n\n`);
+//   });
+// });
+
+
+
+
 //get current user data based on ID
 router.get("/getUserData", async (req, res) => {
   try {
-    const { _id } = req.body;
+    const { _id } = req.params;
     const user = await User.findOne(_id, {
       _id: 1,
       name: 1,
@@ -162,7 +201,7 @@ router.get("/getUserData", async (req, res) => {
 });
 
 //get roomId
-router.post("/getRoomId", async (req, res) => {
+router.post("/room", async (req, res) => {
   try {
     const { userId, email } = req.body;
     const user = await User.findOne({ _id: userId }, { contacts: 1 });

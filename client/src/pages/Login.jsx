@@ -28,9 +28,9 @@ export default function Login() {
       set_id(_id);
 
       // Clear local storage for past session
-      localStorage.clear();
+      sessionStorage.clear();
       // Store token in local storage for new session
-      localStorage.setItem("token", token);
+      sessionStorage.setItem("token", token);
 
       // Redirect user to the protected route
       navigate("Home");

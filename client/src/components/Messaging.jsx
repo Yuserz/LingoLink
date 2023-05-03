@@ -4,24 +4,20 @@ import Chat from "./Chat";
 import { getRoomId } from "../api/api";
 import { MyGlobalContext } from "../context/MyGlobalContext";
 
-// const { v4: uuidv4 } = require("uuid");
-
 const socket = io.connect("http://localhost:3001");
 
-
-function Messaging({ contactData }) {
-
+function Messaging() {
   // const [roomId, setRoomId] = useState();
   const [contactName, setContactName] = useState();
   const { _id, roomId, setRoomId } = useContext(MyGlobalContext);
   const userId = _id;
-  const email = null;
+  const email = "admin2@gmail.com";
 
   // console.log(roomId);
 
   const fetchRoomId = useCallback(async () => {
     try {
-      const response = await getRoomId({ userId, email: "admin@gmail.com" });
+      const response = await getRoomId({ userId, email: "admin2@gmail.com" });
       // console.log("response", response.data.roomId);
       if (response) {
         const { roomId, name } = response.data;
@@ -52,9 +48,6 @@ function Messaging({ contactData }) {
   useEffect(() => {
     roomId && joinRoom();
   }, [roomId]);
-  
-
- 
 
   return (
     <div className="chat-container my-4 flex justify-center w-full h-full overflow-clip">

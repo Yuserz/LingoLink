@@ -26,7 +26,7 @@ export default function Signup() {
       const { token } = response.data;
 
       // Store token in local storage
-      localStorage.setItem("token", token);
+      sessionStorage.setItem("token", token);
 
       // Redirect user to the protected route
       navigate("/home");

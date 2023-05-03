@@ -17,10 +17,10 @@ export const MyDataContext = createContext();
 
 export default function Home() {
   const [showMessaging, setShowMessaging] = useState(
-    localStorage.getItem("showMessaging") === "true" ? true : false
+    sessionStorage.getItem("showMessaging") === "true" ? true : false
   );
   const [showVideoCall, setShowVideoCall] = useState(
-    localStorage.getItem("showVideoCall") === "true" ? true : false
+    sessionStorage.getItem("showVideoCall") === "true" ? true : false
   );
   const [userData, setUserData] = useState("");
   const [contactData, setContactData] = useState("");
@@ -33,7 +33,7 @@ export default function Home() {
   // Use memoized version of fetchData
   const fetchData = useCallback(async () => {
     try {
-      const response = await getData({ _id });
+      const response = await getData(_id);
       const data = response.data;
       setUserData(data);
     } catch (error) {
@@ -68,8 +68,8 @@ export default function Home() {
   );
 
   useEffect(() => {
-    localStorage.setItem("showMessaging", showMessaging);
-    localStorage.setItem("showVideoCall", showVideoCall);
+    sessionStorage.setItem("showMessaging", showMessaging);
+    sessionStorage.setItem("showVideoCall", showVideoCall);
   }, [showMessaging, showVideoCall]);
 
   useEffect(() => {
@@ -79,7 +79,15 @@ export default function Home() {
   return (
     <MyDataContext.Provider value={cachedData}>
       <MainLayout>
-        {showMessaging ? <Messaging userId={_id} userdata={userData} contactData={contactData} /> : ""}
+        {showMessaging ? (
+          <Messaging
+            userId={_id}
+            userdata={userData}
+            contactData={contactData}
+          />
+        ) : (
+          ""
+        )}
         {showVideoCall ? <VideoCall /> : ""}
       </MainLayout>
     </MyDataContext.Provider>
