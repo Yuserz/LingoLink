@@ -4,7 +4,7 @@ export const MyGlobalContext = createContext();
 
 export const MyContextProvider = ({ children }) => {
   const [_id, set_id] = useState(sessionStorage.getItem("_id") || "");
-  const [roomId, setRoomId] = useState(sessionStorage.getItem("roomId") || null);
+  const [roomId, setRoomId] = useState(sessionStorage.getItem("roomId") || "");
 
   useEffect(() => {
     sessionStorage.setItem("_id", _id);

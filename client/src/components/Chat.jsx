@@ -1,4 +1,10 @@
-import React, { useEffect, useState, useRef, useContext, createContext } from "react";
+import React, {
+  useEffect,
+  useState,
+  useRef,
+  useContext,
+  createContext,
+} from "react";
 import moment from "moment";
 
 //icons
@@ -11,7 +17,10 @@ import { MyDataContext } from "../pages/Home";
 
 function Chat({ socket, contactName, roomId }) {
   const [currentMessage, setCurrentMessage] = useState("");
-  const [messageList, setMessageList] = useState([]);
+  const [messageList, setMessageList] = useState(() => {
+    const savedMessages = sessionStorage.getItem("messageList");
+    return savedMessages ? JSON.parse(savedMessages) : [];
+  });
   const messagesEndRef = useRef(null);
   const { setShowVideoCall, setShowMessaging } = useContext(MyDataContext);
 

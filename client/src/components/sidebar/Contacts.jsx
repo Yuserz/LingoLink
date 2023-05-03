@@ -4,12 +4,11 @@ import { MyDataContext } from "../../pages/Home";
 import { getRoomId } from "../../api/api";
 
 export default function Contacts({ contacts, loading }) {
-  const [email, setEmail] = useState();
-  const {
-    _id,
-    roomId,
-    setRoomId,
-  } = useContext(MyGlobalContext);
+  const [email, setEmail] = useState(
+    sessionStorage.getItem("email") === "true" ? true : false
+  );
+  // const [email, setEmail] = useState();
+  const { _id, roomId, setRoomId } = useContext(MyGlobalContext);
   const { setShowMessaging, setContactName } = useContext(MyDataContext);
 
   const fetchRoomId = useCallback(async () => {
@@ -27,18 +26,23 @@ export default function Contacts({ contacts, loading }) {
     } catch (error) {
       console.log(error);
     }
-  }, [_id, email]);
-
-  const handleClick = () => {
-    if (email) {
-      fetchRoomId();
-    }
-    setShowMessaging(true);
-  };
+  }, [email]);
 
   useEffect(() => {
-    roomId && setShowMessaging(true);
-  }, []);
+    if (roomId) {
+      setShowMessaging(true);
+    } else {
+      setShowMessaging(false);
+    }
+  }, [roomId, setShowMessaging]);
+
+  useEffect(() => {
+    if (_id && email && fetchRoomId) {
+      fetchRoomId();
+    } else {
+      console.log("");
+    }
+  }, [email, _id, fetchRoomId]);
 
   return (
     <div className="flex flex-col gap-2  border-gray-300/80 border-t pt-2">
@@ -51,13 +55,11 @@ export default function Contacts({ contacts, loading }) {
             key={index}
             onClick={() => {
               setEmail(contact.email);
-              handleClick();
-              // setShowMessaging(true);
             }}
           >
             <h2>{index + 1 + "."}</h2>
-            {/* <h2>{contact.name}</h2> */}
-            <h2>{contact.email}</h2>
+            <h2>{contact.name}</h2>
+            {/* <h2>{contact.email}</h2> */}
           </button>
         ))
       ) : (

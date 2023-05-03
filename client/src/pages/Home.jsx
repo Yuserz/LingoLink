@@ -22,9 +22,16 @@ export default function Home() {
   const [showVideoCall, setShowVideoCall] = useState(
     sessionStorage.getItem("showVideoCall") === "true" ? true : false
   );
-  const [userData, setUserData] = useState("");
-  const [contactData, setContactData] = useState("");
-  const [contactName, setContactName] = useState("user");
+  const [contactData, setContactData] = useState(
+    sessionStorage.getItem("contactName") === "true" ? true : false
+  );
+  const [contactName, setContactName] = useState(
+    sessionStorage.getItem("contactName") === "true" ? true : false
+  );
+  const [userData, setUserData] = useState(
+    sessionStorage.getItem("userData") === "true" ? true : false
+  );
+
   const { _id } = useContext(MyGlobalContext);
 
   // useEffect(() => {
@@ -84,15 +91,7 @@ export default function Home() {
   return (
     <MyDataContext.Provider value={cachedData}>
       <MainLayout>
-        {showMessaging ? (
-          <Messaging
-            userId={_id}
-            userdata={userData}
-            contactData={contactData}
-          />
-        ) : (
-          ""
-        )}
+        {showMessaging ? <Messaging userId={_id} userdata={userData} /> : ""}
         {showVideoCall ? <VideoCall /> : ""}
       </MainLayout>
     </MyDataContext.Provider>

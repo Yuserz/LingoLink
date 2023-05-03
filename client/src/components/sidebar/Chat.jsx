@@ -27,6 +27,8 @@ export default function Chat() {
     fetchData();
   }, []);
 
+  
+
   // useEffect(() => {
   //   if (contacts) {
   //     console.log(contacts);
