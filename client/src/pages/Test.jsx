@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import io from "socket.io-client";
 
@@ -47,21 +46,22 @@ function App() {
     setRoomId(offer.roomId);
   };
 
-  const handleSendMessage = async () => {
-    if (message !== "") {
+  const handleSendMessage = () => {
+    if (message) {
       const messageData = {
         roomId: roomId,
         message: message
       };
-
-      await socket.emit("message", { messageData });
+  
+      socket.emit("message", roomId, message, messageData);
       setMessage("");
     }
   };
+  
 
   return (
-    <div>
-      <h1>Socket.io Demo</h1>
+    <div className="flex justify-center items-center w-screen h-screen">
+      {/* <h1>Socket.io Demo</h1> */}
       {!offerSent ? (
         <button onClick={handleSendOffer}>Send Offer</button>
       ) : (
