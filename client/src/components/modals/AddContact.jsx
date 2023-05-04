@@ -1,17 +1,25 @@
-import React, { useState, useContext } from "react";
-import { search, addContact } from "../../../api/api";
-import { MyDataContext } from "../../../pages/Home";
-import Search from "../../Search";
-
+import React, { useState, useContext, useEffect } from "react";
+import { search, addContact } from "../../api/api";
+import { MyDataContext } from "../../pages/Home";
+import Search from "../Search";
+import { MyGlobalContext } from "../../context/MyGlobalContext";
 //icons
-import close from "../../../assets/icons/close.svg";
-import plus from "../../../assets/icons/add.svg";
+import close from "../../assets/icons/close.svg";
+import plus from "../../assets/icons/add.svg";
+
+const { v4: uuidv4 } = require("uuid");
 
 export default function AddContact({ closeModal }) {
   const [email, setEmail] = useState();
-  const [contact, setContact] = useState();
+  const genaratedRoomId = uuidv4();
   const [foundEmail, setFoundEmail] = useState();
-  const { setShowMessaging, setData } = useContext(MyDataContext);
+  const { setShowMessaging, setContactData, contactData } =
+    useContext(MyDataContext);
+  const { _id, roomId, setRoomId } = useContext(MyGlobalContext);
+
+  useEffect(() => {
+    setRoomId(genaratedRoomId);
+  }, []);
 
   const findContact = async () => {
     try {
@@ -19,9 +27,8 @@ export default function AddContact({ closeModal }) {
         email,
       });
       //store user info to data
-      setData(response);
-
-      console.log("success:", response);
+      setContactData(response.data);
+      console.log("Contact Found", response.data);
     } catch (error) {
       console.log("not found");
     }
@@ -30,14 +37,23 @@ export default function AddContact({ closeModal }) {
 
   const handleClick = async () => {
     try {
-      const response = await addContact({
-        contact,
-      });
-      setContact(response);
+      const response = await addContact(
+        {
+          name: contactData.name,
+          email: contactData.email,
+          roomId: roomId,
+        },
+        _id
+      );
+      console.log(response);
     } catch (error) {
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    console.log(contactData);
+  }, [contactData]);
 
   return (
     <div className="absolute w-screen h-screen bg-black/20 top-0 left-0 flex items-center justify-center">
@@ -58,11 +74,11 @@ export default function AddContact({ closeModal }) {
           <Search setEmail={setEmail} findContact={findContact} />
         </div>
 
-        {foundEmail && (
+        {foundEmail ? (
           <button
             onClick={() => {
               setShowMessaging(true);
-              handleClick(email);
+              handleClick();
               closeModal(false);
             }}
             className="search-results bg-white border-2 border-primary/50 hover:border-primary/100 px-4 py-3 rounded-lg flex justify-between items-center"
@@ -70,6 +86,8 @@ export default function AddContact({ closeModal }) {
             {foundEmail}
             <img className="w-4 h-4" src={plus} alt="" />
           </button>
+        ) : (
+          []
         )}
       </div>
     </div>

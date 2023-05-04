@@ -1,38 +1,26 @@
-import { useState, useEffect } from 'react';
+import Peer from "simple-peer";
 
-const configuration = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
+export function createPeer(initiator, stream, signalCallback) {
+  const peer = new Peer({
+    initiator: initiator,
+    trickle: false,
+    stream: stream,
+  });
 
-export const usePeerConnection = () => {
-  const [peerConnection, setPeerConnection] = useState(null);
+  peer.on("signal", (data) => {
+    signalCallback(data);
+  });
 
-  useEffect(() => {
-    const pc = new RTCPeerConnection(configuration);
-    setPeerConnection(pc);
+  return { peer, stream };
+}
 
-    return () => {
-      pc.close();
-    };
-  }, []);
+export function answerPeer(peer, signal, stream) {
+  peer.signal(signal);
+  peer.on("stream", (remoteStream) => {
+    stream.addTrack(remoteStream.getTracks()[0]);
+  });
+}
 
-  return peerConnection;
-};
-
-export const createOffer = async (peerConnection) => {
-  const offer = await peerConnection.createOffer();
-  await peerConnection.setLocalDescription(offer);
-  return offer;
-};
-
-export const createAnswer = async (peerConnection) => {
-  const answer = await peerConnection.createAnswer();
-  await peerConnection.setLocalDescription(answer);
-  return answer;
-};
-
-export const setRemoteDescription = async (peerConnection, description) => {
-  await peerConnection.setRemoteDescription(description);
-};
-
-export const addIceCandidate = async (peerConnection, candidate) => {
-  await peerConnection.addIceCandidate(candidate);
-};
+export function destroyPeer(peer) {
+  peer.destroy();
+}

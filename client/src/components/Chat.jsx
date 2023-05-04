@@ -1,17 +1,46 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, {
+  useEffect,
+  useState,
+  useRef,
+  useContext,
+  createContext,
+} from "react";
 import moment from "moment";
-import sendBtn from "../assets/icons/send.svg"
 
-function Chat({ socket, username, room }) {
+//icons
+import sendBtn from "../assets/icons/send.svg";
+import callBtn from "../assets/icons/call.svg";
+import cameraBtn from "../assets/icons/cam.svg";
+
+//context api
+import { MyDataContext } from "../pages/Home";
+
+function Chat({ socket, contactName, roomId }) {
   const [currentMessage, setCurrentMessage] = useState("");
-  const [messageList, setMessageList] = useState([]);
+  const [messageList, setMessageList] = useState(() => {
+    const savedMessages = sessionStorage.getItem("messageList");
+    return savedMessages ? JSON.parse(savedMessages) : [];
+  });
   const messagesEndRef = useRef(null);
+  const { setShowVideoCall, setShowMessaging } = useContext(MyDataContext);
+
+  // console.log(roomId)
+
+  // const sendOffer = () => {
+  //   socket.emit("callUser", {
+  //     userToCall: contactName, // user ID to call
+  //     signalData: null, // signal data for WebRTC (set to null for now)
+  //     from: socket, // caller's socket ID
+  //     name: "Caller", // caller's name
+  //     roomId: roomId, // room ID to join
+  //   });
+  // };
 
   const sendMessage = async () => {
     if (currentMessage !== "") {
       const messageData = {
-        room: room,
-        author: username,
+        room: roomId,
+        author: contactName,
         message: currentMessage,
         time: moment().format("h:mm A"),
       };
@@ -45,7 +74,7 @@ function Chat({ socket, username, room }) {
       <div className="contact-profile  pt-2 w-full flex justify-center h-full p-4 items-center">
         <div className="flex flex-col justify-center w-fit">
           {/* <img className="profile-image w-full h-full" src="" alt="" /> */}
-          <h4 className="text-center">{username}</h4>
+          <h4 className="text-center">{contactName}</h4>
         </div>
       </div>
       <div className="flex flex-col gap-2">
@@ -59,7 +88,7 @@ function Chat({ socket, username, room }) {
                 <div
                   key={index}
                   className={`message-content-container w-fit max-w-[70%] px-4 ${
-                    username === messageContent.author
+                    contactName === messageContent.author
                       ? "self-start"
                       : "self-end"
                   }`}
@@ -67,7 +96,7 @@ function Chat({ socket, username, room }) {
                   <div className="message-content">
                     <p
                       className={`w-full rounded-2xl p-4 ${
-                        username === messageContent.author
+                        contactName === messageContent.author
                           ? "bg-primary text-white"
                           : "bg-white self-end"
                       }`}
@@ -88,7 +117,7 @@ function Chat({ socket, username, room }) {
         </div>
       </div>
       <div className="chat-footer flex gap-4">
-        <div className="p-3 px-4 w-full flex bg-white rounded-2xl">
+        <div className="p-3 px-4 w-full h-fit flex bg-white rounded-2xl gap-1">
           <input
             className="p-1 w-full outline-none"
             type="text"
@@ -101,16 +130,25 @@ function Chat({ socket, username, room }) {
               event.key === "Enter" && sendMessage();
             }}
           />
-          <button>
+          <button className="p-2 hover:border-2 hover:border-primary/50 border-2 border-white/0 rounded-xl focus:border-primary">
             {" "}
-            <img src="" alt="" />
+            <img className="w-8 h-6" src={cameraBtn} alt="" />
           </button>
-          <button>
+          <button
+            onClick={() => {
+              console.log("clicked");
+              setShowVideoCall(true);
+              setShowMessaging(false);
+            }}
+            className="p-2 hover:border-2 hover:border-primary/50 border-2 border-white/0 rounded-xl focus:border-primary"
+          >
             {" "}
-            <img src="" alt="" />
+            <img className="w-8 h-6" src={callBtn} alt="" />
           </button>
         </div>
-        <button onClick={sendMessage}><img src={sendBtn} alt="" /></button>
+        <button onClick={sendMessage}>
+          <img src={sendBtn} alt="" />
+        </button>
       </div>
     </div>
   );

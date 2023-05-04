@@ -24,12 +24,30 @@ const verifyToken = (req, res, next) => {
 
 // Define your routes here
 //Register endpoint
+const mongoose = require("mongoose");
+
 router.post("/register", async (req, res) => {
   try {
     const { name, email, password } = req.body;
+
+    // check if email is in valid format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).send("Invalid email address");
+    }
+
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
-    const user = new User({ name, email, password: hashedPassword });
+
+    const objectId = new mongoose.Types.ObjectId();
+
+    const user = new User({
+      _id: objectId, // generate a unique ID
+      name,
+      email,
+      password: hashedPassword,
+    });
+
     await user.save();
     res.json(user);
   } catch (error) {
@@ -42,6 +60,15 @@ router.post("/register", async (req, res) => {
 router.post("/login", async (req, res, next) => {
   try {
     const { email, password } = req.body;
+
+    // Regex pattern to validate email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    // Check if email is valid
+    if (!emailRegex.test(email)) {
+      return res.status(400).send({ error: "Invalid email format" });
+    }
+
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(401).send({ error: "Email or password is incorrect" });
@@ -66,7 +93,7 @@ router.post("/login", async (req, res, next) => {
 });
 
 //Find a user
-router.post("/search", verifyToken, async (req, res, next) => {
+router.post("/search", async (req, res, next) => {
   try {
     const { email } = req.body;
     const user = await User.findOne({ email });
@@ -74,33 +101,92 @@ router.post("/search", verifyToken, async (req, res, next) => {
       return res.status(401).send({ error: "Email not found" });
     }
 
-    const { name, _id, contacts } = user;
-    res.send({ name, _id, contacts });
+    const { name, _id } = user;
+    res.send({ name, _id, email });
   } catch (error) {
     next(error);
     console.log("Not Found:");
   }
 });
 
-//add contact
-router.post("/addContact", verifyToken,  async (req, res) => {
+//create new contact
+router.post("/contacts/:_id", async (req, res) => {
+  const { _id } = req.params;
+  const { name, email, roomId } = req.body;
+
   try {
-    const { contact } = req.body;
-    const user = await User.findOneAndUpdate(
-      { $push: { contacts: contact } },
-      { new: true }
+    const user = await User.findById(_id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Check if contact already exists
+    const existingContact = user.contacts.find(
+      (contact) => contact.email === email
     );
-    res.json(user);
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Error adding contact");
+    if (existingContact) {
+      return res.status(400).json({ message: "Contact already exists" });
+    }
+
+    const newContact = {
+      name,
+      email,
+      roomId,
+    };
+
+    user.contacts.push(newContact);
+    await user.save();
+
+    res.status(201).json(newContact);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
   }
 });
 
-//get current user data based on ID
-router.get("/getUserData", verifyToken,  async (req, res) => {
+//get contact list from current user
+router.get("/contacts/:_id", async (req, res) => {
+  const { _id } = req.params;
+
   try {
-    const { _id } = req.body; // assuming userId is passed in the request body
+    const user = await User.findById(_id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    const { contacts } = user;
+    res.json({ contacts });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// //SSE endpoint 
+// router.get("/contacts/sse/:_id", async (req, res) => {
+//   const { _id } = req.params;
+//   const user = await User.findById(_id);
+//   if (!user) {
+//     return res.status(404).json({ message: "User not found" });
+//   }
+//   res.set({
+//     'Cache-Control': 'no-cache',
+//     'Content-Type': 'text/event-stream',
+//     'Connection': 'keep-alive'
+//   });
+//   // listen for new contact events and send the updated contact list to the client-side
+//   user.on('newContact', function(contact) {
+//     res.write('event: newContact\n');
+//     res.write(`data: ${JSON.stringify(contact)}\n\n`);
+//   });
+// });
+
+
+
+
+//get current user data based on ID
+router.get("/getUserData", async (req, res) => {
+  try {
+    const { _id } = req.params;
     const user = await User.findOne(_id, {
       _id: 1,
       name: 1,
@@ -111,6 +197,26 @@ router.get("/getUserData", verifyToken,  async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).send("Error getting user data");
+  }
+});
+
+//get roomId
+router.post("/room", async (req, res) => {
+  try {
+    const { userId, email } = req.body;
+    const user = await User.findOne({ _id: userId }, { contacts: 1 });
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+    const contact = user.contacts.find((c) => c.email === email);
+    if (!contact) {
+      return res.status(404).send("Contact not found");
+    }
+    const { roomId, name } = contact;
+    res.json({ roomId, name });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error getting contact data");
   }
 });
 

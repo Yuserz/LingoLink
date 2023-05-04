@@ -2,12 +2,12 @@ import React, { useState, useContext } from "react";
 import InputField from "../components/InputField";
 import { useNavigate } from "react-router-dom";
 import { login } from "../api/api";
-import { MyIdContext } from "../context/MyIdContext";
+import { MyGlobalContext } from "../context/MyGlobalContext";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { set_id } = useContext(MyIdContext);
+  const { set_id } = useContext(MyGlobalContext);
   // const [data, setData] = useState("");
 
   const navigate = useNavigate();
@@ -22,13 +22,15 @@ export default function Login() {
         password,
       });
 
-      console.log("login success");
+      console.log("login success", email);
 
       const { token, _id } = response.data;
       set_id(_id);
 
-      // Store token in local storage
-      localStorage.setItem("token", token);
+      // Clear local storage for past session
+      sessionStorage.clear();
+      // Store token in local storage for new session
+      sessionStorage.setItem("token", token);
 
       // Redirect user to the protected route
       navigate("Home");

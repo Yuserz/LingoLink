@@ -23,7 +23,7 @@
 #### Note: Remove < > sign and replace it with the asked value
 
 ### 4. Start the server:</h3>
-  `npm run dev`
+  `npm start`
   
 ### 5. Start the client:</h3>
 

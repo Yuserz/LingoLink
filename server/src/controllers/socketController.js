@@ -4,24 +4,38 @@ function initialize(server) {
   io = require("socket.io")(server, {
     cors: {
       origin: process.env.CORS_ORIGIN || `http://localhost:3000`,
-      // methods: ['GET', 'POST']
+      methods: ["GET", "POST"],
     },
   });
 
   io.on("connection", (socket) => {
-    console.log(`User Connected: ${socket.id}`);
+    socket.emit("me", socket.id);
 
     socket.on("join_room", (data) => {
       socket.join(data);
-      console.log(`User with ID: ${socket.id} joined room: ${data}`);
+      console.log(`User with socket ID: ${socket.id} joined the room `);
     });
 
     socket.on("send_message", (data) => {
       socket.to(data.room).emit("receive_message", data);
     });
 
+    socket.on("callUser", (data) => {
+      socket.to(data.userToCall).emit("callUser", {
+        signal: data.signalData,
+        from: data.from,
+        name: data.name,
+        roomId: data.roomId
+      });
+    });
+    
+
+    socket.on("answerCall", (data) => {
+      socket.to(data.to).emit("callAccepted", data.signal);
+    });
+
     socket.on("disconnect", () => {
-      console.log("User Disconnected", socket.id);
+      socket.broadcast.emit("callEnded");
     });
   });
 }
@@ -29,4 +43,3 @@ function initialize(server) {
 module.exports = {
   initialize,
 };
-

@@ -1,6 +1,7 @@
 import React, { lazy, Suspense } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { MyContextProvider } from "./context/MyIdContext";
+import { MyContextProvider } from "./context/MyGlobalContext";
+import Test from "./pages/Test.jsx"
 
 // Define lazy-loaded components
 const Home = lazy(() => import("./pages/Home"));
@@ -41,6 +42,11 @@ function App() {
                 <Home />{" "}
               </Suspense>
             }
+          />
+          <Route
+            exact
+            path="/Test"
+            element={<Test />}
           />
         </Routes>
       </Router>
