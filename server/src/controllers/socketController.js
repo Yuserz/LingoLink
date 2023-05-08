@@ -11,24 +11,26 @@ function initialize(server) {
   io.on("connection", (socket) => {
     socket.emit("me", socket.id);
 
-    socket.on("join_room", (data) => {
-      socket.join(data);
-      console.log(`User with socket ID: ${socket.id} joined the room `);
+    socket.on("join_room", (room) => {
+      socket.join(room);
+      console.log(`Joined the room ${room} `);
     });
 
     socket.on("send_message", (data) => {
+      console.log(data)
       socket.to(data.room).emit("receive_message", data);
     });
 
     socket.on("callUser", (data) => {
-      socket.to(data.userToCall).emit("callUser", {
+      io.to(data.userToCall).emit("callUser", {
         signal: data.signalData,
         from: data.from,
         name: data.name,
-        roomId: data.roomId
+        userToCall: data.userToCall,
       });
+      console.log(data)
+      // socket.emit()
     });
-    
 
     socket.on("answerCall", (data) => {
       socket.to(data.to).emit("callAccepted", data.signal);

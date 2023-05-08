@@ -10,30 +10,6 @@ function Messaging() {
   const { roomId } = useContext(MyGlobalContext);
   const { contactName } = useContext(MyDataContext);
 
-  // const userId = _id;
-
-  // const fetchRoomId = useCallback(async () => {
-  //   try {
-  //     const response = await getRoomId({ userId, email: email });
-  //     // console.log("response", response.data.roomId);
-  //     if (response) {
-  //       const { roomId, name } = response.data;
-  //       setRoomId(roomId);
-  //       setContactName(name);
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // }, [userId, email]);
-
-  // useEffect(() => {
-  //   fetchRoomId();
-  // }, []);
-
-  // useEffect(() => {
-  //   console.log("roomId:", roomId);
-  // }, [roomId]);
-
   const joinRoom = () => {
     if (!roomId) {
       console.log("Wrong room credentials");
