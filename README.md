@@ -23,10 +23,11 @@
 #### Note: Remove < > sign and replace it with the asked value
 
 ### 4. Start the server:</h3>
+-cd server
   `npm start`
   
 ### 5. Start the client:</h3>
-
+-cd server
   `npm start`
 
 ### 6. Open your browser and navigate to http://localhost:3000</h3>
