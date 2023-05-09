@@ -6,14 +6,15 @@ export const MyContextProvider = ({ children }) => {
   const [_id, set_id] = useState(sessionStorage.getItem("_id") || "");
   const [roomId, setRoomId] = useState(sessionStorage.getItem("roomId") || "");
   const [userData, setUserData] = useState(
-    sessionStorage.getItem("userData") === "true" ? true : false
+    sessionStorage.getItem("userData" || "")
   );
 
   useEffect(() => {
     sessionStorage.setItem("_id", _id);
     sessionStorage.setItem("roomId", roomId);
+    sessionStorage.setItem("userData", userData);
     setRoomId(setRoomId);
-  }, [_id, roomId]);
+  }, [_id, roomId, userData]);
 
   const contextValue = useMemo(
     () => ({ _id, set_id, roomId, setRoomId, userData, setUserData }),

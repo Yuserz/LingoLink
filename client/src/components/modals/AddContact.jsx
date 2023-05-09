@@ -15,9 +15,9 @@ export default function AddContact({ closeModal }) {
 
   const genaratedRoomId = uuidv4();
 
-  const { setShowMessaging, setContactData, contactData, userData } =
+  const { setShowMessaging, setContactData, contactData } =
     useContext(MyDataContext);
-  const { _id, roomId, setRoomId } = useContext(MyGlobalContext);
+  const { _id, roomId, setRoomId, userData } = useContext(MyGlobalContext);
 
   useEffect(() => {
     setRoomId(genaratedRoomId);
@@ -55,18 +55,18 @@ export default function AddContact({ closeModal }) {
         //Add also this current user to contact list of the resent added contact
         // console.log("userData:", userData)
 
-        // if (_id !== contactData._id) {
-        //   const res = addContact(
-        //     {
-        //       name: userData.name,
-        //       email: userData.email,
-        //       roomId: roomId,
-        //     },
-        //     contactData._id
-        //   );
-        // } else {
-        //   console.log("error: same id");
-        // }
+        if (_id !== contactData._id) {
+          const res = addContact(
+            {
+              name: userData.name,
+              email: userData.email,
+              roomId: roomId,
+            },
+            contactData._id
+          );
+        } else {
+          console.log("error: same id");
+        }
       } catch (error) {
         console.log("error");
       }
