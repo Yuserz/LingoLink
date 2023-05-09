@@ -9,17 +9,17 @@ function initialize(server) {
   });
 
   io.on("connection", (socket) => {
-    socket.emit("me", socket.id);
-
     socket.on("join_room", (room) => {
       socket.join(room);
       console.log(`Joined the room ${room} `);
     });
 
     socket.on("send_message", (data) => {
-      console.log(data)
+      console.log(data);
       socket.to(data.room).emit("receive_message", data);
     });
+
+    socket.emit("me", socket.id);
 
     socket.on("callUser", (data) => {
       io.to(data.userToCall).emit("callUser", {
@@ -28,7 +28,7 @@ function initialize(server) {
         name: data.name,
         userToCall: data.userToCall,
       });
-      console.log(data)
+      console.log(data);
       // socket.emit()
     });
 

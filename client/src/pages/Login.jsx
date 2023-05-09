@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect, useCallback } from "react";
 import InputField from "../components/InputField";
 import { useNavigate } from "react-router-dom";
 import { login } from "../api/api";
@@ -7,7 +7,7 @@ import { MyGlobalContext } from "../context/MyGlobalContext";
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { set_id } = useContext(MyGlobalContext);
+  const { set_id, setUserData} = useContext(MyGlobalContext);
   // const [data, setData] = useState("");
 
   const navigate = useNavigate();
@@ -21,11 +21,13 @@ export default function Login() {
         email,
         password,
       });
+      // console.log({ login: response.data });
 
       console.log("login success", email);
 
-      const { token, _id } = response.data;
-      set_id(_id);
+      const { token, userCred } = response.data;
+      set_id(userCred._id);
+      setUserData(userCred);
 
       // Clear local storage for past session
       sessionStorage.clear();
@@ -38,7 +40,7 @@ export default function Login() {
       console.log("Invalid email or password");
     }
   };
-
+  
   return (
     <>
       <div className="login-container w-full bg-secondary h-screen flex justify-center items-center">

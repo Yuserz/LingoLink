@@ -24,7 +24,7 @@ function Chat({ socket, contactName }) {
   });
   const messagesEndRef = useRef(null);
   const { setShowVideoCall, setShowMessaging } = useContext(MyDataContext);
-  const { roomId, setRoomId } = useContext(MyGlobalContext);
+  const { roomId } = useContext(MyGlobalContext);
 
   const sendMessage = async () => {
     if (currentMessage !== "") {

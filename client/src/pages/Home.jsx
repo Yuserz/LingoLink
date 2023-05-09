@@ -4,12 +4,10 @@ import React, {
   useState,
   useEffect,
   useMemo,
-  useCallback,
 } from "react";
 import MainLayout from "../layout/MainLayout";
 import Messaging from "../components/Messaging";
 import VideoCall from "../components/VideoCall";
-import { getData } from "../api/api";
 import { MyGlobalContext } from "../context/MyGlobalContext";
 
 //Context API for state management
@@ -22,44 +20,28 @@ export default function Home() {
   const [showVideoCall, setShowVideoCall] = useState(
     sessionStorage.getItem("showVideoCall") === "true" ? true : false
   );
+  // const [contactData, setContactData] = useState( );
   const [contactData, setContactData] = useState(
     sessionStorage.getItem("contactName") === "true" ? true : false
   );
   const [contactName, setContactName] = useState(
     sessionStorage.getItem("contactName") === "true" ? true : false
   );
-  const [userData, setUserData] = useState(
-    sessionStorage.getItem("userData") === "true" ? true : false
-  );
 
-  const { _id } = useContext(MyGlobalContext);
+  const { _id, userData } = useContext(MyGlobalContext);
 
-  // useEffect(() => {
-  //   console.log(contactData);
-  // }, [contactData]);
+  useEffect(() => {
+    console.log({ contactData: contactData, userData: userData });
+  }, [contactData, userData]);
 
-  // Use memoized version of fetchData
-  const fetchData = useCallback(async () => {
-    try {
-      const response = await getData(_id);
-      const data = response.data;
-      setUserData(data);
-    } catch (error) {
-      console.log(error);
-    }
-  }, [_id]);
-
-  // console.log(userData);
-
+ 
   // Cache the data with useMemo
   const cachedData = useMemo(
     () => ({
       contactName,
       setContactName,
-      userData,
       showMessaging,
       setShowMessaging,
-      setUserData,
       showVideoCall,
       setShowVideoCall,
       contactData,
@@ -68,10 +50,7 @@ export default function Home() {
     [
       contactName,
       setContactName,
-      userData,
       showMessaging,
-      setShowMessaging,
-      setUserData,
       showVideoCall,
       setShowVideoCall,
       contactData,
@@ -84,14 +63,14 @@ export default function Home() {
     sessionStorage.setItem("showVideoCall", showVideoCall);
   }, [showMessaging, showVideoCall]);
 
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+  // useEffect(() => {
+  //   fetchData();
+  // }, [_id]);
 
   return (
     <MyDataContext.Provider value={cachedData}>
       <MainLayout>
-        {showMessaging ? <Messaging userId={_id} userdata={userData} /> : ""}
+        {showMessaging ? <Messaging userId={_id} /> : ""}
         {showVideoCall ? <VideoCall /> : ""}
       </MainLayout>
     </MyDataContext.Provider>

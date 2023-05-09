@@ -48,8 +48,19 @@ router.post("/register", async (req, res) => {
       password: hashedPassword,
     });
 
+    //save user
     await user.save();
-    res.json(user);
+
+    const token = jwt.sign(
+      { id: user._id },
+      process.env.JWT_SECRET || "12345",
+      {
+        expiresIn: "1h",
+      }
+    );
+
+    const userCred = user;
+    res.send({ success: "User logged in successfully", token, userCred });
   } catch (error) {
     console.error(error);
     res.status(500).send("Error creating user");
@@ -85,8 +96,8 @@ router.post("/login", async (req, res, next) => {
       }
     );
 
-    const { _id } = user;
-    res.send({ success: "User logged in successfully", token, _id });
+    const userCred = user;
+    res.send({ success: "User logged in successfully", token, userCred });
   } catch (error) {
     next(error);
   }

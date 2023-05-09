@@ -2,8 +2,8 @@ import React, { useEffect, useRef, useState, useContext } from "react";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import Peer from "simple-peer";
 import io from "socket.io-client";
-// import { MyDataContext } from "../pages/Home";
-// import { MyGlobalContext } from "../context/MyGlobalContext";
+import { MyDataContext } from "../pages/Home";
+import { MyGlobalContext } from "../context/MyGlobalContext";
 
 const socket = io.connect("http://localhost:3001");
 export default function VideoCall() {
@@ -20,8 +20,9 @@ export default function VideoCall() {
   const userVideo = useRef();
   const connectionRef = useRef();
 
-  // const { userData, contactData } = useContext(MyDataContext);
-  // const { _id } = useContext(MyGlobalContext)
+  const { userData, contactData } = useContext(MyDataContext);
+  const { roomId, _id } = useContext(MyGlobalContext)
+  
 
   useEffect(() => {
     navigator.mediaDevices
@@ -54,7 +55,7 @@ export default function VideoCall() {
       socket.emit("callUser", {
         userToCall: id,
         signalData: data,
-        from: me,
+        from: userData.name,
         name: name,
       });
     });
