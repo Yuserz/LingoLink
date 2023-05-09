@@ -125,7 +125,7 @@ router.post("/contacts/:_id", async (req, res) => {
       (contact) => contact.email === email
     );
     if (existingContact) {
-      return res.status(400).json({ message: "Contact already exists" });
+      return res.status(409).json({ message: "Contact already exists" });
     }
 
     const newContact = {
@@ -137,7 +137,7 @@ router.post("/contacts/:_id", async (req, res) => {
     user.contacts.push(newContact);
     await user.save();
 
-    res.status(201).json(newContact);
+    res.json(newContact);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error" });
@@ -153,15 +153,15 @@ router.get("/contacts/:_id", async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-    const { contacts } = user;
-    res.json({ contacts });
+    const { contacts, status } = user;
+    res.json({ contacts, status });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error" });
   }
 });
 
-// //SSE endpoint 
+// //SSE endpoint
 // router.get("/contacts/sse/:_id", async (req, res) => {
 //   const { _id } = req.params;
 //   const user = await User.findById(_id);
@@ -179,9 +179,6 @@ router.get("/contacts/:_id", async (req, res) => {
 //     res.write(`data: ${JSON.stringify(contact)}\n\n`);
 //   });
 // });
-
-
-
 
 //get current user data based on ID
 router.get("/getUserData", async (req, res) => {
@@ -212,8 +209,8 @@ router.post("/room", async (req, res) => {
     if (!contact) {
       return res.status(404).send("Contact not found");
     }
-    const { roomId, name } = contact;
-    res.json({ roomId, name });
+    const { roomId, name, _id } = contact;
+    res.json({ roomId, name, _id });
   } catch (error) {
     console.error(error);
     res.status(500).send("Error getting contact data");

@@ -10,10 +10,12 @@ import plus from "../../assets/icons/add.svg";
 const { v4: uuidv4 } = require("uuid");
 
 export default function AddContact({ closeModal }) {
-  const [email, setEmail] = useState();
-  const genaratedRoomId = uuidv4();
   const [foundEmail, setFoundEmail] = useState();
-  const { setShowMessaging, setContactData, contactData } =
+  const [email, setEmail] = useState();
+
+  const genaratedRoomId = uuidv4();
+
+  const { setShowMessaging, setContactData, contactData, userData } =
     useContext(MyDataContext);
   const { _id, roomId, setRoomId } = useContext(MyGlobalContext);
 
@@ -28,14 +30,15 @@ export default function AddContact({ closeModal }) {
       });
       //store user info to data
       setContactData(response.data);
-      console.log("Contact Found", response.data);
+      console.log("Contact Found!");
     } catch (error) {
       console.log("not found");
     }
     setFoundEmail(email);
   };
 
-  const handleClick = async () => {
+  //Add new contact
+  const addNewContact = async () => {
     try {
       const response = await addContact(
         {
@@ -45,15 +48,28 @@ export default function AddContact({ closeModal }) {
         },
         _id
       );
-      console.log(response);
+      console.log("1 New contact added!", response);
+
+      //Add also this current user to contact list of the other peer
+      try {
+        const response = await addContact(
+          {
+            name: userData.name,
+            email: userData.email,
+            roomId: roomId,
+          },
+          contactData._id
+        );
+        console.log("2 New contact added!", response);
+      } catch (error) {}
     } catch (error) {
-      console.log(error);
+      console.log("error");
     }
   };
 
   useEffect(() => {
-    console.log(contactData);
-  }, [contactData]);
+    console.log(userData);
+  }, []);
 
   return (
     <div className="absolute w-screen h-screen bg-black/20 top-0 left-0 flex items-center justify-center">
@@ -78,7 +94,7 @@ export default function AddContact({ closeModal }) {
           <button
             onClick={() => {
               setShowMessaging(true);
-              handleClick();
+              addNewContact();
               closeModal(false);
             }}
             className="search-results bg-white border-2 border-primary/50 hover:border-primary/100 px-4 py-3 rounded-lg flex justify-between items-center"

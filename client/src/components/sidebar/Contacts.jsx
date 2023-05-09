@@ -9,7 +9,8 @@ export default function Contacts({ contacts, loading }) {
   );
   // const [email, setEmail] = useState();
   const { _id, roomId, setRoomId } = useContext(MyGlobalContext);
-  const { setShowMessaging, setContactName } = useContext(MyDataContext);
+  const { setShowMessaging, setContactName, setContactData } =
+    useContext(MyDataContext);
 
   const fetchRoomId = useCallback(async () => {
     try {
@@ -17,7 +18,8 @@ export default function Contacts({ contacts, loading }) {
         userId: _id,
         email: email,
       });
-      // console.log("response", response.data.roomId);
+      setContactData(response.data);
+      console.log("response", response.data);
       if (response) {
         const { roomId, name } = response.data;
         setRoomId(roomId);
@@ -45,9 +47,9 @@ export default function Contacts({ contacts, loading }) {
   }, [email, _id, fetchRoomId]);
 
   return (
-    <div className="flex flex-col gap-2  border-gray-300/80 border-t pt-2">
+    <div className="flex flex-col gap-2">
       {loading ? ( // show a loading indicator or a message if data is being fetched
-        <h1>Loading contacts...</h1>
+        ""
       ) : contacts.length > 0 ? (
         contacts.map((contact, index) => (
           <button

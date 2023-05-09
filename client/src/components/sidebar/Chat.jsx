@@ -28,13 +28,6 @@ export default function Chat() {
   }, []);
 
   
-
-  // useEffect(() => {
-  //   if (contacts) {
-  //     console.log(contacts);
-  //   }
-  // }, [contacts]);
-
   const toggleExpanded = () => {
     setExpanded(!expanded);
   };

@@ -14,8 +14,9 @@ import cameraBtn from "../assets/icons/cam.svg";
 
 //context api
 import { MyDataContext } from "../pages/Home";
+import { MyGlobalContext } from "../context/MyGlobalContext";
 
-function Chat({ socket, contactName, roomId }) {
+function Chat({ socket, contactName }) {
   const [currentMessage, setCurrentMessage] = useState("");
   const [messageList, setMessageList] = useState(() => {
     const savedMessages = sessionStorage.getItem("messageList");
@@ -23,18 +24,7 @@ function Chat({ socket, contactName, roomId }) {
   });
   const messagesEndRef = useRef(null);
   const { setShowVideoCall, setShowMessaging } = useContext(MyDataContext);
-
-  // console.log(roomId)
-
-  // const sendOffer = () => {
-  //   socket.emit("callUser", {
-  //     userToCall: contactName, // user ID to call
-  //     signalData: null, // signal data for WebRTC (set to null for now)
-  //     from: socket, // caller's socket ID
-  //     name: "Caller", // caller's name
-  //     roomId: roomId, // room ID to join
-  //   });
-  // };
+  const { roomId, setRoomId } = useContext(MyGlobalContext);
 
   const sendMessage = async () => {
     if (currentMessage !== "") {

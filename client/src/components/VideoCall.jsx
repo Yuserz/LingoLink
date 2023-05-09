@@ -2,14 +2,13 @@ import React, { useEffect, useRef, useState, useContext } from "react";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import Peer from "simple-peer";
 import io from "socket.io-client";
-
-//context api
-import { MyDataContext } from "../pages/Home";
+// import { MyDataContext } from "../pages/Home";
+// import { MyGlobalContext } from "../context/MyGlobalContext";
 
 const socket = io.connect("http://localhost:3001");
 export default function VideoCall() {
   const [me, setMe] = useState("");
-  const [stream, setStream] = useState();
+  const [stream, setStream] = useState("");
   const [receivingCall, setReceivingCall] = useState(false);
   const [caller, setCaller] = useState("");
   const [callerSignal, setCallerSignal] = useState();
@@ -21,20 +20,8 @@ export default function VideoCall() {
   const userVideo = useRef();
   const connectionRef = useRef();
 
-  //context API
-  const { data } = useContext(MyDataContext);
-  let id = "";
-  try {
-    if (data) {
-      id = data.data._id;
-    }
-  } catch (error) {
-    // console.log(error);
-  }
-
-  useEffect(() => {
-    console.log(id);
-  }, [id]);
+  // const { userData, contactData } = useContext(MyDataContext);
+  // const { _id } = useContext(MyGlobalContext)
 
   useEffect(() => {
     navigator.mediaDevices
@@ -57,24 +44,25 @@ export default function VideoCall() {
   }, []);
 
   const callUser = (id) => {
-    console.log("call user");
     const peer = new Peer({
       initiator: true,
       trickle: false,
       stream: stream,
     });
+
     peer.on("signal", (data) => {
       socket.emit("callUser", {
         userToCall: id,
         signalData: data,
         from: me,
         name: name,
-        // roomId: roomId,
       });
     });
+
     peer.on("stream", (stream) => {
       userVideo.current.srcObject = stream;
     });
+
     socket.on("callAccepted", (signal) => {
       setCallAccepted(true);
       peer.signal(signal);
@@ -84,16 +72,22 @@ export default function VideoCall() {
   };
 
   const answerCall = () => {
-    console.log("answer call");
     setCallAccepted(true);
     const peer = new Peer({
       initiator: false,
       trickle: false,
       stream: stream,
     });
+
     peer.on("signal", (data) => {
-      socket.emit("answerCall", { signal: data, to: caller });
+      socket.emit("answerCall", {
+        signal: data,
+        to: caller,
+        callerId: socket.id,
+        toCallId: me,
+      });
     });
+
     peer.on("stream", (stream) => {
       userVideo.current.srcObject = stream;
     });
@@ -103,9 +97,10 @@ export default function VideoCall() {
   };
 
   const leaveCall = () => {
-    console.log("leave call");
     setCallEnded(true);
-    connectionRef.current.destroy();
+    if (callEnded) {
+      connectionRef.current.destroy();
+    }
   };
 
   return (
@@ -116,7 +111,7 @@ export default function VideoCall() {
           <div className="video flex justify-center w-full h-full bg-black rounded-lg">
             {stream && (
               <video
-                className="absolute w-fit h-full rounded-lg"
+                className="absolute w-fit h-full"
                 playsInline
                 muted
                 ref={myVideo}
@@ -125,7 +120,7 @@ export default function VideoCall() {
               />
             )}
           </div>
-          {/* <div className="video">
+          <div className="video">
             {callAccepted && !callEnded ? (
               <video
                 playsInline
@@ -134,17 +129,17 @@ export default function VideoCall() {
                 // style={{ width: "300px" }}
               />
             ) : null}
-          </div> */}
+          </div>
           <div className="absolute bottom-0 mb-4 w-full self-center place-self-center flex justify-center ">
             <div className="myId bg-white w-fit p-4 rounded-md">
-              <input
+              {/* <input
                 id="filled-basic"
                 label="Name"
                 variant="filled"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 style={{ marginBottom: "20px" }}
-              />
+              /> */}
               <CopyToClipboard text={me} style={{ marginBottom: "2rem" }}>
                 <button variant="contained" color="primary">
                   Copy ID
