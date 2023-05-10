@@ -47,7 +47,6 @@ router.post("/register", async (req, res) => {
       email,
       password: hashedPassword,
     });
-
     //save user
     await user.save();
 
@@ -61,6 +60,7 @@ router.post("/register", async (req, res) => {
 
     const userCred = user;
     res.send({ success: "User logged in successfully", token, userCred });
+
   } catch (error) {
     console.error(error);
     res.status(500).send("Error creating user");

@@ -1,4 +1,4 @@
-import React, { useState, useContext} from "react";
+import React, { useState, useContext } from "react";
 import InputField from "../components/InputField";
 import { useNavigate } from "react-router-dom";
 import { login } from "../api/api";
@@ -7,7 +7,7 @@ import { MyGlobalContext } from "../context/MyGlobalContext";
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { set_id, setUserData} = useContext(MyGlobalContext);
+  const { set_id, setUserData } = useContext(MyGlobalContext);
   // const [data, setData] = useState("");
 
   const navigate = useNavigate();
@@ -27,7 +27,12 @@ export default function Login() {
 
       const { token, userCred } = response.data;
       set_id(userCred._id);
-      setUserData(userCred);
+      setUserData({
+        _id: userCred._id,
+        contact: userCred.contacts,
+        name: userCred.name,
+        email: userCred.email,
+      });
 
       // Clear local storage for past session
       sessionStorage.clear();
@@ -40,7 +45,7 @@ export default function Login() {
       console.log("Invalid email or password");
     }
   };
-  
+
   return (
     <>
       <div className="login-container w-full bg-secondary h-screen flex justify-center items-center">

@@ -6,6 +6,7 @@ import { MyDataContext } from "../pages/Home";
 import { MyGlobalContext } from "../context/MyGlobalContext";
 
 const socket = io.connect("http://localhost:3001");
+
 export default function VideoCall() {
   const [me, setMe] = useState("");
   const [stream, setStream] = useState("");
@@ -15,14 +16,12 @@ export default function VideoCall() {
   const [callAccepted, setCallAccepted] = useState(false);
   const [idToCall, setIdToCall] = useState("");
   const [callEnded, setCallEnded] = useState(false);
-  const [name, setName] = useState("");
   const myVideo = useRef();
   const userVideo = useRef();
   const connectionRef = useRef();
-
-  const { userData, contactData } = useContext(MyDataContext);
-  const { roomId, _id } = useContext(MyGlobalContext)
-  
+  const { contactData } = useContext(MyDataContext);
+  const { roomId, _id, userData } = useContext(MyGlobalContext);
+  const [name, setName] = useState(userData.name || "Username");
 
   useEffect(() => {
     navigator.mediaDevices
@@ -34,6 +33,13 @@ export default function VideoCall() {
 
     socket.on("me", (id) => {
       setMe(id);
+    });
+
+    socket.emit("join_room", {
+      roomId: roomId,
+      userId: _id,
+      name: userData.name,
+      message: "Video Call",
     });
 
     socket.on("callUser", (data) => {
@@ -57,6 +63,7 @@ export default function VideoCall() {
         signalData: data,
         from: userData.name,
         name: name,
+        roomId: roomId,
       });
     });
 
@@ -84,8 +91,7 @@ export default function VideoCall() {
       socket.emit("answerCall", {
         signal: data,
         to: caller,
-        callerId: socket.id,
-        toCallId: me,
+        roomId: roomId,
       });
     });
 
@@ -117,7 +123,7 @@ export default function VideoCall() {
                 muted
                 ref={myVideo}
                 autoPlay
-                // style={{ width: "300px" }}
+                style={{ width: "400px" }}
               />
             )}
           </div>
@@ -127,21 +133,13 @@ export default function VideoCall() {
                 playsInline
                 ref={userVideo}
                 autoPlay
-                // style={{ width: "300px" }}
+                style={{ width: "400px" }}
               />
             ) : null}
           </div>
           <div className="absolute bottom-0 mb-4 w-full self-center place-self-center flex justify-center ">
             <div className="myId bg-white w-fit p-4 rounded-md">
-              {/* <input
-                id="filled-basic"
-                label="Name"
-                variant="filled"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                style={{ marginBottom: "20px" }}
-              /> */}
-              <CopyToClipboard text={me} style={{ marginBottom: "2rem" }}>
+              <CopyToClipboard text={_id} style={{ marginBottom: "2rem" }}>
                 <button variant="contained" color="primary">
                   Copy ID
                 </button>
@@ -151,7 +149,7 @@ export default function VideoCall() {
                 id="filled-basic"
                 label="ID to call"
                 variant="filled"
-                placeholder={me}
+                placeholder={_id}
                 value={idToCall}
                 // defaultValue={me}
                 onChange={(e) => setIdToCall(e.target.value)}
@@ -174,16 +172,29 @@ export default function VideoCall() {
           </div>
         </div>
 
-        <div>
-          {receivingCall && !callAccepted ? (
-            <div className="caller">
+        {receivingCall && !callAccepted ? (
+          <div className="absolute top-0 left-0 w-full z-9999 h-full flex items-center justify-center bg-black/95">
+            <div className="caller flex flex-col w-fit h-fit p-4 bg-primary shadow-lg top-0 rounded-md gap-8">
               <h1>{name} is calling...</h1>
-              <button variant="contained" color="primary" onClick={answerCall}>
-                Answer
-              </button>
+              <div className=" flex gap-2">
+                <button
+                  className="p-2 bg-white rounded-lg"
+                  onClick={answerCall}
+                >
+                  Answer
+                </button>
+                <button
+                  className="p-2 bg-white rounded-lg"
+                  onClick={() => {
+                    setReceivingCall(false);
+                  }}
+                >
+                  Reject
+                </button>
+              </div>
             </div>
-          ) : null}
-        </div>
+          </div>
+        ) : null}
       </div>
     </>
   );

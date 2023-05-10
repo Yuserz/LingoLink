@@ -31,8 +31,8 @@ export default function Home() {
   const { _id, userData } = useContext(MyGlobalContext);
 
   useEffect(() => {
-    console.log({ contactData: contactData, userData: userData });
-  }, [contactData, userData]);
+    contactData && console.log({ contactData: contactData, userData: userData });
+  }, [contactData]);
 
  
   // Cache the data with useMemo

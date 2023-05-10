@@ -2,8 +2,7 @@ import React, {
   useEffect,
   useState,
   useRef,
-  useContext,
-  createContext,
+  useContext
 } from "react";
 import moment from "moment";
 
@@ -29,7 +28,7 @@ function Chat({ socket, contactName }) {
   const sendMessage = async () => {
     if (currentMessage !== "") {
       const messageData = {
-        room: roomId,
+        roomId: roomId,
         author: contactName,
         message: currentMessage,
         time: moment().format("h:mm A"),
@@ -53,6 +52,7 @@ function Chat({ socket, contactName }) {
     };
   }, [socket]);
 
+  //auto scroll to new message
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });

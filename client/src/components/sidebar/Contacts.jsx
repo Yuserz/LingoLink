@@ -19,7 +19,7 @@ export default function Contacts({ contacts, loading }) {
         email: email,
       });
       setContactData(response.data);
-      console.log("response", response.data);
+      // console.log("response", response.data);
       if (response) {
         const { roomId, name } = response.data;
         setRoomId(roomId);
@@ -33,17 +33,13 @@ export default function Contacts({ contacts, loading }) {
   useEffect(() => {
     if (roomId) {
       setShowMessaging(true);
-    } else {
-      setShowMessaging(false);
-    }
+    } 
   }, [roomId, setShowMessaging]);
 
   useEffect(() => {
-    if (_id && email && fetchRoomId) {
+    if (_id && email) {
       fetchRoomId();
-    } else {
-      console.log("");
-    }
+    } 
   }, [email, _id, fetchRoomId]);
 
   return (

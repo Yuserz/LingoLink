@@ -8,6 +8,7 @@ const serverApp = require("./src/app");
 const app = express();
 const http = require("http");
 const server = http.createServer(app);
+//socket controller
 const io = require("./src/controllers/socketController");
 
 // Use middleware functions
