@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState, useContext } from "react";
-import { CopyToClipboard } from "react-copy-to-clipboard";
 import Peer from "simple-peer";
 import io from "socket.io-client";
 import { MyDataContext } from "../pages/Home";
@@ -8,20 +7,18 @@ import { MyGlobalContext } from "../context/MyGlobalContext";
 const socket = io.connect("http://localhost:3001");
 
 export default function VideoCall() {
-  const [me, setMe] = useState("");
+  const [name, setName] = useState("");
   const [stream, setStream] = useState("");
   const [receivingCall, setReceivingCall] = useState(false);
   const [caller, setCaller] = useState("");
   const [callerSignal, setCallerSignal] = useState();
   const [callAccepted, setCallAccepted] = useState(false);
-  const [idToCall, setIdToCall] = useState("");
   const [callEnded, setCallEnded] = useState(false);
+  const { roomId, _id, userData } = useContext(MyGlobalContext);
+  const { contactData } = useContext(MyDataContext);
   const myVideo = useRef();
   const userVideo = useRef();
   const connectionRef = useRef();
-  const { contactData } = useContext(MyDataContext);
-  const { roomId, _id, userData } = useContext(MyGlobalContext);
-  const [name, setName] = useState(userData.name || "Username");
 
   useEffect(() => {
     navigator.mediaDevices
@@ -31,10 +28,6 @@ export default function VideoCall() {
         myVideo.current.srcObject = stream;
       });
 
-    socket.on("me", (id) => {
-      setMe(id);
-    });
-
     socket.emit("join_room", {
       roomId: roomId,
       userId: _id,
@@ -43,14 +36,17 @@ export default function VideoCall() {
     });
 
     socket.on("callUser", (data) => {
+      // Check if call offer is meant for the current user
+      // if (data.userToCall !== contactData._id) {
       setReceivingCall(true);
       setCaller(data.from);
       setName(data.name);
       setCallerSignal(data.signal);
+      // }
     });
   }, []);
 
-  const callUser = (id) => {
+  const callUser = () => {
     const peer = new Peer({
       initiator: true,
       trickle: false,
@@ -59,10 +55,10 @@ export default function VideoCall() {
 
     peer.on("signal", (data) => {
       socket.emit("callUser", {
-        userToCall: id,
+        userToCall: contactData._id,
         signalData: data,
-        from: userData.name,
-        name: name,
+        from: userData._id,
+        name: userData.name,
         roomId: roomId,
       });
     });
@@ -139,21 +135,6 @@ export default function VideoCall() {
           </div>
           <div className="absolute bottom-0 mb-4 w-full self-center place-self-center flex justify-center ">
             <div className="myId bg-white w-fit p-4 rounded-md">
-              <CopyToClipboard text={_id} style={{ marginBottom: "2rem" }}>
-                <button variant="contained" color="primary">
-                  Copy ID
-                </button>
-              </CopyToClipboard>
-
-              <input
-                id="filled-basic"
-                label="ID to call"
-                variant="filled"
-                placeholder={_id}
-                value={idToCall}
-                // defaultValue={me}
-                onChange={(e) => setIdToCall(e.target.value)}
-              />
               <div className="call-button">
                 {callAccepted && !callEnded ? (
                   <button
@@ -164,7 +145,7 @@ export default function VideoCall() {
                     End Call
                   </button>
                 ) : (
-                  <button onClick={() => callUser(idToCall)}>call</button>
+                  <button onClick={callUser}>call</button>
                 )}
                 {/* {idToCall} */}
               </div>
@@ -199,3 +180,4 @@ export default function VideoCall() {
     </>
   );
 }
+

@@ -1,9 +1,4 @@
-import React, {
-  useEffect,
-  useState,
-  useRef,
-  useContext
-} from "react";
+import React, { useEffect, useState, useRef, useContext } from "react";
 import moment from "moment";
 
 //icons
@@ -120,15 +115,20 @@ function Chat({ socket, contactName }) {
               event.key === "Enter" && sendMessage();
             }}
           />
-          <button className="p-2 hover:border-2 hover:border-primary/50 border-2 border-white/0 rounded-xl focus:border-primary">
+          <button
+            onClick={() => {
+              setShowVideoCall(true);
+              setShowMessaging(false);
+            }}
+            className="p-2 hover:border-2 hover:border-primary/50 border-2 border-white/0 rounded-xl focus:border-primary"
+          >
             {" "}
             <img className="w-8 h-6" src={cameraBtn} alt="" />
           </button>
           <button
             onClick={() => {
-              console.log("clicked");
-              setShowVideoCall(true);
-              setShowMessaging(false);
+              // setShowVideoCall(true);
+              // setShowMessaging(false);
             }}
             className="p-2 hover:border-2 hover:border-primary/50 border-2 border-white/0 rounded-xl focus:border-primary"
           >

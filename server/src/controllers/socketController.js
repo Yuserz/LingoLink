@@ -24,7 +24,7 @@ function initialize(server) {
     socket.emit("me", socket.id);
 
     socket.on("callUser", (data) => {
-      io.to(data.roomId).emit("callUser", {
+      socket.to(data.roomId).emit("callUser", {
         signal: data.signalData,
         from: data.from,
         name: data.name,
@@ -34,7 +34,7 @@ function initialize(server) {
     });
 
     socket.on("answerCall", (data) => {
-      io.to(data.to).emit("callAccepted", data.signal);
+      io.to(data.roomId).emit("callAccepted", data.signal);
     });
 
     socket.on("disconnect", () => {
