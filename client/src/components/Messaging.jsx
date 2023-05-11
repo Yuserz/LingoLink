@@ -7,20 +7,25 @@ import { MyDataContext } from "../pages/Home";
 const socket = io.connect("http://localhost:3001");
 
 function Messaging() {
-  const { roomId } = useContext(MyGlobalContext);
+  const { roomId, _id, userData } = useContext(MyGlobalContext);
   const { contactName } = useContext(MyDataContext);
 
   const joinRoom = () => {
     if (!roomId) {
       console.log("Wrong room credentials");
     } else {
-      socket.emit("join_room", roomId);
+      socket.emit("join_room", {
+        roomId: roomId,
+        userId: _id,
+        name: userData.name,
+        message: "Chat",
+      });
     }
   };
 
   useEffect(() => {
     roomId && joinRoom();
-  }, [roomId]);
+  }, [roomId, userData]);
 
   return (
     <div className="chat-container my-4 flex justify-center w-full h-full overflow-clip">

@@ -1,13 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import InputField from "../components/InputField";
 import { useNavigate } from "react-router-dom";
 import { register } from "../api/api";
+import { MyGlobalContext } from "../context/MyGlobalContext";
 
 export default function Signup() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const { set_id, setUserData} = useContext(MyGlobalContext);
+
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -23,7 +26,9 @@ export default function Signup() {
 
       console.log("registration success");
 
-      const { token } = response.data;
+      const { token, userCred } = response.data;
+      set_id(userCred._id);
+      setUserData(userCred);
 
       // Store token in local storage
       sessionStorage.setItem("token", token);

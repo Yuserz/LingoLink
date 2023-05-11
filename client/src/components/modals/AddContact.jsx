@@ -15,9 +15,9 @@ export default function AddContact({ closeModal }) {
 
   const genaratedRoomId = uuidv4();
 
-  const { setShowMessaging, setContactData, contactData, userData } =
+  const { setShowMessaging, setContactData, contactData } =
     useContext(MyDataContext);
-  const { _id, roomId, setRoomId } = useContext(MyGlobalContext);
+  const { _id, roomId, setRoomId, userData } = useContext(MyGlobalContext);
 
   useEffect(() => {
     setRoomId(genaratedRoomId);
@@ -38,38 +38,46 @@ export default function AddContact({ closeModal }) {
   };
 
   //Add new contact
-  const addNewContact = async () => {
-    try {
-      const response = await addContact(
-        {
-          name: contactData.name,
-          email: contactData.email,
-          roomId: roomId,
-        },
-        _id
-      );
-      console.log("1 New contact added!", response);
 
-      //Add also this current user to contact list of the other peer
+  const addNewContact = async () => {
+    if (userData.email !== foundEmail) {
       try {
         const response = await addContact(
           {
-            name: userData.name,
-            email: userData.email,
+            name: contactData.name,
+            email: contactData.email,
             roomId: roomId,
           },
-          contactData._id
+          _id
         );
-        console.log("2 New contact added!", response);
-      } catch (error) {}
-    } catch (error) {
-      console.log("error");
+        // console.log("1 New contact added!", response);
+
+        //Add also this current user to contact list of the resent added contact
+        // console.log("userData:", userData)
+
+        if (_id !== contactData._id) {
+          const res = addContact(
+            {
+              name: userData.name,
+              email: userData.email,
+              roomId: roomId,
+            },
+            contactData._id
+          );
+        } else {
+          console.log("error: same id");
+        }
+      } catch (error) {
+        console.log("error");
+      }
+    } else {
+      console.log("cannot add self as contact");
     }
   };
 
-  useEffect(() => {
-    console.log(userData);
-  }, []);
+  // useEffect(() => {
+  //   console.log(userData);
+  // }, []);
 
   return (
     <div className="absolute w-screen h-screen bg-black/20 top-0 left-0 flex items-center justify-center">

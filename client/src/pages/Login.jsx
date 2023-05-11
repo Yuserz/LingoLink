@@ -7,7 +7,7 @@ import { MyGlobalContext } from "../context/MyGlobalContext";
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { set_id } = useContext(MyGlobalContext);
+  const { set_id, setUserData } = useContext(MyGlobalContext);
   // const [data, setData] = useState("");
 
   const navigate = useNavigate();
@@ -21,11 +21,18 @@ export default function Login() {
         email,
         password,
       });
+      // console.log({ login: response.data });
 
       console.log("login success", email);
 
-      const { token, _id } = response.data;
-      set_id(_id);
+      const { token, userCred } = response.data;
+      set_id(userCred._id);
+      setUserData({
+        _id: userCred._id,
+        contact: userCred.contacts,
+        name: userCred.name,
+        email: userCred.email,
+      });
 
       // Clear local storage for past session
       sessionStorage.clear();
