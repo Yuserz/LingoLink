@@ -7,11 +7,11 @@ import { MyGlobalContext } from "../../context/MyGlobalContext";
 import ContactList from "./Contacts";
 
 export default function Chat() {
-  const [expanded, setExpanded] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [contacts, setContacts] = useState([]);
   const [loading, setLoading] = useState(true); // introduce a loading state
   const { _id } = useContext(MyGlobalContext);
+  const [showContacts, setShowContacts] = useState(true);
 
   useEffect(() => {
     async function fetchData() {
@@ -27,20 +27,19 @@ export default function Chat() {
     fetchData();
   }, []);
 
-  
   const toggleExpanded = () => {
-    setExpanded(!expanded);
+    setShowContacts(!showContacts)
   };
 
   return (
     <div
-      className={`chat-container gap-3  bg-secondary rounded-md p-3 px-4 flex flex-col justify-between${
-        expanded ? "expanded min-h-[150px] max-h-fit" : ""
+      className={`chat-container bg-secondary rounded-md py-4 flex flex-col justify-between${
+       showContacts ? "expanded max-h-fit gap-2" : "hidden"
       }`}
     >
       <div
-        className={`flex items-center w-full justify-between h-fit  ${
-          expanded ? "pb-2 border-gray-300/80 border-b " : ""
+        className={`flex items-center w-full justify-between h-fit px-4  ${
+         showContacts ? "pb-2 border-b border-gray-700/15" : ""
         }`}
       >
         <button
@@ -48,7 +47,7 @@ export default function Chat() {
           className={`add-btn flex gap-2 items-center h-fit`}
         >
           <img
-            className={`${expanded ? "rotate-180" : ""}`}
+            className={`p-1 ${showContacts ? "rotate-180 " : ""}`}
             src={arrowDown}
             alt=""
           />
@@ -58,12 +57,18 @@ export default function Chat() {
           onClick={() => setShowModal(true)}
           className="dropDown-btn h-fit"
         >
-          <img src={add} alt="" />
+          <div className="flex justify-center p-1 rounded-md hover:scale-110">
+                <img className="w-4 h-4 ml-[.5px] " src={add} alt="" />
+              </div>
         </button>
 
         {showModal ? <AddContact closeModal={setShowModal} /> : null}
       </div>
-      <ContactList contacts={contacts} loading={loading} />
+      {showContacts ? (
+        <ContactList contacts={contacts} loading={loading} />
+      ) : (
+        ""
+      )}
     </div>
   );
 }

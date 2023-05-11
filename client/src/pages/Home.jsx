@@ -21,11 +21,10 @@ export default function Home() {
     sessionStorage.getItem("showVideoCall") === "true" ? true : false
   );
   const [contactData, setContactData] = useState(
-    sessionStorage.getItem("contactName") === "true" ? true : false
+    sessionStorage.getItem("contactData") === "true" ? true : false
   );
   const [contactName, setContactName] = useState(
-    sessionStorage.getItem("contactName") === "true" ? true : false
-  );
+    sessionStorage.getItem("contactName" || ""));
 
   const { _id, userData } = useContext(MyGlobalContext);
 
@@ -60,8 +59,9 @@ export default function Home() {
 
   useEffect(() => {
     sessionStorage.setItem("showMessaging", showMessaging);
-    sessionStorage.setItem("showVideoCall", showVideoCall);
-  }, [showMessaging, showVideoCall]);
+    sessionStorage.setItem("contactData", contactName);
+    // sessionStorage.setItem("showVideoCall", showVideoCall);
+  }, [showMessaging, contactData]);
 
   return (
     <MyDataContext.Provider value={cachedData}>

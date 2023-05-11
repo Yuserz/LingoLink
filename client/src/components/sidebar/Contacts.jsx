@@ -49,14 +49,14 @@ export default function Contacts({ contacts, loading }) {
       ) : contacts.length > 0 ? (
         contacts.map((contact, index) => (
           <button
-            className="flex gap-2 px-3 p-1 hover:shadow-sm hover:border-2 hover:border-primary/20 rounded-md "
+            className="flex items-center gap-2 p-2 px-4 hover:shadow-sm hover:border hover:border-primary/20"
             key={index}
             onClick={() => {
               setEmail(contact.email);
             }}
           >
-            <h2>{index + 1 + "."}</h2>
-            <h2>{contact.name}</h2>
+            <h2 className="border-2 w-8 h-8 rounded-full"></h2>
+            <h2 className="opacity-70">{contact.email}</h2>
             {/* <h2>{contact.email}</h2> */}
           </button>
         ))

@@ -14,7 +14,8 @@ export default function VideoCall() {
   const [callerSignal, setCallerSignal] = useState();
   const [callAccepted, setCallAccepted] = useState(false);
   const [callEnded, setCallEnded] = useState(false);
-  const { roomId, _id, userData } = useContext(MyGlobalContext);
+  const { roomId, _id, userData, video, setVideo, audio, setAudio } =
+    useContext(MyGlobalContext);
   const { contactData } = useContext(MyDataContext);
   const myVideo = useRef();
   const userVideo = useRef();
@@ -22,7 +23,7 @@ export default function VideoCall() {
 
   useEffect(() => {
     navigator.mediaDevices
-      .getUserMedia({ video: true, audio: true })
+      .getUserMedia({ video: video, audio: audio })
       .then((stream) => {
         setStream(stream);
         myVideo.current.srcObject = stream;
@@ -36,13 +37,10 @@ export default function VideoCall() {
     });
 
     socket.on("callUser", (data) => {
-      // Check if call offer is meant for the current user
-      // if (data.userToCall !== contactData._id) {
       setReceivingCall(true);
       setCaller(data.from);
       setName(data.name);
       setCallerSignal(data.signal);
-      // }
     });
   }, []);
 
@@ -129,7 +127,7 @@ export default function VideoCall() {
                 playsInline
                 ref={userVideo}
                 autoPlay
-                style={{ width: "400px" }}
+                className={`${video ? "w-[400px]" : "hidden"}`}
               />
             ) : null}
           </div>
@@ -147,7 +145,6 @@ export default function VideoCall() {
                 ) : (
                   <button onClick={callUser}>call</button>
                 )}
-                {/* {idToCall} */}
               </div>
             </div>
           </div>
@@ -180,4 +177,3 @@ export default function VideoCall() {
     </>
   );
 }
-
