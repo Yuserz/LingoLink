@@ -8,7 +8,6 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { set_id, setUserData } = useContext(MyGlobalContext);
-  // const [data, setData] = useState("");
 
   const navigate = useNavigate();
 
@@ -21,11 +20,12 @@ export default function Login() {
         email,
         password,
       });
+      
       // console.log({ login: response.data });
 
       console.log("login success", email);
 
-      const { token, userCred } = response.data;
+      const { userCred } = response.data;
       set_id(userCred._id);
       setUserData({
         _id: userCred._id,
@@ -36,8 +36,6 @@ export default function Login() {
 
       // Clear local storage for past session
       sessionStorage.clear();
-      // Store token in local storage for new session
-      sessionStorage.setItem("token", token);
 
       // Redirect user to the protected route
       navigate("Home");
