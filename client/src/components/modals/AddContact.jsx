@@ -17,7 +17,7 @@ export default function AddContact({ closeModal }) {
 
   const { setShowMessaging, setContactData, contactData } =
     useContext(MyDataContext);
-  const { _id, roomId, setRoomId, userData } = useContext(MyGlobalContext);
+  const { _id, roomId, setRoomId, name } = useContext(MyGlobalContext);
 
   useEffect(() => {
     setRoomId(genaratedRoomId);
@@ -40,7 +40,7 @@ export default function AddContact({ closeModal }) {
   //Add new contact
 
   const addNewContact = async () => {
-    if (userData.email !== foundEmail) {
+    if (name.email !== foundEmail) {
       try {
         const response = await addContact(
           {
@@ -51,10 +51,10 @@ export default function AddContact({ closeModal }) {
           _id
         );
         if (_id !== contactData._id) {
-          const res = addContact(
+          const response = addContact(
             {
-              name: userData.name,
-              email: userData.email,
+              name: name,
+              email: email,
               roomId: roomId,
             },
             contactData._id
@@ -83,7 +83,7 @@ export default function AddContact({ closeModal }) {
             className="exit-btn"
           >
             <img src={close} alt="" />
-          </button>
+          </button>logi
         </div>
         <div className="breakLine border border-gray-200"></div>
         <div

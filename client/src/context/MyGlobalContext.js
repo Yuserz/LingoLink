@@ -4,10 +4,9 @@ export const MyGlobalContext = createContext();
 
 export const MyContextProvider = ({ children }) => {
   const [_id, set_id] = useState(sessionStorage.getItem("_id") || "");
+  const [name, setName] = useState(sessionStorage.getItem("name") || "");
+  const [email, setEmail] = useState(sessionStorage.getItem("email") || "");
   const [roomId, setRoomId] = useState(sessionStorage.getItem("roomId") || "");
-  const [userData, setUserData] = useState(
-    sessionStorage.getItem("userData" || "")
-  );
   const [video, setVideo] = useState(
     sessionStorage.getItem("video") === "true" ? true : false
   );
@@ -18,20 +17,22 @@ export const MyContextProvider = ({ children }) => {
   useEffect(() => {
     sessionStorage.setItem("_id", _id);
     sessionStorage.setItem("roomId", roomId);
-    sessionStorage.setItem("userData", userData);
     sessionStorage.setItem("video", video);
     sessionStorage.setItem("audio", audio);
-    sessionStorage.setItem("roomId", roomId);
-  }, [_id, roomId, userData, video, audio]);
+    sessionStorage.setItem("name", name);
+    sessionStorage.setItem("email", email);
+  }, [_id, roomId, video, audio, name, email]);
 
   const contextValue = useMemo(
     () => ({
       _id,
       set_id,
+      name,
+      setName,
+      email,
+      setEmail,
       roomId,
       setRoomId,
-      userData,
-      setUserData,
       video,
       setVideo,
       audio,
@@ -40,10 +41,12 @@ export const MyContextProvider = ({ children }) => {
     [
       _id,
       set_id,
+      name,
+      setName,
+      email,
+      setEmail,
       roomId,
       setRoomId,
-      userData,
-      setUserData,
       video,
       setVideo,
       audio,

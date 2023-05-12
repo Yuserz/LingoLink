@@ -47,7 +47,7 @@ export default function Chat() {
           className={`add-btn flex gap-2 items-center h-fit`}
         >
           <img
-            className={`p-1 ${showContacts ? "rotate-180 " : ""}`}
+            className={`p-1 transition ease-in-out duration-300 ${showContacts ? "rotate-180 " : ""}`}
             src={arrowDown}
             alt=""
           />

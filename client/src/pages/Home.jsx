@@ -21,17 +21,17 @@ export default function Home() {
     sessionStorage.getItem("showVideoCall") === "true" ? true : false
   );
   const [contactData, setContactData] = useState(
-    sessionStorage.getItem("contactData") === "true" ? true : false
+    sessionStorage.getItem("contactData" || "")
   );
   const [contactName, setContactName] = useState(
-    sessionStorage.getItem("contactName" || ""));
-
-  const { _id, userData } = useContext(MyGlobalContext);
+    sessionStorage.getItem("contactName" || "")
+  );
+  const { _id, name } = useContext(MyGlobalContext);
 
   useEffect(() => {
     contactData &&
-      console.log({ contactData: contactData, userData: userData });
-  }, [contactData]);
+      console.log({ contactData: contactData, name: name });
+  }, [contactData, name]);
 
   // Cache the data with useMemo
   const cachedData = useMemo(
@@ -59,9 +59,10 @@ export default function Home() {
 
   useEffect(() => {
     sessionStorage.setItem("showMessaging", showMessaging);
-    sessionStorage.setItem("contactData", contactName);
+    sessionStorage.setItem("contactName", contactName);
+    sessionStorage.setItem("contactData", contactData);
     // sessionStorage.setItem("showVideoCall", showVideoCall);
-  }, [showMessaging, contactData]);
+  }, [showMessaging, contactName, contactData]);
 
   return (
     <MyDataContext.Provider value={cachedData}>

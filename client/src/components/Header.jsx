@@ -2,7 +2,7 @@ import React from "react";
 import StatusBtn from "./StatusBtn";
 import DarkModeBtn from "./DarkModeBtn";
 import Search from "./Search";
-import Logout from "./Lagout"
+import Logout from "./Logout"
 
 
 export default function Header() {
@@ -12,7 +12,7 @@ export default function Header() {
         <div className="w-1/2">
           <Search />
         </div>
-        <div className="util-bar flex gap-2">
+        <div className="util-bar flex gap-2 items-center">
           <StatusBtn />
           <DarkModeBtn />
           <Logout />

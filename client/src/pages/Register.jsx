@@ -9,7 +9,7 @@ export default function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const { set_id, setUserData} = useContext(MyGlobalContext);
+  const { set_id, setname} = useContext(MyGlobalContext);
 
   const navigate = useNavigate();
 
@@ -28,7 +28,7 @@ export default function Signup() {
 
       const { token, userCred } = response.data;
       set_id(userCred._id);
-      setUserData(userCred);
+      setname(userCred);
 
       // Store token in local storage
       sessionStorage.setItem("token", token);

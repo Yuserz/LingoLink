@@ -4,28 +4,13 @@ const router = express.Router();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
-
-// middleware for verifying token
-const verifyToken = (req, res, next) => {
-  const authHeader = req.headers.authorization;
-  if (authHeader) {
-    const token = authHeader.split(" ")[1];
-    jwt.verify(token, process.env.JWT_SECRET || "12345", (err, user) => {
-      if (err) {
-        return res.status(403).send("Invalid token");
-      }
-      req.user = user;
-      next();
-    });
-  } else {
-    res.status(401).send("Token not provided");
-  }
-};
-
-// Define your routes here
-//Register endpoint
 const mongoose = require("mongoose");
 
+router.get("/protected", (req, res) => {
+  res.send("This is a protected endpoint");
+});
+
+//Register endpoint
 router.post("/register", async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -60,7 +45,6 @@ router.post("/register", async (req, res) => {
 
     const userCred = user;
     res.send({ success: "User logged in successfully", token, userCred });
-
   } catch (error) {
     console.error(error);
     res.status(500).send("Error creating user");
@@ -96,10 +80,23 @@ router.post("/login", async (req, res, next) => {
       }
     );
 
+    // set token in an http-only cookie
+    res.cookie("token", token, { httpOnly: true });
     const userCred = user;
     res.send({ success: "User logged in successfully", token, userCred });
   } catch (error) {
     next(error);
+  }
+});
+
+// logout endpoint
+router.post("/logout", (req, res) => {
+  // Clear the token cookie
+  try {
+    res.clearCookie("token");
+    res.send({ success: "User logged out successfully" });
+  } catch (error) {
+    res.send(error);
   }
 });
 
@@ -130,7 +127,7 @@ router.post("/contacts/:_id", async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-
+   
     // Check if contact already exists
     const existingContact = user.contacts.find(
       (contact) => contact.email === email
@@ -172,41 +169,6 @@ router.get("/contacts/:_id", async (req, res) => {
   }
 });
 
-// //SSE endpoint
-// router.get("/contacts/sse/:_id", async (req, res) => {
-//   const { _id } = req.params;
-//   const user = await User.findById(_id);
-//   if (!user) {
-//     return res.status(404).json({ message: "User not found" });
-//   }
-//   res.set({
-//     'Cache-Control': 'no-cache',
-//     'Content-Type': 'text/event-stream',
-//     'Connection': 'keep-alive'
-//   });
-//   // listen for new contact events and send the updated contact list to the client-side
-//   user.on('newContact', function(contact) {
-//     res.write('event: newContact\n');
-//     res.write(`data: ${JSON.stringify(contact)}\n\n`);
-//   });
-// });
-
-//get current user data based on ID
-router.get("/getUserData", async (req, res) => {
-  try {
-    const { _id } = req.params;
-    const user = await User.findOne(_id, {
-      _id: 1,
-      name: 1,
-      contacts: 1,
-      email: 1,
-    });
-    res.json(user);
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Error getting user data");
-  }
-});
 
 //get roomId
 router.post("/room", async (req, res) => {

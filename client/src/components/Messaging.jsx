@@ -7,7 +7,7 @@ import { MyDataContext } from "../pages/Home";
 const socket = io.connect("http://localhost:3001");
 
 function Messaging() {
-  const { roomId, _id, userData } = useContext(MyGlobalContext);
+  const { roomId, _id, name } = useContext(MyGlobalContext);
   const { contactName } = useContext(MyDataContext);
 
   const joinRoom = () => {
@@ -17,7 +17,7 @@ function Messaging() {
       socket.emit("join_room", {
         roomId: roomId,
         userId: _id,
-        name: userData.name,
+        name: name,
         message: "Chat",
       });
     }
@@ -25,7 +25,7 @@ function Messaging() {
 
   useEffect(() => {
     roomId && joinRoom();
-  }, [roomId, userData]);
+  }, [roomId, name]);
 
   return (
     <div className="chat-container my-4 flex justify-center w-full h-full overflow-clip">

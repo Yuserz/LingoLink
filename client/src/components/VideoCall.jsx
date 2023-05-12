@@ -7,14 +7,13 @@ import { MyGlobalContext } from "../context/MyGlobalContext";
 const socket = io.connect("http://localhost:3001");
 
 export default function VideoCall() {
-  const [name, setName] = useState("");
   const [stream, setStream] = useState("");
   const [receivingCall, setReceivingCall] = useState(false);
   const [caller, setCaller] = useState("");
   const [callerSignal, setCallerSignal] = useState();
   const [callAccepted, setCallAccepted] = useState(false);
   const [callEnded, setCallEnded] = useState(false);
-  const { roomId, _id, userData, video, setVideo, audio, setAudio } =
+  const { roomId, _id, name, setName, video, setVideo, audio, setAudio } =
     useContext(MyGlobalContext);
   const { contactData } = useContext(MyDataContext);
   const myVideo = useRef();
@@ -32,7 +31,7 @@ export default function VideoCall() {
     socket.emit("join_room", {
       roomId: roomId,
       userId: _id,
-      name: userData.name,
+      name: name,
       message: "Video Call",
     });
 
@@ -55,8 +54,8 @@ export default function VideoCall() {
       socket.emit("callUser", {
         userToCall: contactData._id,
         signalData: data,
-        from: userData._id,
-        name: userData.name,
+        from: _id,
+        name: name,
         roomId: roomId,
       });
     });

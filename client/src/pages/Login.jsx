@@ -5,13 +5,11 @@ import { login } from "../api/api";
 import { MyGlobalContext } from "../context/MyGlobalContext";
 
 export default function Login() {
-  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { set_id, setUserData } = useContext(MyGlobalContext);
+  const { set_id, setName, email, setEmail } = useContext(MyGlobalContext);
 
   const navigate = useNavigate();
 
-  // Should use POST method for secure authentication and authorization
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -20,24 +18,14 @@ export default function Login() {
         email,
         password,
       });
-      
-      // console.log({ login: response.data });
 
       console.log("login success", email);
-
       const { userCred } = response.data;
       set_id(userCred._id);
-      setUserData({
-        _id: userCred._id,
-        contact: userCred.contacts,
-        name: userCred.name,
-        email: userCred.email,
-      });
+      setName(userCred.name);
+      setEmail(userCred.email);
 
-      // Clear local storage for past session
-      sessionStorage.clear();
-
-      // Redirect user to the protected route
+      // Redirect user to Home
       navigate("Home");
     } catch (err) {
       console.log("Invalid email or password");
