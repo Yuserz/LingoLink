@@ -20,6 +20,13 @@ function Chat({ socket, contactName }) {
   const { roomId, video, setVideo, audio, setAudio } =
     useContext(MyGlobalContext);
 
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    inputRef.current.style.height = "auto";
+    inputRef.current.style.height = `${inputRef.current.scrollHeight}px`;
+  }, [currentMessage]);
+
   const sendMessage = async () => {
     if (currentMessage !== "") {
       const messageData = {
@@ -56,16 +63,22 @@ function Chat({ socket, contactName }) {
 
   return (
     <>
-      <div className="chat-window w-3/4 h-full flex justify-between flex-col p-2 gap-2">
-        <div className="contact-profile  pt-2 w-full flex justify-center h-full p-4 items-center">
-          <div className="flex flex-col justify-center w-fit">
-            {/* <img className="profile-image w-full h-full" src="" alt="" /> */}
-            <h4 className="text-center">{contactName}</h4>
+      <div className="chat-window w-3/4 h-full grid grid-cols-1 grid-rows-4  grid-flow-rows justify-between p-2 gap-2">
+        <div className="contact-profile row-span-full my-4 w-full flex justify-center h-full p-4 items-center">
+          <div className="flex flex-col justify-center w-fit ">
+            <img
+              className="profile-image w-32 h-32 rounded-full border-2 border-gray-300 shadow-sm overflow-hidden bg-primary"
+              src=""
+              alt=""
+            />
+            <h4 className="text-center text-black/50 capitalize">
+              {contactName}
+            </h4>
           </div>
         </div>
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col place-self-end w-full gap-2 row-span-3">
           <div className="chat-body h-full overflow-auto">
-            <div className="message-box flex flex-col gap-2 h-full max-h-[400px] overflow-y-auto">
+            <div className="message-box flex flex-col gap-2 h-full max-h-[380px] overflow-y-auto">
               {messageList.map((messageContent, index) => {
                 const time = moment(messageContent.time, "h:mm A");
                 const timeDiff = moment().diff(time, "minutes");
@@ -82,9 +95,9 @@ function Chat({ socket, contactName }) {
                   >
                     <div className="message-content">
                       <p
-                        className={`w-full rounded-2xl p-4 ${
+                        className={`w-full rounded-2xl p-4 overflow-hidden ${
                           contactName === messageContent.author
-                            ? "bg-primary text-white"
+                            ? "bg-primary dark:bg-gray-500/20 text-white"
                             : "bg-white self-end"
                         }`}
                       >
@@ -103,20 +116,25 @@ function Chat({ socket, contactName }) {
             </div>
           </div>
         </div>
-        <div className="chat-footer flex gap-4">
-          <div className="p-3 px-4 w-full h-fit flex bg-white rounded-2xl gap-1">
-            <input
-              className="p-1 w-full outline-none"
-              type="text"
-              value={currentMessage}
-              placeholder="Type a message..."
-              onChange={(event) => {
-                setCurrentMessage(event.target.value);
-              }}
-              onKeyDown={(event) => {
-                event.key === "Enter" && sendMessage();
-              }}
-            />
+        <div className="chat-footer flex gap-4 items-center">
+          <div className="p-4 px-3 w-full h-fit flex bg-white dark:text-black dark:border-gray-700  dark:bg-gray-500/50 rounded-2xl gap-1">
+            <div className="flex overflow-y-auto w-full max-h-[100px] ">
+              <textarea
+                ref={inputRef}
+                className="p-2 mr-6 py-1 text-start break-words w-full h-fit resize-none outline-none bg-white/0 dark:text-secondary"
+                type="text"
+                value={currentMessage}
+                placeholder="Type a message..."
+                onChange={(event) => {
+                  setCurrentMessage(event.target.value);
+                }}
+                onKeyDown={(event) => {
+                  event.key === "Enter" && sendMessage();
+                }}
+                rows={1}
+                style={{ overflowY: "hidden" }}
+              />
+            </div>
             <button
               onClick={() => {
                 setShowVideoCall(true);

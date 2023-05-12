@@ -29,8 +29,7 @@ export default function Home() {
   const { _id, name } = useContext(MyGlobalContext);
 
   useEffect(() => {
-    contactData &&
-      console.log({ contactData: contactData, name: name });
+    contactData && console.log({ contactData: contactData, name: name });
   }, [contactData, name]);
 
   // Cache the data with useMemo
@@ -61,8 +60,8 @@ export default function Home() {
     sessionStorage.setItem("showMessaging", showMessaging);
     sessionStorage.setItem("contactName", contactName);
     sessionStorage.setItem("contactData", contactData);
-    // sessionStorage.setItem("showVideoCall", showVideoCall);
-  }, [showMessaging, contactName, contactData]);
+    sessionStorage.setItem("showVideoCall", showVideoCall);
+  }, [showMessaging, contactName, contactData, showVideoCall]);
 
   return (
     <MyDataContext.Provider value={cachedData}>

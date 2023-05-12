@@ -33,7 +33,7 @@ export default function Chat() {
 
   return (
     <div
-      className={`chat-container bg-secondary rounded-md py-4 flex flex-col justify-between${
+      className={`chat-container dark:text-black dark:border-gray-700  dark:bg-gray-500/50 bg-secondary rounded-md py-4 flex flex-col justify-between${
        showContacts ? "expanded max-h-fit gap-2" : "hidden"
       }`}
     >

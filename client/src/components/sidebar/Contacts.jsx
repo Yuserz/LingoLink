@@ -56,7 +56,7 @@ export default function Contacts({ contacts, loading }) {
             }}
           >
             <h2 className="border-2 w-8 h-8 rounded-full"></h2>
-            <h2 className="opacity-70">{contact.email}</h2>
+            <h2 className="opacity-70 dark:text-white">{contact.email}</h2>
             {/* <h2>{contact.email}</h2> */}
           </button>
         ))
