@@ -82,8 +82,7 @@ function Chat({ socket, contactName }) {
               {messageList.map((messageContent, index) => {
                 const time = moment(messageContent.time, "h:mm A");
                 const timeDiff = moment().diff(time, "minutes");
-                const timeDisplay =
-                  timeDiff < 1 ? "now" : time.format("h:mm A");
+                const timeDisplay = timeDiff < 1 ? "" : time.format("h:mm A");
                 return (
                   <div
                     key={index}
@@ -117,11 +116,11 @@ function Chat({ socket, contactName }) {
           </div>
         </div>
         <div className="chat-footer flex gap-4 items-center">
-          <div className="p-4 px-3 w-full h-fit flex bg-white dark:text-black dark:border-gray-700  dark:bg-gray-500/50 rounded-2xl gap-1">
-            <div className="flex overflow-y-auto w-full max-h-[100px] ">
+          <div className="chat-input-container p-4 px-3 w-full h-fit grid grid-flow-row-dense grid-cols-5  bg-white dark:text-black dark:border-gray-700  dark:bg-gray-500/50 rounded-2xl gap-1">
+            <div className="flex col-span-4">
               <textarea
                 ref={inputRef}
-                className="p-2 mr-6 py-1 text-start break-words w-full h-fit resize-none outline-none bg-white/0 dark:text-secondary"
+                className="p-2 inline-block break-words mr-6 py-1 h-fit w-full resize-none outline-none bg-white/0 dark:text-secondary"
                 type="text"
                 value={currentMessage}
                 placeholder="Type a message..."
@@ -129,35 +128,41 @@ function Chat({ socket, contactName }) {
                   setCurrentMessage(event.target.value);
                 }}
                 onKeyDown={(event) => {
-                  event.key === "Enter" && sendMessage();
+                  if (event.key === "Enter") {
+                    // Send the message
+                    sendMessage();
+                    // Prevent the default behavior of adding a new line
+                    event.preventDefault();
+                  }
                 }}
-                rows={1}
-                style={{ overflowY: "hidden" }}
               />
             </div>
-            <button
-              onClick={() => {
-                setShowVideoCall(true);
-                setShowMessaging(false);
-                setVideo(true);
-              }}
-              className="p-2 hover:border-2 hover:border-primary/50 border-2 border-white/0 rounded-xl focus:border-primary"
-            >
-              {" "}
-              <img className="w-8 h-6" src={cameraBtn} alt="" />
-            </button>
-            <button
-              onClick={() => {
-                setShowVideoCall(true);
-                setShowMessaging(false);
-                setVideo(false);
-              }}
-              className="p-2 hover:border-2 hover:border-primary/50 border-2 border-white/0 rounded-xl focus:border-primary"
-            >
-              {" "}
-              <img className="w-8 h-6" src={callBtn} alt="" />
-            </button>
+            <div className="flex gap-2 col-span-1 justify-end">
+              <button
+                onClick={() => {
+                  setShowVideoCall(true);
+                  setShowMessaging(false);
+                  setVideo(true);
+                }}
+                className="p-2  hover:border-2 hover:border-primary/50 border-2 border-white/0 rounded-xl focus:border-primary"
+              >
+                {" "}
+                <img className="w-8 h-6" src={cameraBtn} alt="" />
+              </button>
+              <button
+                onClick={() => {
+                  setShowVideoCall(true);
+                  setShowMessaging(false);
+                  setVideo(false);
+                }}
+                className="p-2  hover:border-2 hover:border-primary/50 border-2 border-white/0 rounded-xl focus:border-primary"
+              >
+                {" "}
+                <img className="w-8 h-6" src={callBtn} alt="" />
+              </button>
+            </div>
           </div>
+
           <button onClick={sendMessage}>
             <img src={sendBtn} alt="" />
           </button>
