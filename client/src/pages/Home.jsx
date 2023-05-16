@@ -10,6 +10,9 @@ import Messaging from "../components/Messaging";
 import VideoCall from "../components/VideoCall";
 import { MyGlobalContext } from "../context/MyGlobalContext";
 
+//icon
+import msg from "../assets/icons/msg.svg";
+
 //Context API for state management
 export const MyDataContext = createContext();
 
@@ -63,13 +66,20 @@ export default function Home() {
     sessionStorage.setItem("showVideoCall", showVideoCall);
   }, [showMessaging, contactName, contactData, showVideoCall]);
 
-
   return (
     <MyDataContext.Provider value={cachedData}>
       <MainLayout>
         {showMessaging ? <Messaging userId={_id} /> : ""}
         {showVideoCall ? <VideoCall /> : ""}
-        {!showMessaging && !showVideoCall ? <div>Hello</div> : ""}
+        {!showMessaging && !showVideoCall ? (
+          <div className="start-messaging flex justify-center items-center h-full w-full">
+            <main className="flex flex-col">
+              <img className="w-[100px] h-auto]" src={msg} alt="" /> <h2 className="text-center text-black opacity-30">Start a chat</h2>
+            </main>
+          </div>
+        ) : (
+          ""
+        )}
       </MainLayout>
     </MyDataContext.Provider>
   );
