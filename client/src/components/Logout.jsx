@@ -1,11 +1,12 @@
 import React, { useState, useContext } from "react";
 import arrowDown from "../assets/icons/arrowDown.svg";
+import arrowDownWhite from "../assets/icons/arrowDownWhite.svg";
 import LogoutModal from "./modals/LogoutModal";
 import { MyGlobalContext } from "../context/MyGlobalContext";
 
 export default function Logout() {
   const [showModal, setShowModal] = useState(false);
-  const { name } = useContext(MyGlobalContext);
+  const { name, colorTheme } = useContext(MyGlobalContext);
 
   const handleModal = () => {
     setShowModal(!showModal);
@@ -24,7 +25,7 @@ export default function Logout() {
           src={arrowDown}
           alt=""
         />
-        <h1 className="flex capitalize">{name}</h1>
+        <h1 className="flex capitalize dark:text-white dark:opacity-95">{name}</h1>
       </button>
       {showModal ? <LogoutModal /> : ""}
     </div>

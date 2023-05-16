@@ -1,15 +1,19 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../../api/api";
+import { MyDataContext } from "../../pages/Home";
 
 export default function LogoutModal() {
   const navigate = useNavigate();
+  const { setShowMessaging } = useContext(MyDataContext);
 
   const handleLogout = async () => {
     try {
       const response = await logout();
 
       if (response) {
+        //fix state bug issue
+        setShowMessaging(false);
         // Clear session storage
         sessionStorage.clear();
         navigate("/");

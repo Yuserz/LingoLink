@@ -9,37 +9,37 @@ import ContactList from "./Contacts";
 export default function Chat() {
   const [showModal, setShowModal] = useState(false);
   const [contacts, setContacts] = useState([]);
-  const [loading, setLoading] = useState(true); // introduce a loading state
+  const [loading, setLoading] = useState(true);
   const { _id } = useContext(MyGlobalContext);
   const [showContacts, setShowContacts] = useState(true);
 
   useEffect(() => {
     async function fetchData() {
-      setLoading(true); // set loading to true before making the API call
+      setLoading(true);
       const response = await getContact({}, _id);
       if (response.status === 200) {
         setContacts(response.data.contacts);
       } else {
         setContacts([]);
       }
-      setLoading(false); // set loading to false after the response is received
+      setLoading(false);
     }
     fetchData();
   }, []);
 
   const toggleExpanded = () => {
-    setShowContacts(!showContacts)
+    setShowContacts(!showContacts);
   };
 
   return (
     <div
       className={`chat-container dark:text-black dark:border-gray-700  dark:bg-gray-500/50 bg-secondary rounded-md py-4 flex flex-col justify-between${
-       showContacts ? "expanded max-h-fit gap-2" : "hidden"
+        showContacts ? "expanded max-h-fit gap-2" : "hidden"
       }`}
     >
       <div
         className={`flex items-center w-full justify-between h-fit px-4  ${
-         showContacts ? "pb-2 border-b border-gray-700/15" : ""
+          showContacts ? "pb-2 border-b border-gray-700/15" : ""
         }`}
       >
         <button
@@ -47,7 +47,10 @@ export default function Chat() {
           className={`add-btn flex gap-2 items-center h-fit`}
         >
           <img
-            className={`p-1 transition ease-in-out duration-300 ${showContacts ? "rotate-180 " : ""}`}
+            style={{ filter: "invert( 300%)" }}
+            className={`p-1 transition ease-in-out duration-300 ${
+              showContacts ? "rotate-180 " : ""
+            }`}
             src={arrowDown}
             alt=""
           />
@@ -58,8 +61,8 @@ export default function Chat() {
           className="dropDown-btn h-fit"
         >
           <div className="flex justify-center p-1 rounded-md hover:scale-110">
-                <img className="w-4 h-4 ml-[.5px] " src={add} alt="" />
-              </div>
+            <img className="w-4 h-4 ml-[.5px] " src={add} alt="" />
+          </div>
         </button>
 
         {showModal ? <AddContact closeModal={setShowModal} /> : null}

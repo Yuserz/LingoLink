@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef, useContext } from "react";
 import moment from "moment";
-import VideoCall from "./VideoCall";
+
 //icons
 import sendBtn from "../assets/icons/send.svg";
 import callBtn from "../assets/icons/call.svg";
@@ -8,6 +8,7 @@ import cameraBtn from "../assets/icons/cam.svg";
 //context api
 import { MyDataContext } from "../pages/Home";
 import { MyGlobalContext } from "../context/MyGlobalContext";
+
 
 function Chat({ socket, contactName }) {
   const [currentMessage, setCurrentMessage] = useState("");

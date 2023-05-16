@@ -14,6 +14,10 @@ export const MyContextProvider = ({ children }) => {
     sessionStorage.getItem("Audio") === "true" ? false : true
   );
 
+  //Theme
+  const [theme, setTheme] = useState("theme") === "dark" ? "light" : "dark";
+
+
   useEffect(() => {
     sessionStorage.setItem("_id", _id);
     sessionStorage.setItem("roomId", roomId);
@@ -21,7 +25,8 @@ export const MyContextProvider = ({ children }) => {
     sessionStorage.setItem("audio", audio);
     sessionStorage.setItem("name", name);
     sessionStorage.setItem("email", email);
-  }, [_id, roomId, video, audio, name, email]);
+    localStorage.setItem("theme", theme);
+  }, [_id, roomId, video, audio, name, email, theme]);
 
   const contextValue = useMemo(
     () => ({
@@ -37,6 +42,8 @@ export const MyContextProvider = ({ children }) => {
       setVideo,
       audio,
       setAudio,
+      theme,
+      setTheme
     }),
     [
       _id,
@@ -51,6 +58,8 @@ export const MyContextProvider = ({ children }) => {
       setVideo,
       audio,
       setAudio,
+      theme,
+      setTheme
     ]
   );
 

@@ -63,11 +63,13 @@ export default function Home() {
     sessionStorage.setItem("showVideoCall", showVideoCall);
   }, [showMessaging, contactName, contactData, showVideoCall]);
 
+
   return (
     <MyDataContext.Provider value={cachedData}>
       <MainLayout>
         {showMessaging ? <Messaging userId={_id} /> : ""}
         {showVideoCall ? <VideoCall /> : ""}
+        {!showMessaging && !showVideoCall ? <div>Hello</div> : ""}
       </MainLayout>
     </MyDataContext.Provider>
   );

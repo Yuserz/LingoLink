@@ -13,7 +13,7 @@ export default function Header() {
           <Search />
         </div>
         <div className="util-bar flex gap-2 items-center">
-          <StatusBtn />
+          {/* <StatusBtn /> */}
           <DarkModeBtn />
           <Logout />
         </div>
