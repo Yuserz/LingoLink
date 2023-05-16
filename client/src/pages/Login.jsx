@@ -5,8 +5,9 @@ import { login } from "../api/api";
 import { MyGlobalContext } from "../context/MyGlobalContext";
 
 export default function Login() {
+  const [email, setEmail] = useState();
   const [password, setPassword] = useState("");
-  const { set_id, setName, email, setEmail } = useContext(MyGlobalContext);
+  const { set_id, setName } = useContext(MyGlobalContext);
 
   const navigate = useNavigate();
 
@@ -19,14 +20,16 @@ export default function Login() {
         password,
       });
 
-      console.log("login success", email);
-      const { userCred } = response.data;
-      set_id(userCred._id);
-      setName(userCred.name);
-      setEmail(userCred.email);
+      if (response) {
+        console.log("login success", email);
+        const { userCred } = response.data;
+        set_id(userCred._id);
+        setName(userCred.name);
+        setEmail(userCred.email);
 
-      // Redirect user to Home
-      navigate("Home");
+        // Redirect user to Home
+        navigate("Home");
+      }
     } catch (err) {
       console.log("Invalid email or password");
     }
