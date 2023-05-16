@@ -82,7 +82,7 @@ export default function AddContact({ closeModal }) {
   };
 
   return (
-    <div className="absolute w-screen h-screen bg-black/70 top-0 left-0 flex items-center justify-center">
+    <div className="absolute z-50 w-screen h-screen bg-black/70 top-0 left-0 flex items-center justify-center">
       <div className="add-contact-modal flex flex-col w-[500px] min-h-[200px] border-2 border-gray-500 bg-secondary dark:bg-gray-700 rounded-xl overflow-hidden shadow-lg p-4 gap-2">
         <div className="flex justify-end px-1 py-2 text-lg">
           <button
