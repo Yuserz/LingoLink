@@ -69,12 +69,19 @@ export default function Home() {
   return (
     <MyDataContext.Provider value={cachedData}>
       <MainLayout>
-        {showMessaging ? <Messaging userId={_id} /> : ""}
+        {showMessaging && contactData !== null ? (
+          <Messaging userId={_id} />
+        ) : (
+          ""
+        )}
         {showVideoCall ? <VideoCall /> : ""}
-        {!showMessaging && !showVideoCall ? (
+        {contactData === null ? (
           <div className="start-messaging flex justify-center items-center h-full w-full">
             <main className="flex flex-col">
-              <img className="w-[100px] h-auto]" src={msg} alt="" /> <h2 className="text-center text-black opacity-30">Start a chat</h2>
+              <img className="w-[100px] h-auto]" src={msg} alt="" />{" "}
+              <h2 className="text-center text-black opacity-30">
+                Start a chat
+              </h2>
             </main>
           </div>
         ) : (
