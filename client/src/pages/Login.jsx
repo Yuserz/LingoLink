@@ -1,5 +1,6 @@
 import React, { useState, useContext } from "react";
 import InputField from "../components/InputField";
+import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import { login } from "../api/api";
 import { MyGlobalContext } from "../context/MyGlobalContext";
@@ -30,8 +31,15 @@ export default function Login() {
         // Redirect user to Home
         navigate("Home");
       }
-    } catch (err) {
-      console.log("Invalid email or password");
+    } catch (error) {
+      if (error.response.status === 400) {
+        Swal.fire({
+          icon: "error",
+          title: "Invalid email or password!",
+        });
+      } else {
+        console.log("Error creating user");
+      }
     }
   };
 
