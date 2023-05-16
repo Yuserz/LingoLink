@@ -1,6 +1,5 @@
 import React from "react";
 import Chat from "./Chat";
-import Group from "./Group";
 import logo from "../../assets/logo.svg";
 import Footer from "./Footer";
 

@@ -9,7 +9,7 @@ export default function Contacts({ contacts, loading }) {
   );
   // const [email, setEmail] = useState();
   const { _id, roomId, setRoomId } = useContext(MyGlobalContext);
-  const { setShowMessaging, setContactName, setContactData } =
+  const { setShowMessaging, setShowVideoCall, setContactName, setContactData } =
     useContext(MyDataContext);
 
   const fetchRoomId = useCallback(async () => {
@@ -33,8 +33,9 @@ export default function Contacts({ contacts, loading }) {
   useEffect(() => {
     if (roomId) {
       setShowMessaging(true);
+      setShowVideoCall(false);
     } 
-  }, [roomId, setShowMessaging]);
+  }, [roomId, setShowMessaging, setShowVideoCall]);
 
   useEffect(() => {
     if (_id && email) {
