@@ -1,5 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
 import arrowDown from "../../assets/icons/arrowDown.svg";
+import arrowDownWhite from "../../assets/icons/arrowDownWhite.svg";
 import add from "../../assets/icons/add.svg";
 import AddContact from "../modals/AddContact";
 import { getContact } from "../../api/api";
@@ -10,7 +11,7 @@ export default function Chat() {
   const [showModal, setShowModal] = useState(false);
   const [contacts, setContacts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { _id } = useContext(MyGlobalContext);
+  const { _id, theme } = useContext(MyGlobalContext);
   const [showContacts, setShowContacts] = useState(true);
 
   useEffect(() => {
@@ -44,17 +45,16 @@ export default function Chat() {
       >
         <button
           onClick={toggleExpanded}
-          className={`add-btn flex gap-2 items-center h-fit`}
+          className={`add-btn flex items-center h-fit`}
         >
           <img
-            style={{ filter: "invert( 300%)" }}
-            className={`p-1 transition ease-in-out duration-300 ${
+            className={`p-2 transition ease-in-out duration-300 ${
               showContacts ? "rotate-180 " : ""
             }`}
-            src={arrowDown}
+            src={theme === "dark" ? arrowDownWhite : arrowDown}
             alt=""
           />
-          <h2>Chat</h2>
+          <h2 className="dark:text-white">Chat</h2>
         </button>
         <button
           onClick={() => setShowModal(true)}

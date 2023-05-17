@@ -72,7 +72,7 @@ function Chat({ socket, contactName }) {
               src=""
               alt=""
             />
-            <h4 className="text-center text-black/50 capitalize">
+            <h4 className="text-center text-black/50 capitalize dark:text-white">
               {contactName}
             </h4>
           </div>

@@ -35,10 +35,13 @@ export default function Login() {
       if (error.response.status === 400) {
         Swal.fire({
           icon: "error",
-          title: "Invalid email or password!",
+          title: "Invalid email or password",
         });
       } else {
-        console.log("Error creating user");
+        Swal.fire({
+          icon: "error",
+          title: "Invalid email or password",
+        });
       }
     }
   };

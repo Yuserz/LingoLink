@@ -18,7 +18,7 @@ router.post("/register", async (req, res) => {
     // check if email is in valid format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      return res.status(400).send("Invalid email address");
+      return res.status(400).send({ error: "invalid email!" });
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -44,7 +44,11 @@ router.post("/register", async (req, res) => {
     );
 
     const userCred = user;
-    res.send({ success: "User logged in successfully", token, userCred });
+    res.status(201).send({
+      success: "User created and logged in successfully",
+      token,
+      userCred,
+    });
   } catch (error) {
     console.error(error);
     res.status(500).send("Error creating user");
@@ -83,7 +87,7 @@ router.post("/login", async (req, res, next) => {
     // set token in an http-only cookie
     res.cookie("token", token, { httpOnly: true });
     const userCred = user;
-    res.send({ success: "User logged in successfully", token, userCred });
+    res.send({ success: "User logged in successfully", userCred });
   } catch (error) {
     next(error);
   }
@@ -124,10 +128,15 @@ router.post("/contacts/:_id", async (req, res) => {
 
   try {
     const user = await User.findById(_id);
+    // Prevent adding self as a contact
+    if (user.email === email) {
+      return res.status(400).json({ message: "Cannot add self as a contact" });
+    }
+    //user not found
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-   
+
     // Check if contact already exists
     const existingContact = user.contacts.find(
       (contact) => contact.email === email
@@ -168,7 +177,6 @@ router.get("/contacts/:_id", async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
-
 
 //get roomId
 router.post("/room", async (req, res) => {

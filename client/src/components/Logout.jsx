@@ -6,7 +6,7 @@ import { MyGlobalContext } from "../context/MyGlobalContext";
 
 export default function Logout() {
   const [showModal, setShowModal] = useState(false);
-  const { name, colorTheme } = useContext(MyGlobalContext);
+  const { name, theme } = useContext(MyGlobalContext);
 
   const handleModal = () => {
     setShowModal(!showModal);
@@ -22,10 +22,12 @@ export default function Logout() {
           className={`p-2 transition ease-in-out duration-300 ${
             showModal ? "rotate-180 " : ""
           }`}
-          src={arrowDown}
+          src={theme === "dark" ? arrowDownWhite : arrowDown }
           alt=""
         />
-        <h1 className="flex capitalize dark:text-white dark:opacity-95">{name}</h1>
+        <h1 className="flex capitalize dark:text-white dark:opacity-95">
+          {name}
+        </h1>
       </button>
       {showModal ? <LogoutModal /> : ""}
     </div>

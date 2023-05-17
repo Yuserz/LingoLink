@@ -15,7 +15,7 @@ export const MyContextProvider = ({ children }) => {
   );
 
   //Theme
-  const [theme, setTheme] = useState("theme") === "dark" ? "light" : "dark";
+  const [theme, setTheme] = useState(localStorage.theme);
 
 
   useEffect(() => {

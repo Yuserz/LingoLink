@@ -31,9 +31,9 @@ export default function Home() {
   );
   const { _id, name } = useContext(MyGlobalContext);
 
-  useEffect(() => {
-    contactData && console.log({ contactData: contactData, name: name });
-  }, [contactData, name]);
+  // useEffect(() => {
+  //   contactData && console.log({ contactData: contactData, name: name });
+  // }, [contactData, name]);
 
   // Cache the data with useMemo
   const cachedData = useMemo(
@@ -79,7 +79,7 @@ export default function Home() {
           <div className="start-messaging flex justify-center items-center h-full w-full">
             <main className="flex flex-col">
               <img className="w-[100px] h-auto]" src={msg} alt="" />{" "}
-              <h2 className="text-center text-black opacity-30">
+              <h2 className="text-center text-black opacity-30 dark:text-white">
                 Start a chat
               </h2>
             </main>
