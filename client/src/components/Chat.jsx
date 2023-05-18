@@ -9,7 +9,6 @@ import cameraBtn from "../assets/icons/cam.svg";
 import { MyDataContext } from "../pages/Home";
 import { MyGlobalContext } from "../context/MyGlobalContext";
 
-
 function Chat({ socket, contactName }) {
   const [currentMessage, setCurrentMessage] = useState("");
   const [messageList, setMessageList] = useState(() => {
@@ -53,7 +52,9 @@ function Chat({ socket, contactName }) {
     return () => {
       socket.off("receive_message", receiveMessageHandler);
     };
+    
   }, [socket]);
+
 
   //auto scroll to new message
   useEffect(() => {
@@ -139,24 +140,26 @@ function Chat({ socket, contactName }) {
               />
             </div>
             <div className="flex gap-2 col-span-1 justify-end">
+              {/* //video chat */}
               <button
                 onClick={() => {
                   setShowVideoCall(true);
                   setShowMessaging(false);
                   setVideo(true);
                 }}
-                className="p-2  hover:border-2 hover:border-primary/50 border-2 border-white/0 rounded-xl focus:border-primary"
+                className="p-2 min-w-fit  hover:border-2 hover:border-primary/50 border-2 border-white/0 rounded-xl focus:border-primary"
               >
                 {" "}
                 <img className="w-8 h-6" src={cameraBtn} alt="" />
               </button>
+              {/* //Voice chat */}
               <button
                 onClick={() => {
                   setShowVideoCall(true);
                   setShowMessaging(false);
                   setVideo(false);
                 }}
-                className="p-2  hover:border-2 hover:border-primary/50 border-2 border-white/0 rounded-xl focus:border-primary"
+                className="p-2 min-w-fit  hover:border-2 hover:border-primary/50 border-2 border-white/0 rounded-xl focus:border-primary"
               >
                 {" "}
                 <img className="w-8 h-6" src={callBtn} alt="" />

@@ -2,6 +2,7 @@ import React from "react";
 import search from "../assets/icons/search.svg";
 
 export default function Search({ findContact, setSearchEmail, searchEmail }) {
+  
   return (
     <div className="search-bar w-full h-full flex dark:shadow-inner items-center p-2 px-4 bg-white dark:text-black dark:border-gray-700  dark:bg-gray-500/50 border border-solid rounded-2xl outline-gray-200 min-w-[220px] gap-2">
       <img src={search} alt="icon" />

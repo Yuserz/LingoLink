@@ -31,9 +31,9 @@ export default function Home() {
   );
   const { _id, name, myEmail } = useContext(MyGlobalContext);
 
-  useEffect(() => {
-    console.log({ email: myEmail});
-  }, [contactData, name]);
+  // useEffect(() => {
+  //   console.log({ email: myEmail});
+  // }, [contactData, name]);
 
   // Cache the data with useMemo
   const cachedData = useMemo(
