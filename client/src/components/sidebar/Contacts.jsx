@@ -56,13 +56,13 @@ export default function Contacts({ contacts, loading }) {
               setEmail(contact.email);
             }}
           >
-            {/* <h2 className="border-2 w-8 h-8 rounded-full"></h2> */}
+            <h2 className="border-2 w-12 h-12 rounded-full"></h2>
             <h2 className="opacity-70 dark:text-white">{contact.email}</h2>
             {/* <h2>{contact.email}</h2> */}
           </button>
         ))
       ) : (
-        <h1 className="opacity-30 text-center">Start adding contacts</h1>
+        <h1 className="text-black/30 text-center dark:text-white/30 mt-2">Start adding contacts</h1>
       )}
     </div>
   );

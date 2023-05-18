@@ -29,11 +29,11 @@ export default function Home() {
   const [contactName, setContactName] = useState(
     sessionStorage.getItem("contactName" || "")
   );
-  const { _id, name } = useContext(MyGlobalContext);
+  const { _id, name, myEmail } = useContext(MyGlobalContext);
 
-  // useEffect(() => {
-  //   contactData && console.log({ contactData: contactData, name: name });
-  // }, [contactData, name]);
+  useEffect(() => {
+    console.log({ email: myEmail});
+  }, [contactData, name]);
 
   // Cache the data with useMemo
   const cachedData = useMemo(

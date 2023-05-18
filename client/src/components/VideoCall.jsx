@@ -105,10 +105,9 @@ export default function VideoCall() {
 
   return (
     <>
-      <h1 style={{ textAlign: "center", color: "#fff" }}>Zoomish</h1>
       <div className="container h-full w-full">
         <div className="relative video-container w-full h-full flex">
-          <div className="video flex justify-center w-full h-full bg-black rounded-lg">
+          <div className="video flex justify-center w-full h-full bg-black rounded-lg dark:bg-black/0">
             {stream && (
               <video
                 className="absolute w-fit h-full"

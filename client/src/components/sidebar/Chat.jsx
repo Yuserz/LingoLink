@@ -39,7 +39,7 @@ export default function Chat() {
       }`}
     >
       <div
-        className={`flex items-center w-full justify-between h-fit px-4  ${
+        className={`flex items-center w-full justify-between h-fit px-4 py-1 ${
           showContacts ? "pb-2 border-b border-gray-700/15" : ""
         }`}
       >
@@ -48,13 +48,13 @@ export default function Chat() {
           className={`add-btn flex items-center h-fit`}
         >
           <img
-            className={`p-2 transition ease-in-out duration-300 ${
+            className={`p-2 transition ease-in-out duration-300 dark:bg-primary/90 border rounded-md mr-1 ${
               showContacts ? "rotate-180 " : ""
             }`}
             src={theme === "dark" ? arrowDownWhite : arrowDown}
             alt=""
           />
-          <h2 className="dark:text-white">Chat</h2>
+          <h2 className="dark:text-white text-end">Chat</h2>
         </button>
         <button
           onClick={() => setShowModal(true)}

@@ -87,7 +87,7 @@ router.post("/login", async (req, res, next) => {
     // set token in an http-only cookie
     res.cookie("token", token, { httpOnly: true });
     const userCred = user;
-    res.send({ success: "User logged in successfully", userCred });
+    res.status(200).send({ success: "User logged in successfully", userCred });
   } catch (error) {
     next(error);
   }
@@ -114,7 +114,7 @@ router.post("/search", async (req, res, next) => {
     }
 
     const { name, _id } = user;
-    res.send({ name, _id, email });
+    res.status(200).send({ name, _id, email });
   } catch (error) {
     next(error);
     console.log("Not Found:");
@@ -154,7 +154,7 @@ router.post("/contacts/:_id", async (req, res) => {
     user.contacts.push(newContact);
     await user.save();
 
-    res.json(newContact);
+    res.status(201).json({message: "success!", newContact});
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error" });

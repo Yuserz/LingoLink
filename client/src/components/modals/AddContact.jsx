@@ -3,6 +3,8 @@ import { search, addContact } from "../../api/api";
 import { MyDataContext } from "../../pages/Home";
 import Search from "../Search";
 import { MyGlobalContext } from "../../context/MyGlobalContext";
+import Swal from "sweetalert2";
+
 //icons
 import close from "../../assets/icons/close.svg";
 import addContactIcon from "../../assets/icons/add.svg";
@@ -22,26 +24,39 @@ export default function AddContact({ closeModal }) {
 
   const { setShowMessaging, setContactData, contactData } =
     useContext(MyDataContext);
-  const { _id, roomId, setRoomId, name, email } = useContext(MyGlobalContext);
+  const { _id, roomId, setRoomId, name, myEmail } = useContext(MyGlobalContext);
 
-  const myId = _id;
+  // const myId = _id;
 
   useEffect(() => {
     setRoomId(genaratedRoomId);
+    console.log(contactData);
   }, []);
 
   const findContact = async () => {
     try {
       setLoading(true); // Set loading state to true
       const response = await search({ email: searchEmail });
-      console.log("Contact Found!");
-      setShowNotFound(false);
-      setContactData(response.data);
-      setFoundEmail(response.data.email);
+
+      if (response.status === 200) {
+        // console.log("Added successfully!");
+        setShowNotFound(false);
+        setShowAddSelf(false);
+        setFriendsAlready(false);
+        setContactData(response.data);
+        setFoundEmail(response.data.email);
+      } else {
+        setShowNotFound(true);
+      }
     } catch (error) {
       console.log("not found");
-      setShowNotFound(true);
-      setFoundEmail(false);
+      //search not found
+      if (error.response.status === 401) {
+        setShowNotFound(true);
+        setShowAddSelf(false);
+        setFriendsAlready(false);
+        setFoundEmail(false);
+      }
     } finally {
       setLoading(false); // Set loading state back to false
     }
@@ -55,19 +70,23 @@ export default function AddContact({ closeModal }) {
         _id
       );
 
-      //add this user to contacts contact list
-      if (response.status) {
-        await addContact(
-          { name: name, email: email, roomId: roomId },
+      //add this user to the added contacts contact list
+      if (response.status === 201) {
+        const res = await addContact(
+          { name: name, email: myEmail, roomId: roomId },
           contactData._id
         );
+        setShowMessaging(true);
 
-        if (response) {
-          setShowMessaging(true);
-          closeModal(false);
-        }
+        closeModal(false);
+        Swal.fire({
+          position: "center",
+          icon: "success",
+          title: "Contact is added!",
+          timer: 1200,
+        });
       } else {
-        console.log("error: same id");
+        console.log({ error: "Same id" });
       }
     } catch (error) {
       const err = error.response.status;
@@ -104,7 +123,7 @@ export default function AddContact({ closeModal }) {
   };
 
   return (
-    <div className="absolute z-50 w-screen h-screen bg-black/70 top-0 left-0 flex items-center justify-center">
+    <div className="absolute z-50 w-screen h-screen bg-black/70 dark:bg-black/80 top-0 left-0 flex items-center justify-center">
       <div className="add-contact-modal flex flex-col w-[500px] h-fit border-2 border-gray-500 bg-secondary dark:bg-gray-700 rounded-xl overflow-hidden shadow-lg p-4 gap-2">
         <div className="flex justify-end px-1 py-2 text-lg">
           <button
@@ -122,7 +141,7 @@ export default function AddContact({ closeModal }) {
           }`}
         >
           <div className="w-full h-fit row-span-full mb-4">
-            <h1 className="font-semibold text-black/70 w-full text-center mb-6 text-xl uppercase">
+            <h1 className="font-semibold text-black/70 w-full text-center mb-6 text-xl uppercase dark:text-white">
               Add Contact
             </h1>
             <Search setSearchEmail={setSearchEmail} findContact={findContact} />
@@ -130,11 +149,11 @@ export default function AddContact({ closeModal }) {
 
           {loading ? (
             <div className="w-full h-20 flex justify-center items-center my-8">
-              <h2 className="text-center"> loading...</h2>
+              <h2 className="text-center dark:text-white/90"> loading...</h2>
             </div>
           ) : foundEmail && !friendsAlready ? (
             <div>
-              <h2 className="opacity-30 text-sm ml-1 py-2 border-gray-400 border-y">
+              <h2 className="text-black/30 text-sm ml-1 py-2 border-gray-400/70 border-y dark:border-gray-400/50   dark:text-white/70">
                 Result
               </h2>
               <button
@@ -156,7 +175,9 @@ export default function AddContact({ closeModal }) {
           ) : friendsAlready ? (
             <div className="text-center my-4 mb-8  opacity-80 flex flex-col justify-center w-full items-center">
               <img className="w-20" src={existIcon} alt="" />{" "}
-              <h3 className="opacity-50">Contact already exist!</h3>
+              <h3 className="opacity-60 dark:text-white/90">
+                Contact already exist!
+              </h3>
             </div>
           ) : (
             ""
@@ -164,7 +185,9 @@ export default function AddContact({ closeModal }) {
           {!loading && showNotFound ? (
             <div className="text-center my-8 opacity-80 flex flex-col justify-center w-full items-center">
               <img className="w-20" src={notFoundIcon} alt="" />{" "}
-              <h3 className="opacity-50">Contact not found!</h3>
+              <h3 className="opacity-60 dark:text-white/90">
+                Contact not found!
+              </h3>
             </div>
           ) : (
             ""
@@ -172,7 +195,9 @@ export default function AddContact({ closeModal }) {
           {!loading && showAddSelf ? (
             <div className="text-center my-8 opacity-80 flex flex-col justify-center w-full items-center">
               <img className="w-20" src={notFoundIcon} alt="" />{" "}
-              <h3 className="opacity-50">Cannot add self!</h3>
+              <h3 className="opacity-60 dark:text-white/90">
+                Cannot add self!
+              </h3>
             </div>
           ) : (
             ""

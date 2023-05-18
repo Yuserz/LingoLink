@@ -8,7 +8,7 @@ import { MyGlobalContext } from "../context/MyGlobalContext";
 export default function Login() {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState("");
-  const { set_id, setName } = useContext(MyGlobalContext);
+  const { set_id, setName, setMyEmail } = useContext(MyGlobalContext);
 
   const navigate = useNavigate();
 
@@ -21,12 +21,28 @@ export default function Login() {
         password,
       });
 
-      if (response) {
-        console.log("login success", email);
+      if (response.status === 200) {
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 1000,
+          timerProgressBar: false,
+          didOpen: (toast) => {
+            toast.addEventListener("mouseenter", Swal.stopTimer);
+            toast.addEventListener("mouseleave", Swal.resumeTimer);
+          },
+        });
+
+        Toast.fire({
+          icon: "success",
+          title: "Signed in successfully",
+        });
+
         const { userCred } = response.data;
         set_id(userCred._id);
         setName(userCred.name);
-        setEmail(userCred.email);
+        setMyEmail(userCred.email);
 
         // Redirect user to Home
         navigate("Home");
@@ -40,7 +56,8 @@ export default function Login() {
       } else {
         Swal.fire({
           icon: "error",
-          title: "Invalid email or password",
+          title: "Something went wrong!",
+          text: "Please try again later.",
         });
       }
     }
