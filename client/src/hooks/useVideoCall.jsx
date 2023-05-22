@@ -15,7 +15,7 @@ export function useVideoCall() {
   const [callEnded, setCallEnded] = useState(false);
   const { roomId, _id, name, setName, video, setVideo, audio, setAudio } =
     useContext(MyGlobalContext);
-  const { contactData } = useContext(MyDataContext);
+  const { contactData, setShowMessaging, setShowVideoCall } = useContext(MyDataContext);
   const myVideo = useRef();
   const userVideo = useRef();
   const connectionRef = useRef();
@@ -103,6 +103,8 @@ export function useVideoCall() {
   };
 
   const leaveCall = () => {
+    setShowMessaging(true);
+    setShowVideoCall(false);
     setCallEnded(true);
     if (connectionRef.current) {
       connectionRef.current.destroy();
