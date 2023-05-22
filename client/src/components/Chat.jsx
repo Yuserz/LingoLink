@@ -1,67 +1,26 @@
-import React, { useEffect, useState, useRef, useContext } from "react";
+import React from "react";
 import moment from "moment";
 
 //icons
 import sendBtn from "../assets/icons/send.svg";
 import callBtn from "../assets/icons/call.svg";
 import cameraBtn from "../assets/icons/cam.svg";
-//context api
-import { MyDataContext } from "../pages/Home";
-import { MyGlobalContext } from "../context/MyGlobalContext";
+
+//hooks
+import { useChat } from "../hooks/useChat";
 
 function Chat({ socket, contactName }) {
-  const [currentMessage, setCurrentMessage] = useState("");
-  const [messageList, setMessageList] = useState(() => {
-    const savedMessages = sessionStorage.getItem("messageList");
-    return savedMessages ? JSON.parse(savedMessages) : [];
-  });
-  const messagesEndRef = useRef(null);
-  const { setShowVideoCall, setShowMessaging } = useContext(MyDataContext);
-  const { roomId, video, setVideo, audio, setAudio } =
-    useContext(MyGlobalContext);
-
-  const inputRef = useRef(null);
-
-  useEffect(() => {
-    inputRef.current.style.height = "auto";
-    inputRef.current.style.height = `${inputRef.current.scrollHeight}px`;
-  }, [currentMessage]);
-
-  const sendMessage = async () => {
-    if (currentMessage !== "") {
-      const messageData = {
-        roomId: roomId,
-        author: contactName,
-        message: currentMessage,
-        time: moment().format("h:mm A"),
-      };
-
-      await socket.emit("send_message", messageData);
-      setMessageList((list) => [...list, messageData]);
-      setCurrentMessage("");
-    }
-  };
-
-  useEffect(() => {
-    const receiveMessageHandler = (data) => {
-      setMessageList((list) => [...list, data]);
-    };
-
-    socket.on("receive_message", receiveMessageHandler);
-
-    return () => {
-      socket.off("receive_message", receiveMessageHandler);
-    };
-    
-  }, [socket]);
-
-
-  //auto scroll to new message
-  useEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [messageList]);
+  const {
+    currentMessage,
+    setCurrentMessage,
+    messageList,
+    messagesEndRef,
+    setShowVideoCall,
+    setShowMessaging,
+    setVideo,
+    inputRef,
+    sendMessage,
+  } = useChat(socket, contactName);
 
   return (
     <>

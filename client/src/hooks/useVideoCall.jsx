@@ -104,7 +104,7 @@ export function useVideoCall() {
 
   const leaveCall = () => {
     setCallEnded(true);
-    if (callEnded) {
+    if (connectionRef.current) {
       connectionRef.current.destroy();
     }
   };

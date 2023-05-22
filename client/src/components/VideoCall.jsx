@@ -15,6 +15,7 @@ export default function VideoCall() {
     name,
     video,
     setReceivingCall,
+    // messagingComponent,
   } = useVideoCall();
 
   return (
@@ -29,7 +30,7 @@ export default function VideoCall() {
                 muted
                 ref={myVideo ? myVideo : null}
                 autoPlay
-                style={{ width: "400px" }}
+                style={{ width: "100%" }}
               />
             )}
           </div>
@@ -85,6 +86,11 @@ export default function VideoCall() {
             </div>
           </div>
         ) : null}
+
+        {/* {messagingComponent ? (
+          // Render the messaging component here
+          <div>Messaging Component</div>
+        ) : null} */}
       </div>
     </>
   );
