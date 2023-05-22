@@ -6,8 +6,7 @@ import React, {
   useMemo,
 } from "react";
 import MainLayout from "../layout/MainLayout";
-import Messaging from "../components/Messaging";
-import VideoCall from "../components/VideoCall";
+import Chat from "../components/Chat";
 import { MyGlobalContext } from "../context/MyGlobalContext";
 
 //icon
@@ -30,10 +29,6 @@ export default function Home() {
     sessionStorage.getItem("contactName" || "")
   );
   const { _id, name, myEmail } = useContext(MyGlobalContext);
-
-  // useEffect(() => {
-  //   console.log({ email: myEmail});
-  // }, [contactData, name]);
 
   // Cache the data with useMemo
   const cachedData = useMemo(
@@ -69,12 +64,7 @@ export default function Home() {
   return (
     <MyDataContext.Provider value={cachedData}>
       <MainLayout>
-        {showMessaging && contactData !== null ? (
-          <Messaging userId={_id} />
-        ) : (
-          ""
-        )}
-        {showVideoCall ? <VideoCall /> : ""}
+        {contactData !== null ? <Chat userId={_id} /> : ""}
         {contactData === null ? (
           <div className="start-messaging flex justify-center items-center h-full w-full">
             <main className="flex flex-col">
