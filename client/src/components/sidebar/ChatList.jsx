@@ -7,7 +7,7 @@ import { getContact } from "../../api/api";
 import { MyGlobalContext } from "../../context/MyGlobalContext";
 import ContactList from "./Contacts";
 
-export default function Chat() {
+export default function ChatList() {
   const [showModal, setShowModal] = useState(false);
   const [contacts, setContacts] = useState([]);
   const [loading, setLoading] = useState(true);

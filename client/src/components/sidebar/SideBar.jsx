@@ -1,5 +1,5 @@
 import React, { useContext} from "react";
-import Chat from "./Chat";
+import ChatList from "./ChatList";
 import logo from "../../assets/logo.svg";
 import logoWhite from "../../assets/logoWhite.svg";
 import Footer from "./Footer";
@@ -12,12 +12,9 @@ export default function SideBar() {
       <div className="sidebar-container flex flex-col justify-center p-4 px-6 gap-8 h-full">
         <img src={theme === "dark" ? logoWhite : logo} alt="" />
         <div className="chat flex flex-col justify-between h-full">
-          <Chat />
+          <ChatList />
           <Footer />
         </div>
-        {/* <div className="group">
-          <Group />
-        </div> */}
       </div>
     </>
   );
