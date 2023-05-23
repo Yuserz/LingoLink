@@ -3,9 +3,7 @@ import React from 'react'
 export default function Footer() {
   return (
     <footer>
-        <h1 className='text-center opacity-20 text-sm dark:text-white'>All rights reserved</h1>
-        {/* <h1 className='text-center opacity-70'>LingoLink</h1> */}
-        {/* <h1>WebRTC App using ReactJS, MongoDB, Express</h1> */}
+        <h1 className='text-center opacity-40 font-thin text-sm dark:text-white'>LingoLink | v1.0</h1>
     </footer>
   )
 }

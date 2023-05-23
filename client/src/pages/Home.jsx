@@ -11,10 +11,18 @@ export const MyDataContext = createContext();
 
 export default function Home() {
   const { _id } = useContext(MyGlobalContext);
-  const [showMessaging, setShowMessaging] = useState(false);
-  const [showVideoCall, setShowVideoCall] = useState(false);
-  const [contactData, setContactData] = useState("");
-  const [contactName, setContactName] = useState("");
+  const [showMessaging, setShowMessaging] = useState(
+    sessionStorage.getItem("showMessaging") === "true" || false
+  );
+  const [showVideoCall, setShowVideoCall] = useState(
+    sessionStorage.getItem("showVideoCall") === "true" || false
+  );
+  const [contactData, setContactData] = useState(
+    sessionStorage.getItem("contactData") || ""
+  );
+  const [contactName, setContactName] = useState(
+    sessionStorage.getItem("contactName") || ""
+  );
 
   // Cache the data with useMemo
   const cachedData = useMemo(() => ({
@@ -30,15 +38,15 @@ export default function Home() {
 
   useEffect(() => {
     sessionStorage.setItem("showMessaging", showMessaging);
-    sessionStorage.setItem("contactName", contactName);
-    sessionStorage.setItem("contactData", contactData);
     sessionStorage.setItem("showVideoCall", showVideoCall);
-  }, [showMessaging, contactName, contactData, showVideoCall]);
+    sessionStorage.setItem("contactData", contactData);
+    sessionStorage.setItem("contactName", contactName);
+  }, [showMessaging, showVideoCall, contactData, contactName]);
 
   return (
     <MyDataContext.Provider value={cachedData}>
       <MainLayout>
-        {contactData !== null ? <Chat userId={_id} /> : null}
+        {contactName !== null ? <Chat userId={_id} /> : null}
         {contactData === null && (
           <div className="start-messaging flex justify-center items-center h-full w-full">
             <main className="flex flex-col">

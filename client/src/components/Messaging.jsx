@@ -30,14 +30,11 @@ export default function Messaging({ socket, contactName }) {
       <div className="chat-window w-3/4 h-full grid grid-cols-1 grid-rows-4  grid-flow-rows justify-between p-2 gap-2">
         <div className="contact-profile row-span-full my-4 w-full flex justify-center h-full p-4 items-center">
           <div className="flex flex-col justify-center w-fit ">
-            <img
-              className="profile-image w-32 h-32 rounded-full border-2 border-gray-300 shadow-sm overflow-hidden bg-primary"
-              src=""
-              alt=""
-            />
-            <h4 className="text-center text-black/50 capitalize dark:text-white">
-              {contactName}
-            </h4>
+            <div className="flex bg-primary dark:bg-black items-center justify-center border-2 w-[100px] h-[100px]  rounded-full">
+              <h1 className="uppercase text-white font-semibold text-6xl">
+                {contactName.charAt(0)}
+              </h1>
+            </div>
           </div>
         </div>
         <div className="flex flex-col place-self-end w-full gap-2 row-span-3">

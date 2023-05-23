@@ -1,5 +1,5 @@
 import io from "socket.io-client";
-import { useEffect, useContext } from "react";
+import { useEffect, useContext, useState } from "react";
 import { MyGlobalContext } from "../context/MyGlobalContext";
 import { MyDataContext } from "../pages/Home";
 import Messaging from "./Messaging";
@@ -8,6 +8,7 @@ import VideoCall from "./VideoCall";
 const socket = io.connect("http://localhost:3001");
 
 export default function Chat() {
+  const [incomingCall, setIncomingCall] = useState(false);
   const { roomId, _id, name } = useContext(MyGlobalContext);
   const { contactName, showVideoCall, showMessaging } =
     useContext(MyDataContext);
@@ -35,7 +36,14 @@ export default function Chat() {
         <Messaging socket={socket} contactName={contactName} roomId={roomId} />
       ) : null}
 
-      {showVideoCall ? <VideoCall /> : null}
+      {showVideoCall ? (
+        <>
+          <VideoCall handleIncomingCall={setIncomingCall} />
+          {incomingCall ? (
+            <div className="call-offer">Incoming Call...</div>
+          ) : null}
+        </>
+      ) : null}
     </div>
   );
 }

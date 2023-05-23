@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { useVideoCall } from "../hooks/useVideoCall";
 import { MyDataContext } from "../pages/Home";
 
-export default function VideoCall() {
+export default function VideoCall({ handleIncomingCall }) {
   const { showVideoCall } = useContext(MyDataContext);
   const {
     myVideo,
@@ -85,7 +85,10 @@ export default function VideoCall() {
                 <div className=" flex gap-2">
                   <button
                     className="p-2 bg-white rounded-lg"
-                    onClick={answerCall}
+                    onClick={() => {
+                      answerCall();
+                      handleIncomingCall();
+                    }}
                   >
                     Answer
                   </button>
