@@ -14,21 +14,24 @@ export default function Logout() {
 
   return (
     <div className="relative">
-      <button
-        onClick={handleModal}
-        className={`flex min-w-fit items-center h-fit p-2`}
-      >
-        <img
-          className={`p-2 transition ease-in-out duration-300 ${
-            showModal ? "rotate-180 " : ""
-          }`}
-          src={theme === "dark" ? arrowDownWhite : arrowDown }
-          alt=""
-        />
-        <h1 className="flex capitalize dark:text-white dark:opacity-95">
-          {name}
-        </h1>
-      </button>
+      <div className="flex capitalize dark:text-white dark:opacity-95 justify-center items-center gap-1">
+        {/* <div className="bg-primary text-white w-8 shadow-sm border h-8 flex justify-center items-center rounded-full">
+          {name.charAt(0)}
+        </div> */}
+        {name}
+        <button
+          onClick={handleModal}
+          className={`flex min-w-fit items-center h-fit`}
+        >
+          <img
+            className={`p-1 transition ease-in-out duration-300 ${
+              showModal ? "rotate-180 " : ""
+            }`}
+            src={theme === "dark" ? arrowDownWhite : arrowDown}
+            alt=""
+          />
+        </button>
+      </div>
       {showModal ? <LogoutModal /> : ""}
     </div>
   );

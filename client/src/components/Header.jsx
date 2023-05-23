@@ -12,7 +12,7 @@ export default function Header() {
         <div className="w-1/2">
           <Search />
         </div>
-        <div className="util-bar flex gap-2 items-center">
+        <div className="util-bar flex gap-6 items-center">
           {/* <StatusBtn /> */}
           <DarkModeBtn />
           <Logout />

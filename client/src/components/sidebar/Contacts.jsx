@@ -7,7 +7,6 @@ export default function Contacts({ contacts, loading }) {
   const [email, setEmail] = useState(
     sessionStorage.getItem("email") === "true" ? true : false
   );
-  // const [email, setEmail] = useState();
   const { _id, roomId, setRoomId } = useContext(MyGlobalContext);
   const { setShowMessaging, setShowVideoCall, setContactName, setContactData } =
     useContext(MyDataContext);
@@ -26,7 +25,7 @@ export default function Contacts({ contacts, loading }) {
         setContactName(name);
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   }, [email]);
 
@@ -50,14 +49,16 @@ export default function Contacts({ contacts, loading }) {
       ) : contacts.length > 0 ? (
         contacts.map((contact, index) => (
           <button
-            className="flex items-center gap-2 p-2 px-4 hover:shadow-sm hover:border hover:border-primary/20"
+            className="flex items-center gap-2 p-2 px-4 hover:border-b hover:border-gray-500/50 hover:scale-[101%]"
             key={index}
             onClick={() => {
               setEmail(contact.email);
             }}
           >
             <div className="flex bg-primary items-center justify-center border-2 w-12 h-12 rounded-full ">
-              <h1 className="uppercase  text-white font-semibold">{contact.name.charAt(0)}</h1>
+              <h1 className="uppercase  text-white font-semibold">
+                {contact.name.charAt(0)}
+              </h1>
             </div>
 
             <h2 className="opacity-70 dark:text-white">{contact.email}</h2>

@@ -34,7 +34,7 @@ export default function Signup() {
       });
 
       if (response.status === 201) {
-        console.log("registration success");
+        // console.log("registration success");
         const { userCred } = response.data;
         set_id(userCred._id);
         setName(userCred);
@@ -58,7 +58,7 @@ export default function Signup() {
           });
         }
       } else {
-        console.log("Error creating user");
+        // console.log("Error creating user");
       }
     }
   };

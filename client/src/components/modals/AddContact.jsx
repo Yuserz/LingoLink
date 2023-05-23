@@ -13,7 +13,7 @@ import existIcon from "../../assets/icons/existingContact.svg";
 
 const { v4: uuidv4 } = require("uuid");
 
-export default function AddContact({ closeModal }) {
+export default function AddContact({ closeModal, updateContact }) {
   const [foundEmail, setFoundEmail] = useState(false);
   const [showAddSelf, setShowAddSelf] = useState(false);
   const [friendsAlready, setFriendsAlready] = useState(false);
@@ -30,7 +30,7 @@ export default function AddContact({ closeModal }) {
 
   useEffect(() => {
     setRoomId(genaratedRoomId);
-    console.log(contactData);
+    // console.log(contactData);
   }, []);
 
   const findContact = async () => {
@@ -49,7 +49,7 @@ export default function AddContact({ closeModal }) {
         setShowNotFound(true);
       }
     } catch (error) {
-      console.log("not found");
+      // console.log("not found");
       //search not found
       if (error.response.status === 401) {
         setShowNotFound(true);
@@ -77,6 +77,7 @@ export default function AddContact({ closeModal }) {
           contactData._id
         );
         setShowMessaging(true);
+        updateContact(new Date()); 
 
         closeModal(false);
         Swal.fire({
@@ -86,7 +87,7 @@ export default function AddContact({ closeModal }) {
           timer: 1200,
         });
       } else {
-        console.log({ error: "Same id" });
+        // console.log({ error: "Same id" });
       }
     } catch (error) {
       const err = error.response.status;

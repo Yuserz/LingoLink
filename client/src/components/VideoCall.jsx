@@ -2,8 +2,10 @@ import React, { useContext } from "react";
 import { useVideoCall } from "../hooks/useVideoCall";
 import { MyDataContext } from "../pages/Home";
 
+import endCall from "../assets/icons/callWhite.svg"
+
 export default function VideoCall({ handleIncomingCall }) {
-  const { showVideoCall } = useContext(MyDataContext);
+  const { showVideoCall, contactName } = useContext(MyDataContext);
   const {
     myVideo,
     userVideo,
@@ -27,7 +29,7 @@ export default function VideoCall({ handleIncomingCall }) {
             <div className="video max-w-[20%] absolute top-0 right-0">
               {stream && (
                 <video
-                  className=" h-full z-50 shadow-md rounded"
+                  className=" h-full z-20 shadow-md rounded"
                   playsInline
                   muted
                   ref={myVideo ? myVideo : null}
@@ -47,20 +49,17 @@ export default function VideoCall({ handleIncomingCall }) {
               ) : (
                 <div className="video flex justify-center w-full h-full bg-black rounded-lg dark:bg-black/0">
                   <div className="flex flex-col justify-center w-fit ">
-                    <img
-                      className="profile-image w-40  h-40 rounded-full border-2 border-gray-300 shadow-sm overflow-hidden bg-primary"
-                      src=""
-                      alt=""
-                    />
-                    <h4 className="text-center text-black/50 capitalize dark:text-white">
-                      {/* {contactName} */}
-                    </h4>
+                    <div className="flex bg-primary dark:bg-black items-center justify-center border-2 w-[100px] h-[100px]  rounded-full">
+                      <h1 className="uppercase text-white font-semibold text-6xl">
+                        {contactName.charAt(0)}
+                      </h1>
+                    </div>
                   </div>{" "}
                 </div>
               )}
             </div>
             <div className="absolute bottom-0 mb-4 w-full self-center place-self-center flex justify-center ">
-              <div className="myId bg-white w-fit p-4 rounded-md">
+              <div className="myId  w-fit p-4 rounded-md">
                 <div className="call-button">
                   {callAccepted && !callEnded ? (
                     <button
@@ -68,7 +67,8 @@ export default function VideoCall({ handleIncomingCall }) {
                       color="secondary"
                       onClick={leaveCall}
                     >
-                      End Call
+                      <img className="p-2 w-14 h-14 bg-red-500 rounded-xl shadow-md" src={endCall} alt="" />
+             
                     </button>
                   ) : (
                     <button onClick={callUser}>call</button>

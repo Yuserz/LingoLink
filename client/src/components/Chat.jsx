@@ -14,15 +14,15 @@ export default function Chat() {
     useContext(MyDataContext);
 
   const joinRoom = () => {
-    if (!roomId) {
-      console.log("Wrong room credentials");
-    } else {
+    if (roomId) {
       socket.emit("join_room", {
         roomId: roomId,
         userId: _id,
         name: name,
         message: "Chat",
       });
+    } else {
+      // console.log("Wrong room credentials");
     }
   };
 

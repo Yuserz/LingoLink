@@ -27,7 +27,7 @@ export default function LogoutModal() {
     <>
       <button
         onClick={handleLogout}
-        className={`logout-btn absolute transition ease-in-out duration-100 flex gap-2 bg-white right-0 shadow-sm border hover:scale-105 w-fit px-4 text-center rounded-md justify-center items-center h-fit p-2`}
+        className={`logout-btn absolute z-30 transition ease-in-out duration-100 flex gap-2 bg-white right-0  shadow-sm border hover:scale-105 w-fit px-4 text-center rounded-md justify-center items-center h-fit p-2`}
       >
         <h1>Logout</h1>
       </button>

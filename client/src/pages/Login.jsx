@@ -48,16 +48,10 @@ export default function Login() {
         navigate("Home");
       }
     } catch (error) {
-      if (error.response.status === 400) {
+      if (error.response.status === 400 || error.response.status === 401) {
         Swal.fire({
           icon: "error",
-          title: "Invalid email or password",
-        });
-      } else {
-        Swal.fire({
-          icon: "error",
-          title: "Something went wrong!",
-          text: "Please try again later.",
+          title: "Invalid email or password!",
         });
       }
     }

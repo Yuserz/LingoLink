@@ -13,6 +13,7 @@ export default function ChatList() {
   const [loading, setLoading] = useState(true);
   const { _id, theme } = useContext(MyGlobalContext);
   const [showContacts, setShowContacts] = useState(true);
+  const [latestContact, setLatestContact] = useState(null);
 
   useEffect(() => {
     async function fetchData() {
@@ -20,13 +21,14 @@ export default function ChatList() {
       const response = await getContact({}, _id);
       if (response.status === 200) {
         setContacts(response.data.contacts);
+        setLatestContact(response.data.latestContact); // Set the latest contact
       } else {
         setContacts([]);
       }
       setLoading(false);
     }
     fetchData();
-  }, []);
+  }, [latestContact]); // Add latestContact as a dependency
 
   const toggleExpanded = () => {
     setShowContacts(!showContacts);
@@ -34,8 +36,8 @@ export default function ChatList() {
 
   return (
     <div
-      className={`chat-container dark:text-black dark:border-gray-700  dark:bg-gray-500/50 bg-secondary rounded-md py-4 flex flex-col justify-between${
-        showContacts ? "expanded max-h-fit gap-2" : "hidden"
+      className={`chat-container dark:text-black overflow-hidden dark:border-gray-700  dark:bg-gray-500/50 bg-secondary rounded-md py-4 flex flex-col justify-between${
+        showContacts ? "expanded max-h-fit gap-4" : "hidden"
       }`}
     >
       <div
@@ -65,7 +67,12 @@ export default function ChatList() {
           </div>
         </button>
 
-        {showModal ? <AddContact closeModal={setShowModal} /> : null}
+        {showModal ? (
+          <AddContact
+            closeModal={setShowModal}
+            updateContact={setLatestContact}
+          />
+        ) : null}
       </div>
       {showContacts ? (
         <ContactList contacts={contacts} loading={loading} />

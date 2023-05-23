@@ -42,11 +42,12 @@ router.post("/register", async (req, res) => {
         expiresIn: "1h",
       }
     );
+    // set token in an http-only cookie
+    res.cookie("token", token, { httpOnly: true });
 
     const userCred = user;
     res.status(201).send({
       success: "User created and logged in successfully",
-      token,
       userCred,
     });
   } catch (error) {
@@ -154,7 +155,7 @@ router.post("/contacts/:_id", async (req, res) => {
     user.contacts.push(newContact);
     await user.save();
 
-    res.status(201).json({message: "success!", newContact});
+    res.status(201).json({ message: "success!", newContact });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error" });
