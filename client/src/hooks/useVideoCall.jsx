@@ -15,20 +15,23 @@ export function useVideoCall() {
   const [callEnded, setCallEnded] = useState(false);
   const { roomId, _id, name, setName, video, setVideo, audio, setAudio } =
     useContext(MyGlobalContext);
-  const { contactData, setShowMessaging, setShowVideoCall } = useContext(MyDataContext);
+  const { contactData, showMessaging, setShowMessaging, setShowVideoCall } =
+    useContext(MyDataContext);
   const myVideo = useRef();
   const userVideo = useRef();
   const connectionRef = useRef();
 
   useEffect(() => {
-    navigator.mediaDevices
-      .getUserMedia({ video: video, audio: audio })
-      .then((stream) => {
-        setStream(stream);
-        if (myVideo.current) {
-          myVideo.current.srcObject = stream;
-        }
-      });
+    if (!showMessaging) {
+      navigator.mediaDevices
+        .getUserMedia({ video: video, audio: audio })
+        .then((stream) => {
+          setStream(stream);
+          if (myVideo.current) {
+            myVideo.current.srcObject = stream;
+          }
+        });
+    }
 
     socket.emit("join_room", {
       roomId: roomId,

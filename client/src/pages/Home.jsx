@@ -1,58 +1,32 @@
-import React, {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  useMemo,
-} from "react";
+import React, { createContext, useContext, useState, useEffect, useMemo } from "react";
 import MainLayout from "../layout/MainLayout";
 import Chat from "../components/Chat";
 import { MyGlobalContext } from "../context/MyGlobalContext";
 
-//icon
+// Icon
 import msg from "../assets/icons/msg.svg";
 
-//Context API for state management
+// Create a context for the data
 export const MyDataContext = createContext();
 
 export default function Home() {
-  const [showMessaging, setShowMessaging] = useState(
-    sessionStorage.getItem("showMessaging") === "true" ? true : false
-  );
-  const [showVideoCall, setShowVideoCall] = useState(
-    sessionStorage.getItem("showVideoCall") === "true" ? true : false
-  );
-  const [contactData, setContactData] = useState(
-    sessionStorage.getItem("contactData" || "")
-  );
-  const [contactName, setContactName] = useState(
-    sessionStorage.getItem("contactName" || "")
-  );
-  const { _id, name, myEmail } = useContext(MyGlobalContext);
+  const { _id } = useContext(MyGlobalContext);
+  const [showMessaging, setShowMessaging] = useState(false);
+  const [showVideoCall, setShowVideoCall] = useState(false);
+  const [contactData, setContactData] = useState("");
+  const [contactName, setContactName] = useState("");
 
   // Cache the data with useMemo
-  const cachedData = useMemo(
-    () => ({
-      contactName,
-      setContactName,
-      showMessaging,
-      setShowMessaging,
-      showVideoCall,
-      setShowVideoCall,
-      contactData,
-      setContactData,
-    }),
-    [
-      contactName,
-      setContactName,
-      showMessaging,
-      setShowMessaging,
-      showVideoCall,
-      setShowVideoCall,
-      contactData,
-      setContactData,
-    ]
-  );
+  const cachedData = useMemo(() => ({
+    contactName,
+    setContactName,
+    showMessaging,
+    setShowMessaging,
+    showVideoCall,
+    setShowVideoCall,
+    contactData,
+    setContactData,
+  }), [contactName, setContactName, showMessaging, setShowMessaging, showVideoCall, setShowVideoCall, contactData, setContactData]);
 
   useEffect(() => {
     sessionStorage.setItem("showMessaging", showMessaging);
@@ -64,8 +38,8 @@ export default function Home() {
   return (
     <MyDataContext.Provider value={cachedData}>
       <MainLayout>
-        {contactData !== null ? <Chat userId={_id} /> : ""}
-        {contactData === null ? (
+        {contactData !== null ? <Chat userId={_id} /> : null}
+        {contactData === null && (
           <div className="start-messaging flex justify-center items-center h-full w-full">
             <main className="flex flex-col">
               <img className="w-[100px] h-auto]" src={msg} alt="" />{" "}
@@ -74,8 +48,6 @@ export default function Home() {
               </h2>
             </main>
           </div>
-        ) : (
-          ""
         )}
       </MainLayout>
     </MyDataContext.Provider>
