@@ -4,13 +4,14 @@ import { useNavigate } from "react-router-dom";
 import { register } from "../api/api";
 import { MyGlobalContext } from "../context/MyGlobalContext";
 import Swal from "sweetalert2";
+import { login } from "../api/api";
 
 export default function Signup() {
-  const [name, setName] = useState("");
+  const [newName, setNewName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const { set_id } = useContext(MyGlobalContext);
+  const { set_id, setName, setMyEmail } = useContext(MyGlobalContext);
 
   const navigate = useNavigate();
 
@@ -27,7 +28,7 @@ export default function Signup() {
 
     try {
       const response = await register({
-        name,
+        name: newName,
         email,
         password,
         confirmPassword,
@@ -35,11 +36,59 @@ export default function Signup() {
 
       if (response.status === 201) {
         // console.log("registration success");
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 1000,
+          timerProgressBar: false,
+          didOpen: (toast) => {
+            toast.addEventListener("mouseenter", Swal.stopTimer);
+            toast.addEventListener("mouseleave", Swal.resumeTimer);
+          },
+        });
+
+        Toast.fire({
+          icon: "success",
+          title: "Account Successfully",
+        });
+
         const { userCred } = response.data;
         set_id(userCred._id);
-        setName(userCred);
+        setName(userCred.name);
+        setNewName(userCred.name);
+        setEmail(userCred.email);
+        setMyEmail(userCred.email);
 
-        navigate("/home");
+        //login
+        const res = await login({
+          email,
+          password,
+        });
+
+        if (res.status === 200) {
+          const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 1000,
+            timerProgressBar: false,
+            didOpen: (toast) => {
+              toast.addEventListener("mouseenter", Swal.stopTimer);
+              toast.addEventListener("mouseleave", Swal.resumeTimer);
+            },
+          });
+
+          Toast.fire({
+            icon: "success",
+            title: "Signed in successfully",
+          });
+
+          set_id(userCred._id);
+
+          // Redirect user to Home
+          navigate("/Home");
+        }
       }
     } catch (error) {
       if (error.response) {
@@ -86,7 +135,7 @@ export default function Signup() {
                 name="name"
                 id="exampleFormControlInput2"
                 placeholder="Input your name"
-                onChange={(e) => setName(e.target.value)}
+                onChange={(e) => setNewName(e.target.value)}
                 required
               />
             </div>

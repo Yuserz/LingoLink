@@ -11,6 +11,7 @@
   "author": "Yusri Caloyloy",
   "license": "ISC",
   "dependencies": {
+    "accepts": "^1.3.8",
     "body-parser": "^1.20.2",
     "cookie-parser": "^1.4.6",
     "express": "^4.18.2",
