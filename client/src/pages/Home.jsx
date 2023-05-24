@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useState, useEffect, useMemo } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useMemo,
+} from "react";
 import MainLayout from "../layout/MainLayout";
 import Chat from "../components/Chat";
 import { MyGlobalContext } from "../context/MyGlobalContext";
@@ -25,16 +31,28 @@ export default function Home() {
   );
 
   // Cache the data with useMemo
-  const cachedData = useMemo(() => ({
-    contactName,
-    setContactName,
-    showMessaging,
-    setShowMessaging,
-    showVideoCall,
-    setShowVideoCall,
-    contactData,
-    setContactData,
-  }), [contactName, setContactName, showMessaging, setShowMessaging, showVideoCall, setShowVideoCall, contactData, setContactData]);
+  const cachedData = useMemo(
+    () => ({
+      contactName,
+      setContactName,
+      showMessaging,
+      setShowMessaging,
+      showVideoCall,
+      setShowVideoCall,
+      contactData,
+      setContactData,
+    }),
+    [
+      contactName,
+      setContactName,
+      showMessaging,
+      setShowMessaging,
+      showVideoCall,
+      setShowVideoCall,
+      contactData,
+      setContactData,
+    ]
+  );
 
   useEffect(() => {
     sessionStorage.setItem("showMessaging", showMessaging);
@@ -46,8 +64,9 @@ export default function Home() {
   return (
     <MyDataContext.Provider value={cachedData}>
       <MainLayout>
-        {contactName !== null ? <Chat userId={_id} /> : null}
-        {!showMessaging && !showVideoCall ? (
+        {contactName ? (
+          <Chat userId={_id} />
+        ) : (
           <div className="start-messaging flex justify-center items-center h-full w-full">
             <main className="flex flex-col">
               <img className="w-[100px] h-auto]" src={msg} alt="" />{" "}
@@ -56,7 +75,7 @@ export default function Home() {
               </h2>
             </main>
           </div>
-        ) : ""}
+        )}
       </MainLayout>
     </MyDataContext.Provider>
   );
