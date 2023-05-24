@@ -1,5 +1,6 @@
-import React, { useContext, useState } from "react";
+import React, { useContext} from "react";
 import moment from "moment";
+import { MyGlobalContext } from "../context/MyGlobalContext";
 
 //context
 import { MyDataContext } from "../pages/Home";
@@ -14,6 +15,7 @@ import { useChat } from "../hooks/useChat";
 
 export default function Messaging({ socket, contactName }) {
   const { setShowMessaging } = useContext(MyDataContext);
+  const { roomId } = useContext(MyGlobalContext);
   const {
     currentMessage,
     setCurrentMessage,
@@ -35,6 +37,9 @@ export default function Messaging({ socket, contactName }) {
                 {contactName.charAt(0)}
               </h1>
             </div>
+            <h2 className="text-center mt-1 dark:text-white opacity-70">
+              {contactName}
+            </h2>
           </div>
         </div>
         <div className="flex flex-col place-self-end w-full gap-2 row-span-3">
@@ -44,34 +49,42 @@ export default function Messaging({ socket, contactName }) {
                 const time = moment(messageContent.time, "h:mm A");
                 const timeDiff = moment().diff(time, "minutes");
                 const timeDisplay = timeDiff < 1 ? "" : time.format("h:mm A");
-                return (
-                  <div
-                    key={index}
-                    className={`message-content-container w-fit max-w-[70%] px-4 ${
-                      contactName === messageContent.author
-                        ? "self-start"
-                        : "self-end"
-                    }`}
-                  >
-                    <div className="message-content">
-                      <p
-                        className={`w-full rounded-2xl p-4 overflow-hidden ${
-                          contactName === messageContent.author
-                            ? "bg-primary dark:bg-gray-500/20 text-white"
-                            : "bg-white self-end"
-                        }`}
-                      >
-                        {messageContent.message}
-                      </p>
+
+                if (roomId === messageContent.roomId) {
+                  // Render the message content only if the author matches the contactName
+                  return (
+                    <div
+                      key={index}
+                      className={`message-content-container w-fit max-w-[70%] px-4 ${
+                        contactName === messageContent.author
+                          ? "self-start"
+                          : "self-end"
+                      }`}
+                    >
+                      <div className="message-content">
+                        <p
+                          className={`w-full rounded-2xl p-4 overflow-hidden ${
+                            contactName === messageContent.author
+                              ? "bg-primary dark:bg-gray-500/20 text-white"
+                              : "bg-white self-end"
+                          }`}
+                        >
+                          {messageContent.message}
+                        </p>
+                      </div>
+                      <div className="message-meta flex justify-end gap-2">
+                        <p className="text-gray-400 text-sm" id="time">
+                          {timeDisplay}
+                        </p>
+                      </div>
                     </div>
-                    <div className="message-meta flex justify-end gap-2">
-                      <p className="text-gray-400 text-sm" id="time">
-                        {timeDisplay}
-                      </p>
-                    </div>
-                  </div>
-                );
+                  );
+                } else {
+                  // Render an empty <div> for other messages
+                  return <div key={index}></div>;
+                }
               })}
+
               <div ref={messagesEndRef} />
             </div>
           </div>
