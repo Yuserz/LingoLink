@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { useVideoCall } from "../hooks/useVideoCall";
 import { MyDataContext } from "../pages/Home";
 
-export default function VideoCall({ handleIncomingCall }) {
+export default function VideoCall() {
   const { showVideoCall, contactName } = useContext(MyDataContext);
   const {
     myVideo,
@@ -132,7 +132,6 @@ export default function VideoCall({ handleIncomingCall }) {
                     className="Answer-call-btn p-2 rounded-lg hover:scale-[120%] hover:text-white transition ease-in-out"
                     onClick={() => {
                       answerCall();
-                      handleIncomingCall();
                     }}
                   >
                     <svg

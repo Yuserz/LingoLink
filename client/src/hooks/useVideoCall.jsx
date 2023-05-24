@@ -54,7 +54,7 @@ export function useVideoCall() {
 
     return () => {
       // Clean up media stream
-      if (stream) {
+      if (stream && callEnded) {
         const tracks = stream.getTracks();
         tracks.forEach((track) => track.stop());
       }
@@ -128,9 +128,9 @@ export function useVideoCall() {
       tracks.forEach((track) => track.stop());
     }
 
-    if (connectionRef.current) {
-      connectionRef.current.destroy();
-    }
+    // if (connectionRef.current) {
+    //   connectionRef.current.destroy();
+    // }
   };
 
   return {

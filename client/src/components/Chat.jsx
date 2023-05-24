@@ -33,15 +33,17 @@ export default function Chat() {
   return (
     <div className="chat-container my-4 flex justify-center w-full h-full overflow-clip">
       {showMessaging ? (
-        <Messaging socket={socket} contactName={contactName} roomId={roomId} />
+        <Messaging
+          socket={socket}
+          contactName={contactName}
+          roomId={roomId}
+          handleIncomingCall={setIncomingCall}
+        />
       ) : null}
 
       {showVideoCall ? (
         <>
-          <VideoCall handleIncomingCall={setIncomingCall} />
-          {incomingCall ? (
-            <div className="call-offer">Incoming Call...</div>
-          ) : null}
+          <VideoCall />
         </>
       ) : null}
     </div>
