@@ -13,7 +13,7 @@ import cameraBtn from "../assets/icons/cam.svg";
 //hooks
 import { useChat } from "../hooks/useChat";
 
-export default function Messaging({ socket, contactName }) {
+export default function Messaging({ socket, contactName}) {
   const { setShowMessaging } = useContext(MyDataContext);
   const { roomId } = useContext(MyGlobalContext);
   const {
