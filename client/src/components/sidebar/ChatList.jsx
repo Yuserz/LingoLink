@@ -47,7 +47,7 @@ export default function ChatList() {
       >
         <button
           onClick={toggleExpanded}
-          className={`add-btn flex items-center h-fit`}
+          className={`add-btn  flex items-center h-fit`}
         >
           <img
             className={`p-2 transition ease-in-out duration-300 dark:bg-primary/90 border rounded-md mr-1 ${

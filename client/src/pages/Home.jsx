@@ -47,7 +47,7 @@ export default function Home() {
     <MyDataContext.Provider value={cachedData}>
       <MainLayout>
         {contactName !== null ? <Chat userId={_id} /> : null}
-        {contactData === null && (
+        {!showMessaging && !showVideoCall ? (
           <div className="start-messaging flex justify-center items-center h-full w-full">
             <main className="flex flex-col">
               <img className="w-[100px] h-auto]" src={msg} alt="" />{" "}
@@ -56,7 +56,7 @@ export default function Home() {
               </h2>
             </main>
           </div>
-        )}
+        ) : ""}
       </MainLayout>
     </MyDataContext.Provider>
   );

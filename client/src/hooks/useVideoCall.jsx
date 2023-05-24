@@ -15,14 +15,19 @@ export function useVideoCall() {
   const [callEnded, setCallEnded] = useState(false);
   const { roomId, _id, name, setName, video, setVideo, audio, setAudio } =
     useContext(MyGlobalContext);
-  const { contactData, showMessaging, setShowMessaging, setShowVideoCall } =
-    useContext(MyDataContext);
+  const {
+    contactData,
+    showMessaging,
+    setShowMessaging,
+    setShowVideoCall,
+    showVideoCall,
+  } = useContext(MyDataContext);
   const myVideo = useRef();
   const userVideo = useRef();
   const connectionRef = useRef();
 
   useEffect(() => {
-    if (!showMessaging) {
+    if (!showMessaging && showVideoCall) {
       navigator.mediaDevices
         .getUserMedia({ video: video, audio: audio })
         .then((stream) => {
@@ -37,7 +42,7 @@ export function useVideoCall() {
       roomId: roomId,
       userId: _id,
       name: name,
-      message: "Video Call",
+      message: "Call",
     });
 
     socket.on("callUser", (data) => {
@@ -48,6 +53,12 @@ export function useVideoCall() {
     });
 
     return () => {
+      // Clean up media stream
+      if (stream) {
+        const tracks = stream.getTracks();
+        tracks.forEach((track) => track.stop());
+      }
+
       socket.off("callUser");
     };
   }, []);
@@ -109,6 +120,14 @@ export function useVideoCall() {
     setShowMessaging(true);
     setShowVideoCall(false);
     setCallEnded(true);
+    setVideo(false);
+
+    // Stop camera and microphone tracks
+    if (stream) {
+      const tracks = stream.getTracks();
+      tracks.forEach((track) => track.stop());
+    }
+
     if (connectionRef.current) {
       connectionRef.current.destroy();
     }

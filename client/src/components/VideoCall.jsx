@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { useVideoCall } from "../hooks/useVideoCall";
 import { MyDataContext } from "../pages/Home";
 
-import endCall from "../assets/icons/callWhite.svg"
+import endCall from "../assets/icons/callWhite.svg";
 
 export default function VideoCall({ handleIncomingCall }) {
   const { showVideoCall, contactName } = useContext(MyDataContext);
@@ -63,15 +63,36 @@ export default function VideoCall({ handleIncomingCall }) {
                 <div className="call-button">
                   {callAccepted && !callEnded ? (
                     <button
-                      variant="contained"
-                      color="secondary"
+                      className=" hover:scale-[110%] shadow-md transition ease-in-out duration-200 bg-[#FF6565] rounded-xl p-1"
                       onClick={leaveCall}
                     >
-                      <img className="p-2 w-14 h-14 bg-red-500 rounded-xl shadow-md" src={endCall} alt="" />
-             
+                      <svg
+                        className="fill-white w-12 h-12"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path d="M19.95 21C17.8 21 15.7043 20.525 13.663 19.575C11.6217 18.625 9.81333 17.3583 8.238 15.775C6.66267 14.1917 5.396 12.379 4.438 10.337C3.48 8.295 3.00067 6.19933 3 4.05V3.525C3 3.34167 3.01667 3.16667 3.05 3H8.9L9.825 8.025L6.975 10.9C7.675 12.1 8.55433 13.225 9.613 14.275C10.6717 15.325 11.834 16.2333 13.1 17L16 14.1L21 15.1V20.95C20.8333 20.9667 20.6583 20.9793 20.475 20.988C20.2917 20.9967 20.1167 21.0007 19.95 21Z" />
+                      </svg>
                     </button>
                   ) : (
-                    <button onClick={callUser}>call</button>
+                    <button
+                      className=" hover:scale-[110%] transition ease-in-out duration-200"
+                      onClick={callUser}
+                    >
+                      <svg
+                        className="dark:fill-white fill-primary w-12 h-12"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path d="M19.95 21C17.8 21 15.7043 20.525 13.663 19.575C11.6217 18.625 9.81333 17.3583 8.238 15.775C6.66267 14.1917 5.396 12.379 4.438 10.337C3.48 8.295 3.00067 6.19933 3 4.05V3.525C3 3.34167 3.01667 3.16667 3.05 3H8.9L9.825 8.025L6.975 10.9C7.675 12.1 8.55433 13.225 9.613 14.275C10.6717 15.325 11.834 16.2333 13.1 17L16 14.1L21 15.1V20.95C20.8333 20.9667 20.6583 20.9793 20.475 20.988C20.2917 20.9967 20.1167 21.0007 19.95 21Z" />
+                      </svg>
+                    </button>
                   )}
                 </div>
               </div>
