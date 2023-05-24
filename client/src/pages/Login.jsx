@@ -1,18 +1,17 @@
 import React, { useState, useContext } from "react";
 import InputField from "../components/InputField";
+import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import { login } from "../api/api";
 import { MyGlobalContext } from "../context/MyGlobalContext";
 
 export default function Login() {
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState();
   const [password, setPassword] = useState("");
-  const { set_id, setUserData } = useContext(MyGlobalContext);
-  // const [data, setData] = useState("");
+  const { set_id, setName, setMyEmail } = useContext(MyGlobalContext);
 
   const navigate = useNavigate();
 
-  // Should use POST method for secure authentication and authorization
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -21,28 +20,40 @@ export default function Login() {
         email,
         password,
       });
-      // console.log({ login: response.data });
 
-      console.log("login success", email);
+      if (response.status === 200) {
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 1000,
+          timerProgressBar: false,
+          didOpen: (toast) => {
+            toast.addEventListener("mouseenter", Swal.stopTimer);
+            toast.addEventListener("mouseleave", Swal.resumeTimer);
+          },
+        });
 
-      const { token, userCred } = response.data;
-      set_id(userCred._id);
-      setUserData({
-        _id: userCred._id,
-        contact: userCred.contacts,
-        name: userCred.name,
-        email: userCred.email,
-      });
+        Toast.fire({
+          icon: "success",
+          title: "Signed in successfully",
+        });
 
-      // Clear local storage for past session
-      sessionStorage.clear();
-      // Store token in local storage for new session
-      sessionStorage.setItem("token", token);
+        const { userCred } = response.data;
+        set_id(userCred._id);
+        setName(userCred.name);
+        setMyEmail(userCred.email);
 
-      // Redirect user to the protected route
-      navigate("Home");
-    } catch (err) {
-      console.log("Invalid email or password");
+        // Redirect user to Home
+        navigate("Home");
+      }
+    } catch (error) {
+      if (error.response.status === 400 || error.response.status === 401) {
+        Swal.fire({
+          icon: "error",
+          title: "Invalid email or password!",
+        });
+      }
     }
   };
 

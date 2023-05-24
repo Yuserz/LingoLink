@@ -7,9 +7,8 @@ export default function Contacts({ contacts, loading }) {
   const [email, setEmail] = useState(
     sessionStorage.getItem("email") === "true" ? true : false
   );
-  // const [email, setEmail] = useState();
   const { _id, roomId, setRoomId } = useContext(MyGlobalContext);
-  const { setShowMessaging, setContactName, setContactData } =
+  const { setShowMessaging, setShowVideoCall, setContactName, setContactData } =
     useContext(MyDataContext);
 
   const fetchRoomId = useCallback(async () => {
@@ -26,20 +25,21 @@ export default function Contacts({ contacts, loading }) {
         setContactName(name);
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   }, [email]);
 
   useEffect(() => {
     if (roomId) {
       setShowMessaging(true);
-    } 
-  }, [roomId, setShowMessaging]);
+      setShowVideoCall(false);
+    }
+  }, [roomId, setShowMessaging, setShowVideoCall]);
 
   useEffect(() => {
     if (_id && email) {
       fetchRoomId();
-    } 
+    }
   }, [email, _id, fetchRoomId]);
 
   return (
@@ -49,19 +49,25 @@ export default function Contacts({ contacts, loading }) {
       ) : contacts.length > 0 ? (
         contacts.map((contact, index) => (
           <button
-            className="flex gap-2 px-3 p-1 hover:shadow-sm hover:border-2 hover:border-primary/20 rounded-md "
+            className="flex items-center gap-2 p-2 px-4 hover:border-b hover:border-gray-500/50 hover:scale-[101%]"
             key={index}
             onClick={() => {
               setEmail(contact.email);
             }}
           >
-            <h2>{index + 1 + "."}</h2>
-            <h2>{contact.name}</h2>
-            {/* <h2>{contact.email}</h2> */}
+            <div className="flex bg-primary items-center justify-center border-2 w-12 h-12 rounded-full ">
+              <h1 className="uppercase  text-white font-semibold">
+                {contact.name.charAt(0)}
+              </h1>
+            </div>
+
+            <h2 className="opacity-70 dark:text-white">{contact.email}</h2>
           </button>
         ))
       ) : (
-        <h1 className="opacity-70">No contact</h1>
+        <h1 className="text-black/30 text-center dark:text-white/30 mt-2">
+          Start adding contacts
+        </h1>
       )}
     </div>
   );

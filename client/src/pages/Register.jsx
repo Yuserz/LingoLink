@@ -3,18 +3,27 @@ import InputField from "../components/InputField";
 import { useNavigate } from "react-router-dom";
 import { register } from "../api/api";
 import { MyGlobalContext } from "../context/MyGlobalContext";
+import Swal from "sweetalert2";
 
 export default function Signup() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const { set_id, setUserData} = useContext(MyGlobalContext);
+  const { set_id } = useContext(MyGlobalContext);
 
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (password !== confirmPassword) {
+      Swal.fire({
+        icon: "error",
+        title: "Password does not match!",
+      });
+      return;
+    }
 
     try {
       const response = await register({
@@ -24,19 +33,33 @@ export default function Signup() {
         confirmPassword,
       });
 
-      console.log("registration success");
+      if (response.status === 201) {
+        // console.log("registration success");
+        const { userCred } = response.data;
+        set_id(userCred._id);
+        setName(userCred);
 
-      const { token, userCred } = response.data;
-      set_id(userCred._id);
-      setUserData(userCred);
+        navigate("/home");
+      }
+    } catch (error) {
+      if (error.response) {
+        const { status } = error.response;
 
-      // Store token in local storage
-      sessionStorage.setItem("token", token);
-
-      // Redirect user to the protected route
-      navigate("/home");
-    } catch (err) {
-      console.log("Failed to register user");
+        if (status === 400) {
+          Swal.fire({
+            icon: "error",
+            title: "Email is not valid!",
+          });
+        } else if (status === 500) {
+          Swal.fire({
+            icon: "error",
+            text: "Please use a different email",
+            title: "Email is already registered!",
+          });
+        }
+      } else {
+        // console.log("Error creating user");
+      }
     }
   };
 
@@ -115,7 +138,7 @@ export default function Signup() {
 
             <div className="account text-center text-black2">
               Already have an account?{" "}
-              <a href="/login" className="sign-in-up text-primary">
+              <a href="/" className="sign-in-up text-primary">
                 Sign in
               </a>
             </div>

@@ -4,28 +4,13 @@ const router = express.Router();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
-
-// middleware for verifying token
-const verifyToken = (req, res, next) => {
-  const authHeader = req.headers.authorization;
-  if (authHeader) {
-    const token = authHeader.split(" ")[1];
-    jwt.verify(token, process.env.JWT_SECRET || "12345", (err, user) => {
-      if (err) {
-        return res.status(403).send("Invalid token");
-      }
-      req.user = user;
-      next();
-    });
-  } else {
-    res.status(401).send("Token not provided");
-  }
-};
-
-// Define your routes here
-//Register endpoint
 const mongoose = require("mongoose");
 
+router.get("/protected", (req, res) => {
+  res.send("This is a protected endpoint");
+});
+
+//Register endpoint
 router.post("/register", async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -33,7 +18,7 @@ router.post("/register", async (req, res) => {
     // check if email is in valid format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      return res.status(400).send("Invalid email address");
+      return res.status(400).send({ error: "invalid email!" });
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -57,10 +42,14 @@ router.post("/register", async (req, res) => {
         expiresIn: "1h",
       }
     );
+    // set token in an http-only cookie
+    res.cookie("token", token, { httpOnly: true });
 
     const userCred = user;
-    res.send({ success: "User logged in successfully", token, userCred });
-
+    res.status(201).send({
+      success: "User created and logged in successfully",
+      userCred,
+    });
   } catch (error) {
     console.error(error);
     res.status(500).send("Error creating user");
@@ -96,10 +85,23 @@ router.post("/login", async (req, res, next) => {
       }
     );
 
+    // set token in an http-only cookie
+    res.cookie("token", token, { httpOnly: true });
     const userCred = user;
-    res.send({ success: "User logged in successfully", token, userCred });
+    res.status(200).send({ success: "User logged in successfully", userCred });
   } catch (error) {
     next(error);
+  }
+});
+
+// logout endpoint
+router.post("/logout", (req, res) => {
+  // Clear the token cookie
+  try {
+    res.clearCookie("token");
+    res.send({ success: "User logged out successfully" });
+  } catch (error) {
+    res.send(error);
   }
 });
 
@@ -113,7 +115,7 @@ router.post("/search", async (req, res, next) => {
     }
 
     const { name, _id } = user;
-    res.send({ name, _id, email });
+    res.status(200).send({ name, _id, email });
   } catch (error) {
     next(error);
     console.log("Not Found:");
@@ -127,6 +129,11 @@ router.post("/contacts/:_id", async (req, res) => {
 
   try {
     const user = await User.findById(_id);
+    // Prevent adding self as a contact
+    if (user.email === email) {
+      return res.status(400).json({ message: "Cannot add self as a contact" });
+    }
+    //user not found
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -148,7 +155,7 @@ router.post("/contacts/:_id", async (req, res) => {
     user.contacts.push(newContact);
     await user.save();
 
-    res.json(newContact);
+    res.status(201).json({ message: "success!", newContact });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error" });
@@ -169,42 +176,6 @@ router.get("/contacts/:_id", async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error" });
-  }
-});
-
-// //SSE endpoint
-// router.get("/contacts/sse/:_id", async (req, res) => {
-//   const { _id } = req.params;
-//   const user = await User.findById(_id);
-//   if (!user) {
-//     return res.status(404).json({ message: "User not found" });
-//   }
-//   res.set({
-//     'Cache-Control': 'no-cache',
-//     'Content-Type': 'text/event-stream',
-//     'Connection': 'keep-alive'
-//   });
-//   // listen for new contact events and send the updated contact list to the client-side
-//   user.on('newContact', function(contact) {
-//     res.write('event: newContact\n');
-//     res.write(`data: ${JSON.stringify(contact)}\n\n`);
-//   });
-// });
-
-//get current user data based on ID
-router.get("/getUserData", async (req, res) => {
-  try {
-    const { _id } = req.params;
-    const user = await User.findOne(_id, {
-      _id: 1,
-      name: 1,
-      contacts: 1,
-      email: 1,
-    });
-    res.json(user);
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Error getting user data");
   }
 });
 

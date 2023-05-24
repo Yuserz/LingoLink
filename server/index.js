@@ -1,4 +1,5 @@
 const express = require("express");
+const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const helmet = require("helmet");
 const bodyParser = require("body-parser");
@@ -17,6 +18,7 @@ app.use(compression());
 app.use(cors());
 app.use(bodyParser.json());
 app.use("/api", serverApp);
+app.use(cookieParser());
 
 // Setup socket io connection
 io.initialize(server);

@@ -21,6 +21,7 @@ function initialize(server) {
       socket.to(data.roomId).emit("receive_message", data);
     });
 
+    //emit my socket id
     socket.emit("me", socket.id);
 
     socket.on("callUser", (data) => {
