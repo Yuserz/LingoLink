@@ -2,8 +2,6 @@ import React, { useContext } from "react";
 import { useVideoCall } from "../hooks/useVideoCall";
 import { MyDataContext } from "../pages/Home";
 
-import endCall from "../assets/icons/callWhite.svg";
-
 export default function VideoCall({ handleIncomingCall }) {
   const { showVideoCall, contactName } = useContext(MyDataContext);
   const {
@@ -26,18 +24,23 @@ export default function VideoCall({ handleIncomingCall }) {
       {showVideoCall ? (
         <div className="container h-full w-full">
           <div className="relative video-container w-full h-full flex">
-            <div className="video max-w-[20%] absolute top-0 right-0">
-              {stream && (
-                <video
-                  className=" h-full z-20 shadow-md rounded"
-                  playsInline
-                  muted
-                  ref={myVideo ? myVideo : null}
-                  autoPlay
-                  style={{ width: "100%" }}
-                />
-              )}
-            </div>
+            {video ? (
+              <div className="video max-w-[20%] absolute top-0 right-0">
+                {stream && (
+                  <video
+                    className=" h-full z-20 shadow-md rounded"
+                    playsInline
+                    muted
+                    ref={myVideo ? myVideo : null}
+                    autoPlay
+                    style={{ width: "100%" }}
+                  />
+                )}
+              </div>
+            ) : (
+              ""
+            )}
+
             <div className="video flex justify-center w-full h-full bg-black rounded-lg dark:bg-black/0">
               {callAccepted && !callEnded ? (
                 <video

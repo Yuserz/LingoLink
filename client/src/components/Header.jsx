@@ -10,7 +10,7 @@ export default function Header() {
     <>
       <header className="flex justify-between mt-4 gap-4 items-center">
         <div className="w-1/2">
-          <Search />
+          {/* <Search /> */}
         </div>
         <div className="util-bar flex gap-6 items-center">
           {/* <StatusBtn /> */}
