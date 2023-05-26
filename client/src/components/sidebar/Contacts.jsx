@@ -43,13 +43,13 @@ export default function Contacts({ contacts, loading }) {
   }, [email, _id, fetchRoomId]);
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col">
       {loading ? ( // show a loading indicator or a message if data is being fetched
         ""
       ) : contacts.length > 0 ? (
         contacts.map((contact, index) => (
           <button
-            className="flex items-center gap-2 p-2 px-4 hover:border-b hover:border-gray-500/50 hover:scale-[101%]"
+            className="flex items-center gap-2 p-2 px-4  hover:bg-gray-200 dark:hover:bg-gray-600 hover:scale-[101%]"
             key={index}
             onClick={() => {
               setEmail(contact.email);

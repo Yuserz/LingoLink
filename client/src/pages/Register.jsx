@@ -84,8 +84,6 @@ export default function Signup() {
             title: "Signed in successfully",
           });
 
-          set_id(userCred._id);
-
           // Redirect user to Home
           navigate("/Home");
         }
