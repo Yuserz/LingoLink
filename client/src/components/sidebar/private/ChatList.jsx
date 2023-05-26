@@ -1,10 +1,10 @@
 import React, { useState, useContext, useEffect } from "react";
-import arrowDown from "../../assets/icons/arrowDown.svg";
-import arrowDownWhite from "../../assets/icons/arrowDownWhite.svg";
-import add from "../../assets/icons/add.svg";
-import AddContact from "../modals/AddContact";
-import { getContact } from "../../api/api";
-import { MyGlobalContext } from "../../context/MyGlobalContext";
+import arrowDown from "../../../assets/icons/arrowDown.svg";
+import arrowDownWhite from "../../../assets/icons/arrowDownWhite.svg";
+import add from "../../../assets/icons/add.svg";
+import AddContact from "../../modals/AddContact";
+import { getContact } from "../../../api/api";
+import { MyGlobalContext } from "../../../context/MyGlobalContext";
 import ContactList from "./Contacts";
 
 export default function ChatList() {

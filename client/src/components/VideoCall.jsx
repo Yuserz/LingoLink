@@ -31,7 +31,7 @@ export default function VideoCall() {
                     className=" h-full z-20 shadow-md rounded"
                     playsInline
                     muted
-                    ref={myVideo ? myVideo : null}
+                    ref={myVideo}
                     autoPlay
                     style={{ width: "100%" }}
                   />
@@ -45,7 +45,7 @@ export default function VideoCall() {
               {callAccepted && !callEnded ? (
                 <video
                   playsInline
-                  ref={userVideo ? userVideo : null}
+                  ref={userVideo}
                   autoPlay
                   className={`${video ? "w-full" : "hidden"}`}
                 />

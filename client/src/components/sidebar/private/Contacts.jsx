@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState, useCallback } from "react";
-import { MyGlobalContext } from "../../context/MyGlobalContext";
-import { MyDataContext } from "../../pages/Home";
-import { getRoomId } from "../../api/api";
+import { MyGlobalContext } from "../../../context/MyGlobalContext";
+import { MyDataContext } from "../../../pages/Home";
+import { getRoomId } from "../../../api/api";
 
 export default function Contacts({ contacts, loading }) {
   const [email, setEmail] = useState(

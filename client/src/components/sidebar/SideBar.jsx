@@ -1,5 +1,5 @@
 import React, { useContext} from "react";
-import ChatList from "./ChatList";
+import ChatList from "./private/ChatList";
 import logo from "../../assets/logo.svg";
 import logoWhite from "../../assets/logoWhite.svg";
 import Footer from "./Footer";
