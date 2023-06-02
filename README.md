@@ -1,5 +1,5 @@
 # LingoLink
-### A google hangout clone build with react.js, express.js, and mongoDB.
+### A WEBRTC app built with react.js, express.js, and mongoDB.
 
 ## Prerequisites
 ### Make sure you have the following installed:
