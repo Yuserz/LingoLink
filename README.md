@@ -22,13 +22,22 @@
 
 #### Note: Remove < > sign and replace it with the asked value
 
-### 4. Start the server:</h3>
--cd server
+
+### 4. START THE APP
+
+# WITH CONCURRENTLY(Both client and server will start)
+
   `npm start`
-  
-### 5. Start the client:</h3>
--cd server
-  `npm start`
+
+
+# MANUAL
+  ### 1. Start the server:
+  -cd server
+    `npm start`
+    
+  ### 2. Start the client:
+  -cd server
+    `npm start`
 
 ### 6. Open your browser and navigate to http://localhost:3000</h3>
 
