@@ -1,6 +1,6 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import { search, addContact } from "../../api/api";
-import { MyDataContext } from "../../pages/Home";
+import { MyDataContext } from "../../context/MyDataContext";
 import Search from "../Search";
 import { MyGlobalContext } from "../../context/MyGlobalContext";
 import Swal from "sweetalert2";
@@ -18,44 +18,53 @@ export default function AddContact({ closeModal, updateContact }) {
   const [showAddSelf, setShowAddSelf] = useState(false);
   const [friendsAlready, setFriendsAlready] = useState(false);
   const [showNotFound, setShowNotFound] = useState(false);
+  const [requestError, setRequestError] = useState(false);
   const [searchEmail, setSearchEmail] = useState();
-  const [loading, setLoading] = useState(false); // New loading state
-  const genaratedRoomId = uuidv4();
+  const [loading, setLoading] = useState(false);
+  // Guards the whole submit against synchronous double-clicks (two rapid
+  // clicks share one render, so a loading state alone cannot block them).
+  const addingRef = useRef(false);
 
-  const { setShowMessaging, setContactData, contactData } =
+  const { setShowMessaging, setContactData, setContactName, contactData } =
     useContext(MyDataContext);
   const { _id, roomId, setRoomId, name, myEmail } = useContext(MyGlobalContext);
 
-  // const myId = _id;
-
   useEffect(() => {
-    setRoomId(genaratedRoomId);
-    // console.log(contactData);
-  }, []);
+    setRoomId(uuidv4());
+  }, [setRoomId]);
+
+  // Clear every result panel before a new attempt
+  const resetResults = () => {
+    setShowNotFound(false);
+    setShowAddSelf(false);
+    setFriendsAlready(false);
+    setFoundEmail(false);
+    setRequestError(false);
+  };
 
   const findContact = async () => {
     try {
       setLoading(true); // Set loading state to true
+      resetResults();
       const response = await search({ email: searchEmail });
 
       if (response.status === 200) {
-        // console.log("Added successfully!");
-        setShowNotFound(false);
-        setShowAddSelf(false);
-        setFriendsAlready(false);
         setContactData(response.data);
         setFoundEmail(response.data.email);
       } else {
         setShowNotFound(true);
       }
     } catch (error) {
-      // console.log("not found");
-      //search not found
-      if (error.response.status === 401) {
+      // error.response is undefined when the request never reached the server
+      const status = error?.response?.status;
+
+      if (status === 401) {
+        //search not found
         setShowNotFound(true);
-        setShowAddSelf(false);
-        setFriendsAlready(false);
-        setFoundEmail(false);
+        setRequestError(false);
+      } else {
+        setShowNotFound(false);
+        setRequestError(true);
       }
     } finally {
       setLoading(false); // Set loading state back to false
@@ -63,7 +72,10 @@ export default function AddContact({ closeModal, updateContact }) {
   };
 
   const addNewContact = async () => {
+    if (addingRef.current) return;
+    addingRef.current = true;
     setLoading(true);
+    resetResults();
     try {
       const response = await addContact(
         { name: contactData.name, email: contactData.email, roomId: roomId },
@@ -72,12 +84,15 @@ export default function AddContact({ closeModal, updateContact }) {
 
       //add this user to the added contacts contact list
       if (response.status === 201) {
-        const res = await addContact(
+        await addContact(
           { name: name, email: myEmail, roomId: roomId },
           contactData._id
         );
+        // Open the chat with the new contact right away instead of dropping
+        // the user back on the "Start a chat" screen.
+        setContactName(contactData.name);
         setShowMessaging(true);
-        updateContact(new Date()); 
+        updateContact(new Date());
 
         closeModal(false);
         Swal.fire({
@@ -86,46 +101,38 @@ export default function AddContact({ closeModal, updateContact }) {
           title: "Contact is added!",
           timer: 1200,
         });
-      } else {
-        // console.log({ error: "Same id" });
       }
     } catch (error) {
-      const err = error.response.status;
+      // error.response is undefined when the request never reached the server
+      const err = error?.response?.status;
 
       //cannot add self
       if (err === 400) {
         setShowAddSelf(true);
-
-        setFriendsAlready(false);
-        setShowNotFound(false);
-        setFoundEmail(false);
-      }
-      //conatact not found
-      if (err === 404) {
+        setRequestError(false);
+      } else if (err === 404) {
+        //conatact not found
         setShowNotFound(true);
-
-        setShowAddSelf(false);
-        setFriendsAlready(false);
-        setFoundEmail(false);
-      }
-      //contact exist
-      if (err === 409) {
+        setRequestError(false);
+      } else if (err === 409) {
+        //contact exist
         setFriendsAlready(true);
-
-        setShowAddSelf(false);
-        setShowNotFound(false);
-        setFoundEmail(false);
+        setRequestError(false);
+      } else {
+        // network failure or an unexpected status: tell the user instead of failing silently
+        setRequestError(true);
       }
     } finally {
       setTimeout(() => {
         setLoading(false);
-      }, 1000); // Delay for 3 seconds before setting loading state back to false
+        addingRef.current = false;
+      }, 1000);
     }
   };
 
   return (
     <div className="absolute z-50 w-screen h-screen bg-black/70 dark:bg-black/80 top-0 left-0 flex items-center justify-center">
-      <div className="add-contact-modal flex flex-col w-[500px] h-fit border-2 border-gray-500 bg-secondary dark:bg-gray-700 rounded-xl overflow-hidden shadow-lg p-4 gap-2">
+      <div className="add-contact-modal flex flex-col w-[500px] max-w-[calc(100vw-2rem)] h-fit border-2 border-gray-500 bg-secondary dark:bg-gray-700 rounded-xl overflow-hidden shadow-lg p-4 gap-2">
         <div className="flex justify-end px-1 py-2 text-lg">
           <button
             onClick={() => {
@@ -198,6 +205,18 @@ export default function AddContact({ closeModal, updateContact }) {
               <img className="w-20" src={notFoundIcon} alt="" />{" "}
               <h3 className="opacity-60 dark:text-white/90">
                 Cannot add self!
+              </h3>
+            </div>
+          ) : (
+            ""
+          )}
+          {!loading && requestError ? (
+            <div className="text-center my-8 flex flex-col justify-center w-full items-center">
+              <h3 className="opacity-80 dark:text-white/90">
+                Something went wrong.
+              </h3>
+              <h3 className="opacity-60 dark:text-white/70">
+                Please check your connection and try again.
               </h3>
             </div>
           ) : (

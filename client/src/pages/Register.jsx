@@ -35,7 +35,6 @@ export default function Signup() {
       });
 
       if (response.status === 201) {
-        // console.log("registration success");
         const Toast = Swal.mixin({
           toast: true,
           position: "top-end",
@@ -85,35 +84,39 @@ export default function Signup() {
           });
 
           // Redirect user to Home
-          navigate("/Home");
+          navigate("/home");
         }
       }
     } catch (error) {
-      if (error.response) {
-        const { status } = error.response;
+      // error.response is undefined when the request never reached the server
+      // (offline, server down), so it must be read defensively.
+      const status = error?.response?.status;
 
-        if (status === 400) {
-          Swal.fire({
-            icon: "error",
-            title: "Email is not valid!",
-          });
-        } else if (status === 500) {
-          Swal.fire({
-            icon: "error",
-            text: "Please use a different email",
-            title: "Email is already registered!",
-          });
-        }
+      if (status === 400) {
+        Swal.fire({
+          icon: "error",
+          title: "Email is not valid!",
+        });
+      } else if (status === 500) {
+        Swal.fire({
+          icon: "error",
+          text: "Please use a different email",
+          title: "Email is already registered!",
+        });
       } else {
-        // console.log("Error creating user");
+        Swal.fire({
+          icon: "error",
+          title: "Unable to sign up",
+          text: "Something went wrong. Please check your connection and try again.",
+        });
       }
     }
   };
 
   return (
     <>
-      <div className="signup-container w-full bg-secondary h-screen flex justify-center items-center">
-        <div className="box bg-white shadow-xl signup w-[24%] max-[24%]: min-w-[360px]  p-8 rounded-xl flex flex-col gap-6">
+      <div className="signup-container w-full bg-secondary h-screen flex justify-center items-center dark:bg-gray-800">
+        <div className="box bg-white shadow-xl signup w-[24%] min-w-[360px]  p-8 rounded-xl flex flex-col gap-6 dark:bg-gray-700 dark:text-white">
           <form
             className="w-full h-fit flex flex-col gap-6 "
             onSubmit={handleSubmit}
@@ -122,16 +125,18 @@ export default function Signup() {
               <p className="intro-box__intro-text text-4xl font-bold text-primary text-center mb-4">
                 Sign up
               </p>
-              <p className="intro-box__intro-message text-black2 whitespace-nowrap text-center">
+              <p className="intro-box__intro-message text-black2 whitespace-nowrap text-center dark:text-white/70">
                 Enter your email and password to create an account
               </p>
             </div>
             <div className="input-box flex flex-col gap-2">
-              <label htmlFor="Email">Name</label>
+              <label htmlFor="name" className="dark:text-white">
+                Name
+              </label>
               <InputField
                 type="text"
                 name="name"
-                id="exampleFormControlInput2"
+                id="name"
                 placeholder="Input your name"
                 onChange={(e) => setNewName(e.target.value)}
                 required
@@ -139,11 +144,13 @@ export default function Signup() {
             </div>
 
             <div className="input-box flex flex-col gap-2">
-              <label htmlFor="Email">Email</label>
+              <label htmlFor="email" className="dark:text-white">
+                Email
+              </label>
               <InputField
                 type="text"
                 name="email"
-                id="exampleFormControlInput2"
+                id="email"
                 placeholder="Your email address"
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -151,11 +158,13 @@ export default function Signup() {
             </div>
 
             <div className="input-box flex flex-col gap-2">
-              <label htmlFor="Password">Password</label>
+              <label htmlFor="password" className="dark:text-white">
+                Password
+              </label>
               <InputField
                 type="password"
                 name="password"
-                id="exampleFormControlInput2"
+                id="password"
                 placeholder="Your password"
                 onChange={(e) => setPassword(e.target.value)}
                 required
@@ -163,11 +172,13 @@ export default function Signup() {
             </div>
 
             <div className="input-box flex flex-col gap-2">
-              <label htmlFor="ConfirmPassword">Confirm Password</label>
+              <label htmlFor="confirmPassword" className="dark:text-white">
+                Confirm Password
+              </label>
               <InputField
                 type="password"
                 name="confirmPassword"
-                id="exampleFormControlInput2"
+                id="confirmPassword"
                 placeholder="Confirm password"
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
@@ -183,7 +194,7 @@ export default function Signup() {
               </button>
             </div>
 
-            <div className="account text-center text-black2">
+            <div className="account text-center text-black2 dark:text-white/70">
               Already have an account?{" "}
               <a href="/" className="sign-in-up text-primary">
                 Sign in

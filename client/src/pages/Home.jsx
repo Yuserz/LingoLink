@@ -1,22 +1,12 @@
-import React, {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  useMemo,
-} from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import MainLayout from "../layout/MainLayout";
 import Chat from "../components/Chat";
-import { MyGlobalContext } from "../context/MyGlobalContext";
+import { MyDataContext } from "../context/MyDataContext";
 
 // Icon
 import msg from "../assets/icons/msg.svg";
 
-// Create a context for the data
-export const MyDataContext = createContext();
-
 export default function Home() {
-  const { _id } = useContext(MyGlobalContext);
   const [showMessaging, setShowMessaging] = useState(
     sessionStorage.getItem("showMessaging") === "true" || false
   );
@@ -65,11 +55,11 @@ export default function Home() {
     <MyDataContext.Provider value={cachedData}>
       <MainLayout>
         {contactName ? (
-          <Chat userId={_id} />
+          <Chat />
         ) : (
           <div className="start-messaging flex justify-center items-center h-full w-full">
             <main className="flex flex-col">
-              <img className="w-[100px] h-auto]" src={msg} alt="" />{" "}
+              <img className="w-[100px] h-auto" src={msg} alt="" />{" "}
               <h2 className="text-center text-black opacity-30 dark:text-white">
                 Start a chat
               </h2>

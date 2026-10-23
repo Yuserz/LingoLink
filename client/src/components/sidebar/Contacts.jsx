@@ -1,12 +1,10 @@
 import React, { useContext, useEffect, useState, useCallback } from "react";
 import { MyGlobalContext } from "../../context/MyGlobalContext";
-import { MyDataContext } from "../../pages/Home";
+import { MyDataContext } from "../../context/MyDataContext";
 import { getRoomId } from "../../api/api";
 
 export default function Contacts({ contacts, loading }) {
-  const [email, setEmail] = useState(
-    sessionStorage.getItem("email") === "true" ? true : false
-  );
+  const [email, setEmail] = useState(false);
   const { _id, roomId, setRoomId } = useContext(MyGlobalContext);
   const { setShowMessaging, setShowVideoCall, setContactName, setContactData } =
     useContext(MyDataContext);
@@ -18,16 +16,13 @@ export default function Contacts({ contacts, loading }) {
         email: email,
       });
       setContactData(response.data);
-      // console.log("response", response.data);
-      if (response) {
-        const { roomId, name } = response.data;
-        setRoomId(roomId);
-        setContactName(name);
-      }
-    } catch (error) {
-      // console.log(error);
+      const { roomId, name } = response.data;
+      setRoomId(roomId);
+      setContactName(name);
+    } catch {
+      // Contact lookup failed; keep the current selection state.
     }
-  }, [email]);
+  }, [_id, email, setContactData, setContactName, setRoomId]);
 
   useEffect(() => {
     if (roomId) {

@@ -1,12 +1,23 @@
-import React, { lazy, Suspense } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { MyContextProvider } from "./context/MyGlobalContext";
-import Test from "./pages/Test.jsx"
+import React, { lazy, Suspense, useContext } from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import { MyContextProvider, MyGlobalContext } from "./context/MyGlobalContext";
 
-// Define lazy-loaded components
 const Home = lazy(() => import("./pages/Home"));
 const Login = lazy(() => import("./pages/Login"));
 const Register = lazy(() => import("./pages/Register"));
+
+// /home is only meaningful with a signed-in user; everything else bounces to
+// the login screen. Redirecting here also keeps the Home chunk (and its
+// socket/API calls) from loading at all without a session.
+function RequireAuth({ children }) {
+  const { _id } = useContext(MyGlobalContext);
+  return _id ? children : <Navigate to="/" replace />;
+}
 
 function App() {
   return (
@@ -14,39 +25,30 @@ function App() {
       <Router>
         <Routes>
           <Route
-            exact
             path="/"
             element={
               <Suspense fallback={<div>Loading...</div>}>
-                {" "}
-                <Login />{" "}
+                <Login />
               </Suspense>
             }
           />
           <Route
-            exact
             path="/register"
             element={
               <Suspense fallback={<div>Loading...</div>}>
-                {" "}
-                <Register />{" "}
+                <Register />
               </Suspense>
             }
           />
           <Route
-            exact
             path="/home"
             element={
-              <Suspense fallback={<div>Loading...</div>}>
-                {" "}
-                <Home />{" "}
-              </Suspense>
+              <RequireAuth>
+                <Suspense fallback={<div>Loading...</div>}>
+                  <Home />
+                </Suspense>
+              </RequireAuth>
             }
-          />
-          <Route
-            exact
-            path="/Test"
-            element={<Test />}
           />
         </Routes>
       </Router>

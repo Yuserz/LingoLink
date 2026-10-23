@@ -3,7 +3,7 @@ import moment from "moment";
 import { MyGlobalContext } from "../context/MyGlobalContext";
 
 //context
-import { MyDataContext } from "../pages/Home";
+import { MyDataContext } from "../context/MyDataContext";
 
 //icons
 import sendBtn from "../assets/icons/send.svg";
@@ -25,7 +25,7 @@ export default function Messaging({ socket, contactName}) {
     setVideo,
     inputRef,
     sendMessage,
-  } = useChat(socket, contactName);
+  } = useChat(socket);
 
   return (
     <>

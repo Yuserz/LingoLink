@@ -18,7 +18,7 @@ export default function Logout() {
         {/* <div className="bg-primary text-white w-8 shadow-sm border h-8 flex justify-center items-center rounded-full">
           {name.charAt(0)}
         </div> */}
-        {name}
+        <span className="truncate max-w-[35vw]">{name}</span>
         <button
           onClick={handleModal}
           className={`flex min-w-fit items-center h-fit`}

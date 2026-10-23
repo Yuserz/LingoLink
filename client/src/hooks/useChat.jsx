@@ -1,21 +1,14 @@
 import { useEffect, useState, useRef, useContext } from "react";
 import moment from "moment";
-//context api
-import { MyDataContext } from "../pages/Home";
+import { MyDataContext } from "../context/MyDataContext";
 import { MyGlobalContext } from "../context/MyGlobalContext";
 
-export function useChat(socket, contactName) {
+export function useChat(socket) {
   const [currentMessage, setCurrentMessage] = useState("");
-  const [messageList, setMessageList] = useState(() => {
-    const savedMessages = sessionStorage.getItem("messageList");
-    return savedMessages ? JSON.parse(savedMessages) : [];
-  });
+  const [messageList, setMessageList] = useState([]);
   const messagesEndRef = useRef(null);
-
-  const { setShowVideoCall, setShowMessaging } = useContext(MyDataContext);
-  const { roomId, video, setVideo, audio, setAudio } =
-    useContext(MyGlobalContext);
-
+  const { setShowVideoCall } = useContext(MyDataContext);
+  const { roomId, setVideo, name } = useContext(MyGlobalContext);
   const inputRef = useRef(null);
 
   useEffect(() => {
@@ -24,15 +17,18 @@ export function useChat(socket, contactName) {
   }, [currentMessage]);
 
   const sendMessage = async () => {
-    if (currentMessage !== "") {
+    // Whitespace-only input would render as a blank bubble.
+    if (currentMessage.trim() !== "") {
       const messageData = {
         roomId: roomId,
-        author: contactName,
+        // Stamp with the SENDER's name so each client can tell its own
+        // bubbles (rendered right) from the contact's (rendered left).
+        author: name,
         message: currentMessage,
         time: moment().format("h:mm A"),
       };
 
-      await socket.emit("send_message", messageData);
+      socket.emit("send_message", messageData);
       setMessageList((list) => [...list, messageData]);
       setCurrentMessage("");
     }
@@ -62,12 +58,7 @@ export function useChat(socket, contactName) {
     messageList,
     messagesEndRef,
     setShowVideoCall,
-    setShowMessaging,
-    roomId,
-    video,
     setVideo,
-    audio,
-    setAudio,
     inputRef,
     sendMessage,
   };

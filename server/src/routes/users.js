@@ -45,7 +45,8 @@ router.post("/register", async (req, res) => {
     // set token in an http-only cookie
     res.cookie("token", token, { httpOnly: true });
 
-    const userCred = user;
+    // Only fields the client needs — never the password hash.
+    const userCred = { _id: user._id, name: user.name, email: user.email };
     res.status(201).send({
       success: "User created and logged in successfully",
       userCred,
@@ -87,7 +88,9 @@ router.post("/login", async (req, res, next) => {
 
     // set token in an http-only cookie
     res.cookie("token", token, { httpOnly: true });
-    const userCred = user;
+
+    // Only fields the client needs — never the password hash.
+    const userCred = { _id: user._id, name: user.name, email: user.email };
     res.status(200).send({ success: "User logged in successfully", userCred });
   } catch (error) {
     next(error);
@@ -129,31 +132,26 @@ router.post("/contacts/:_id", async (req, res) => {
 
   try {
     const user = await User.findById(_id);
+    // user not found (checked before dereferencing user.email)
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
     // Prevent adding self as a contact
     if (user.email === email) {
       return res.status(400).json({ message: "Cannot add self as a contact" });
     }
-    //user not found
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
 
-    // Check if contact already exists
-    const existingContact = user.contacts.find(
-      (contact) => contact.email === email
+    // Atomic conditional push: the "contacts.email != email" filter makes the
+    // duplicate check race-proof (two concurrent adds cannot both succeed).
+    const newContact = { name, email, roomId };
+    const result = await User.updateOne(
+      { _id, "contacts.email": { $ne: email } },
+      { $push: { contacts: newContact } }
     );
-    if (existingContact) {
+
+    if (result.modifiedCount === 0) {
       return res.status(409).json({ message: "Contact already exists" });
     }
-
-    const newContact = {
-      name,
-      email,
-      roomId,
-    };
-
-    user.contacts.push(newContact);
-    await user.save();
 
     res.status(201).json({ message: "success!", newContact });
   } catch (err) {

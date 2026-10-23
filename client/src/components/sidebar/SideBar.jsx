@@ -10,7 +10,11 @@ export default function SideBar() {
   return (
     <>
       <div className="sidebar-container flex flex-col justify-center p-4 px-6 gap-8 h-full">
-        <img src={theme === "dark" ? logoWhite : logo} alt="" />
+        <img
+          className="max-w-[200px]"
+          src={theme === "dark" ? logoWhite : logo}
+          alt=""
+        />
         <div className="chat flex flex-col justify-between h-full">
           <ChatList />
           <Footer />

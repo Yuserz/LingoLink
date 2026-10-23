@@ -45,13 +45,23 @@ export default function Login() {
         setMyEmail(userCred.email);
 
         // Redirect user to Home
-        navigate("Home");
+        navigate("/home");
       }
     } catch (error) {
-      if (error.response.status === 400 || error.response.status === 401) {
+      // error.response is undefined when the request never reached the server
+      // (offline, server down), so it must be read defensively.
+      const status = error?.response?.status;
+
+      if (status === 400 || status === 401) {
         Swal.fire({
           icon: "error",
           title: "Invalid email or password!",
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Unable to sign in",
+          text: "Something went wrong. Please check your connection and try again.",
         });
       }
     }
@@ -59,9 +69,10 @@ export default function Login() {
 
   return (
     <>
-      <div className="login-container w-full bg-secondary h-screen flex justify-center items-center">
-        <div className="box bg-white shadow-xl login w-[24%] max-[24%]: min-w-[360px]  p-8 rounded-xl flex flex-col gap-6">
+      <div className="login-container w-full bg-secondary h-screen flex justify-center items-center dark:bg-gray-800">
+        <div className="box bg-white shadow-xl login w-[24%] min-w-[360px]  p-8 rounded-xl flex flex-col gap-6 dark:bg-gray-700 dark:text-white">
           <form
+            aria-label="Sign in"
             className="w-full h-fit flex flex-col gap-6 "
             onSubmit={handleSubmit}
           >
@@ -69,16 +80,18 @@ export default function Login() {
               <p className="intro-box__intro-text text-4xl font-bold text-primary text-center mb-4">
                 Login
               </p>
-              <p className="intro-box__intro-message text-black2 whitespace-nowrap text-center">
+              <p className="intro-box__intro-message text-black2 whitespace-nowrap text-center dark:text-white/70">
                 Enter your email and password to sign in
               </p>
             </div>
             <div className="input-box flex flex-col gap-2">
-              <label htmlFor="Email">Email</label>
+              <label htmlFor="email" className="dark:text-white">
+                Email
+              </label>
               <InputField
                 type="text"
                 name="email"
-                id="exampleFormControlInput2"
+                id="email"
                 placeholder="Your email address"
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -86,11 +99,13 @@ export default function Login() {
             </div>
 
             <div className="input-box flex flex-col gap-2">
-              <label htmlFor="Password">Password</label>
+              <label htmlFor="password" className="dark:text-white">
+                Password
+              </label>
               <InputField
                 type="password"
                 name="password"
-                id="exampleFormControlInput2"
+                id="password"
                 placeholder="Your password"
                 onChange={(e) => setPassword(e.target.value)}
                 required
@@ -106,7 +121,7 @@ export default function Login() {
               </button>
             </div>
 
-            <div className="account text-center text-black2">
+            <div className="account text-center text-black2 dark:text-white/70">
               Don't have an account?{" "}
               <a href="/register" className="sign-in-up text-primary">
                 Sign up

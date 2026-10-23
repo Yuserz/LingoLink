@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../../api/api";
-import { MyDataContext } from "../../pages/Home";
+import { MyDataContext } from "../../context/MyDataContext";
 
 export default function LogoutModal() {
   const navigate = useNavigate();

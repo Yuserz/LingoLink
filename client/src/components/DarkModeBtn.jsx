@@ -5,7 +5,7 @@ export default function DarkModeBtn() {
   const [colorTheme, setTheme] = useDarkMode();
 
   const [check, setCheck] = useState(
-    localStorage.theme === "light" ? false : true
+    localStorage.getItem("theme") === "dark"
   );
 
   const toggleDarkMode = () => {

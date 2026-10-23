@@ -11,12 +11,13 @@ export const MyContextProvider = ({ children }) => {
     sessionStorage.getItem("video") === "true" ? true : false
   );
   const [audio, setAudio] = useState(
-    sessionStorage.getItem("Audio") === "true" ? false : true
+    sessionStorage.getItem("audio") !== "false"
   );
 
-  //Theme
-  const [theme, setTheme] = useState(localStorage.theme);
-
+  //Theme — never an undefined value: anything not explicitly "dark" is "light".
+  const [theme, setTheme] = useState(
+    localStorage.getItem("theme") === "dark" ? "dark" : "light"
+  );
 
   useEffect(() => {
     sessionStorage.setItem("_id", _id);
@@ -27,6 +28,14 @@ export const MyContextProvider = ({ children }) => {
     sessionStorage.setItem("myEmail", myEmail);
     localStorage.setItem("theme", theme);
   }, [_id, roomId, video, audio, name, myEmail, theme]);
+
+  // Single source of truth for the <html> class, so the theme applies on every
+  // page (auth screens included) instead of only where the toggle is mounted.
+  useEffect(() => {
+    const root = window.document.documentElement;
+    root.classList.remove("light", "dark");
+    root.classList.add(theme);
+  }, [theme]);
 
   const contextValue = useMemo(
     () => ({

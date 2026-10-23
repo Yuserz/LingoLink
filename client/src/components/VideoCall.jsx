@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { useVideoCall } from "../hooks/useVideoCall";
-import { MyDataContext } from "../pages/Home";
+import { MyDataContext } from "../context/MyDataContext";
 
 export default function VideoCall() {
   const { showVideoCall, contactName } = useContext(MyDataContext);

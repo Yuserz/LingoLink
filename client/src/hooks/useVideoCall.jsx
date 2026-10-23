@@ -1,43 +1,47 @@
 import { useEffect, useRef, useState, useContext } from "react";
 import Peer from "simple-peer";
-import io from "socket.io-client";
-import { MyDataContext } from "../pages/Home";
+import { MyDataContext } from "../context/MyDataContext";
+import { getSocket } from "../socket";
 import { MyGlobalContext } from "../context/MyGlobalContext";
 
-const socket = io.connect("http://localhost:3001");
-
 export function useVideoCall() {
+  const socket = getSocket();
   const [stream, setStream] = useState("");
   const [receivingCall, setReceivingCall] = useState(false);
   const [caller, setCaller] = useState("");
   const [callerSignal, setCallerSignal] = useState();
   const [callAccepted, setCallAccepted] = useState(false);
   const [callEnded, setCallEnded] = useState(false);
-  const { roomId, _id, name, setName, video, setVideo, audio, setAudio } =
+  const { roomId, _id, name, setName, video, setVideo, audio } =
     useContext(MyGlobalContext);
   const {
     contactData,
     showMessaging,
+    showVideoCall,
     setShowMessaging,
     setShowVideoCall,
-    showVideoCall,
   } = useContext(MyDataContext);
   const myVideo = useRef();
   const userVideo = useRef();
-  const connectionRef = useRef();
 
+  // Camera/microphone access while the call screen is up.
   useEffect(() => {
-    if (!showMessaging && showVideoCall) {
-      navigator.mediaDevices
-        .getUserMedia({ video: video, audio: audio })
-        .then((stream) => {
-          setStream(stream);
-          if (myVideo.current) {
-            myVideo.current.srcObject = stream;
-          }
-        });
-    }
+    if (showMessaging || !showVideoCall) return undefined;
+    let active = true;
+    navigator.mediaDevices.getUserMedia({ video, audio }).then((mediaStream) => {
+      if (!active) return;
+      setStream(mediaStream);
+      if (myVideo.current) {
+        myVideo.current.srcObject = mediaStream;
+      }
+    });
+    return () => {
+      active = false;
+    };
+  }, [showMessaging, showVideoCall, video, audio]);
 
+  // Room presence + incoming-call signalling.
+  useEffect(() => {
     socket.emit("join_room", {
       roomId: roomId,
       userId: _id,
@@ -45,23 +49,18 @@ export function useVideoCall() {
       message: "Call",
     });
 
-    socket.on("callUser", (data) => {
+    const onCallUser = (data) => {
       setReceivingCall(true);
       setCaller(data.from);
       setName(data.name);
       setCallerSignal(data.signal);
-    });
+    };
+    socket.on("callUser", onCallUser);
 
     return () => {
-      // Clean up media stream
-      if (stream && callEnded) {
-        const tracks = stream.getTracks();
-        tracks.forEach((track) => track.stop());
-      }
-
-      socket.off("callUser");
+      socket.off("callUser", onCallUser);
     };
-  }, []);
+  }, [roomId, _id, name, setName, socket]);
 
   const callUser = () => {
     const peer = new Peer({
@@ -80,16 +79,14 @@ export function useVideoCall() {
       });
     });
 
-    peer.on("stream", (stream) => {
-      userVideo.current.srcObject = stream;
+    peer.on("stream", (remoteStream) => {
+      userVideo.current.srcObject = remoteStream;
     });
 
     socket.on("callAccepted", (signal) => {
       setCallAccepted(true);
       peer.signal(signal);
     });
-
-    connectionRef.current = peer;
   };
 
   const answerCall = () => {
@@ -108,12 +105,11 @@ export function useVideoCall() {
       });
     });
 
-    peer.on("stream", (stream) => {
-      userVideo.current.srcObject = stream;
+    peer.on("stream", (remoteStream) => {
+      userVideo.current.srcObject = remoteStream;
     });
 
     peer.signal(callerSignal);
-    connectionRef.current = peer;
   };
 
   const leaveCall = () => {
@@ -127,10 +123,6 @@ export function useVideoCall() {
       const tracks = stream.getTracks();
       tracks.forEach((track) => track.stop());
     }
-
-    // if (connectionRef.current) {
-    //   connectionRef.current.destroy();
-    // }
   };
 
   return {

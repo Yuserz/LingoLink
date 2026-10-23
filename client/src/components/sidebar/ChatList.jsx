@@ -11,35 +11,52 @@ export default function ChatList() {
   const [showModal, setShowModal] = useState(false);
   const [contacts, setContacts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
   const { _id, theme } = useContext(MyGlobalContext);
   const [showContacts, setShowContacts] = useState(true);
   const [latestContact, setLatestContact] = useState(null);
 
   useEffect(() => {
+    let active = true;
+
     async function fetchData() {
       setLoading(true);
-      const response = await getContact({}, _id);
-      if (response.status === 200) {
-        setContacts(response.data.contacts);
-        setLatestContact(response.data.latestContact); // Set the latest contact
-      } else {
+      setLoadError(false);
+      try {
+        const response = await getContact({}, _id);
+        if (!active) return;
+        if (response.status === 200) {
+          setContacts(response.data.contacts);
+        } else {
+          setContacts([]);
+          setLoadError(true);
+        }
+      } catch (error) {
+        if (!active) return;
         setContacts([]);
+        setLoadError(true);
+      } finally {
+        // Always leave the loading state, even when the request fails.
+        if (active) setLoading(false);
       }
-      setLoading(false);
     }
     fetchData();
-  }, [latestContact]); // Add latestContact as a dependency
+
+    return () => {
+      active = false;
+    };
+  }, [latestContact, _id]);
+
+  const retry = () => {
+    setLatestContact(new Date());
+  };
 
   const toggleExpanded = () => {
     setShowContacts(!showContacts);
   };
 
   return (
-    <div
-      className={`chat-container dark:text-black overflow-hidden dark:border-gray-700  dark:bg-gray-500/50 bg-secondary rounded-md py-4 flex flex-col justify-between${
-        showContacts ? "expanded max-h-fit gap-4" : "hidden"
-      }`}
-    >
+    <div className="chat-container dark:text-black overflow-hidden dark:border-gray-700 dark:bg-gray-500/50 bg-secondary rounded-md py-4 flex flex-col justify-between gap-4">
       <div
         className={`flex items-center w-full justify-between h-fit px-4 py-1 ${
           showContacts ? "pb-2 border-b border-gray-700/15" : ""
@@ -75,7 +92,25 @@ export default function ChatList() {
         ) : null}
       </div>
       {showContacts ? (
-        <ContactList contacts={contacts} loading={loading} />
+        loadError ? (
+          <div
+            className="flex flex-col items-center justify-center gap-3 px-4 py-6 text-center"
+            role="alert"
+          >
+            <p className="text-black/60 dark:text-white/80">
+              Couldn't load your chats.
+            </p>
+            <button
+              type="button"
+              onClick={retry}
+              className="px-4 py-2 rounded-xl bg-primary text-white text-[12px] font-bold hover:scale-[101%] transition ease-in-out"
+            >
+              TRY AGAIN
+            </button>
+          </div>
+        ) : (
+          <ContactList contacts={contacts} loading={loading} />
+        )
       ) : (
         ""
       )}
